@@ -60,7 +60,7 @@
 
         <h3>More about the Venue</h3>
         <div class="form-grid">
-        <label>Event Planner: <input type="checkbox" name="eventPlanner" value="0" <?php echo $row['eventPlanner'] ? 'checked' : ''; ?>></label>
+            <label>Event Planner: <input type="checkbox" name="eventPlanner" value="0" <?php echo $row['eventPlanner'] ? 'checked' : ''; ?>></label>
             <label>Equipment Rentals: <input type="checkbox" name="equipmentRentals" value="0" <?php echo $row['equipmentRentals'] ? 'checked' : ''; ?>></label>
             <label>Decorate Services: <input type="checkbox" name="decorateServices" value="0" <?php echo $row['decorateServices'] ? 'checked' : ''; ?>></label>
             <label>Onsite Staff: <input type="checkbox" name="onsiteStaff" value="0" <?php echo $row['onsiteStaff'] ? 'checked' : ''; ?>></label>
