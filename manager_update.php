@@ -7,10 +7,10 @@
         $barangayAddress = $_POST['barangayAddress'];
         $cityAddress = $_POST['cityAddress']; 
         $maxCapacity = $_POST['maxCapacity'];
-        $intimate = $_POST['inti']; 
-        $business = $_POST['busi'];
+        $intimate = $_POST['intimate']; 
+        $business = $_POST['business'];
         $fun = $_POST['fun']; 
-        $casual = $_POST['casu'];
+        $casual = $_POST['casual'];
         // availabilityDays will have a predefined set of values
         $validOptions = ['Everyday', 'Everyday (except holidays)', 'Weekdays only','Weekends only', 'Monday to Saturday'];
         $availabilityDays = $_POST['availabilityDays'];
@@ -35,11 +35,11 @@
         $nnAvail = overlaps($nnStart, $nnEnd, $start, $end) ? 1 : 0;
         $pmAvail = overlaps($pmStart, $pmEnd, $start, $end) ? 1 : 0;
 
-        $eventPlanner = $_POST['evntPlan']; 
-        $equipRentals = $_POST['EqmRentals']; 
-        $decorateServices = $_POST['DecServ']; 
-        $onsiteStaff = $_POST['siteStaff'];
-        $techSupport = $_POST['techsup']; 
+        $eventPlanner = $_POST['eventPlanner']; 
+        $equipRentals = $_POST['equipRentals']; 
+        $decoServices = $_POST['decoServices']; 
+        $onsiteStaff = $_POST['onsiteStaff'];
+        $techSupport = $_POST['techSupport']; 
         $pwdFriendly = $_POST['pwdFriendly'];
         // price range will have a predefined set of values 
         $priceRange = $_POST['priceRange'];
@@ -49,11 +49,11 @@
         }
         $contactEmail = $_POST['contactEmail'];
         $contactNum = $_POST['contactNum']; 
-        $managerLname = $_POST['venueManagerLname'];
-        $managerFname = $_POST['venueManagerFname'];
-        $fbLink = $_POST['facebookLink'];
-        $igLink = $_POST['instagramLink'];
-        $webLink = $_POST['websiteLink'];
+        $lastname = $_POST['firstname'];
+        $firstname = $_POST['lastname'];
+        $fbLink = $_POST['fbLink'];
+        $igLink = $_POST['igLink'];
+        $webLink = $_POST['webLink'];
         $walkInBook = $_POST['walkInBook'];
         $onlineBook = $_POST['onlineBook'];
         $phoneBook = $_POST['phoneBook'];
