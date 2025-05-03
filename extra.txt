@@ -1,0 +1,20 @@
+if (isset($_GET['venueID'])) {
+        $venueID = $_GET['venueID'];
+
+        $sql = "SELECT v.*, m.firstName, m.lastName 
+                FROM venueData v 
+                JOIN managerData m ON v.managerID = m.managerID 
+                WHERE v.venueID = '$venueID'";
+
+        $result = mysqli_query($conn, $sql);
+
+        if ($result && mysqli_num_rows($result) > 0) {
+            $row = mysqli_fetch_assoc($result);
+        } else {
+            echo "No venue found with ID: $venueID";
+            exit;
+        }
+    } else {
+        echo "No venueID provided in URL.";
+        exit;
+    }

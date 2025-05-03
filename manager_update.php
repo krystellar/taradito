@@ -7,10 +7,10 @@
         $barangayAddress = $_POST['barangayAddress'];
         $cityAddress = $_POST['cityAddress']; 
         $maxCapacity = $_POST['maxCapacity'];
-        $intimate = $_POST['intimate']; 
-        $business = $_POST['business'];
-        $fun = $_POST['fun']; 
-        $casual = $_POST['casual'];
+        $intimate = isset($_POST['intimate']) ? 1 : 0;
+        $business = isset($_POST['business']) ? 1 : 0;
+        $fun = isset($_POST['fun']) ? 1 : 0;
+        $casual = isset($_POST['casual']) ? 1 : 0;
         // availabilityDays will have a predefined set of values
         $validOptions = ['Everyday', 'Everyday (except holidays)', 'Weekdays only','Weekends only', 'Monday to Saturday'];
         $availabilityDays = $_POST['availabilityDays'];
@@ -35,40 +35,38 @@
         $nnAvail = overlaps($nnStart, $nnEnd, $start, $end) ? 1 : 0;
         $pmAvail = overlaps($pmStart, $pmEnd, $start, $end) ? 1 : 0;
 
-        $eventPlanner = $_POST['eventPlanner']; 
-        $equipRentals = $_POST['equipRentals']; 
-        $decoServices = $_POST['decoServices']; 
-        $onsiteStaff = $_POST['onsiteStaff'];
-        $techSupport = $_POST['techSupport']; 
-        $pwdFriendly = $_POST['pwdFriendly'];
+        $eventPlanner = isset($_POST['eventPlanner']) ? 1 : 0;
+        $equipRentals = isset($_POST['equipRentals']) ? 1 : 0;
+        $decoServices = isset($_POST['decoServices']) ? 1:0; 
+        $onsiteStaff = isset($_POST['onsiteStaff']) ? 1: 0;
+        $techSupport = isset($_POST['techSupport']) ? 1 : 0;
+        $pwdFriendly = isset($_POST['pwdFriendly']) ? 1 : 0;
         // price range will have a predefined set of values 
-        $priceRange = $_POST['priceRange'];
+        $priceRangeID = $_POST['priceRangeID'];
         $validRanges = ['1', '2', '3', '4', '5'];
-        if (!in_array($priceRange, $validRanges)) {
-            $priceRange = 'NULL';
+        if (!in_array($priceRangeID, $validRanges)) {
+            $priceRangeID = 'NULL';
         }
         $contactEmail = $_POST['contactEmail'];
         $contactNum = $_POST['contactNum']; 
-        $lastname = $_POST['firstname'];
-        $firstname = $_POST['lastname'];
-        $fbLink = $_POST['fbLink'];
-        $igLink = $_POST['igLink'];
-        $webLink = $_POST['webLink'];
-        $walkInBook = $_POST['walkInBook'];
-        $onlineBook = $_POST['onlineBook'];
-        $phoneBook = $_POST['phoneBook'];
-        $payCash = $_POST['payCash'];
-        $payBank = $_POST['payBank'];
-        $payElectronic = $_POST['payElectronic'];
+        $managerID = $_POST['managerID'];
+        $facebookLink = $_POST['facebookLink'];
+        $instagramLink = $_POST['instagramLink'];
+        $websiteLink = $_POST['websiteLink'];
+        $walkInBook = isset($_POST['walkInBook']) ? 1 : 0;
+        $onlineBook = isset($_POST['onlineBook']) ? 1 : 0;
+        $phoneBook = isset($_POST['phoneBook']) ? 1 : 0;
+        $payCash = isset($_POST['payCash']) ? 1 : 0;
+        $payBank = isset($_POST['payBank']) ? 1 : 0;
+        $payElectronic = isset($_POST['payElectronic']) ? 1 : 0;
         $gmaps = $_POST['gmaps'];
         $publicTranspo = $_POST['publicTranspo'];
         $routes = $_POST['routes'];
-        $landmarks = $_POST['landmarks'];
-        $imgs = $_POST['imgs'];
-
+        $landmarks = $_POST['landmarks'] ?? '';
+        $imgs = $_POST['imgs'] ?? '';
+        $managerID = $_POST['managerID'];
 
         $sql = "UPDATE venueData SET
-            venueID = '$venueID',
             venueName = '$venueName',
             barangayAddress = '$barangayAddress',
             cityAddress = '$cityAddress',
@@ -83,18 +81,17 @@
             pmAvail = " . ($pmAvail === '' ? 'NULL' : "'$pmAvail'") . ",
             eventPlanner = " . ($eventPlanner === '' ? 'NULL' : "'$eventPlanner'") . ", 
             equipRentals = " . ($equipRentals === '' ? 'NULL' : "'$equipRentals'") . ",
-            decorateServices = " . ($decorateServices === '' ? 'NULL' : "'$decorateServices'") . ",
+            decoServices = " . ($decoServices === '' ? 'NULL' : "'$decoServices'") . ",
             onsiteStaff = " . ($onsiteStaff === '' ? 'NULL' : "'$onsiteStaff'") . ",
             techSupport = " . ($techSupport === '' ? 'NULL' : "'$techSupport'") . ",
             pwdFriendly = " . ($pwdFriendly === '' ? 'NULL' : "'$pwdFriendly'") . ",
-            priceRange = " . ($priceRange === '' ? 'NULL' : "'$priceRange'") . ",
+            priceRangeID = " . ($priceRangeID === '' ? 'NULL' : "'$priceRangeID'") . ",
             contactEmail = " . ($contactEmail === '' ? 'NULL' : "'$contactEmail'") . ",
             contactNum = " . ($contactNum === '' ? 'NULL' : "'$contactNum'") . ",
-            venueManagerLname = " . ($managerLname === '' ? 'NULL' : "'$managerLname'") . ",
-            venueManagerFname = " . ($managerFname === '' ? 'NULL' : "'$managerFname'") . ",
-            facebookLink = " . ($fbLink === '' ? 'NULL' : "'$fbLink'") . ",
-            instagramLink = " . ($igLink === '' ? 'NULL' : "'$igLink'") . ",
-            websiteLink = " . ($webLink === '' ? 'NULL' : "'$webLink'") . ",
+            managerID = " . ($managerID === '' ? 'NULL' : "'$managerID'") . ",
+            facebookLink = " . ($facebookLink === '' ? 'NULL' : "'$facebookLink'") . ",
+            instagramLink = " . ($instagramLink === '' ? 'NULL' : "'$instagramLink'") . ",
+            websiteLink = " . ($websiteLink === '' ? 'NULL' : "'$websiteLink'") . ",
             walkInBook = " . ($walkInBook === '' ? 'NULL' : "'$walkInBook'") . ",
             onlineBook = " . ($onlineBook === '' ? 'NULL' : "'$onlineBook'") . ",
             phoneBook = " . ($phoneBook === '' ? 'NULL' : "'$phoneBook'") . ",
@@ -112,7 +109,7 @@
             $conn->query($sql);
             echo "<script>
                 alert('Venue record updated successfully!');
-                window.location.href = 'index.php';
+                window.location.href = 'manager_read.php';
             </script>";
         } catch (mysqli_sql_exception $e) {
             echo "<script>

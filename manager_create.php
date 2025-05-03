@@ -1,21 +1,16 @@
-
 <?php
     include('db_connection.php');
-    /*AFTER MAKING THE VENUEID PRIMARY KEY AND AUTO INCREMENTED, USE:
-    ALTER TABLE venueData 
-    MODIFY venueID INT AUTO_INCREMENT PRIMARY KEY;
-    */
-
+    $venueID = $_POST['venueID'] ?? $_GET['venueID'] ?? null;
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // venueId autoincremented
         $venueName = $_POST['venueName'];
         $barangayAddress = $_POST['barangayAddress'];
         $cityAddress = $_POST['cityAddress']; 
         $maxCapacity = $_POST['maxCapacity'];
-        $intimate = $_POST['inti']; 
-        $business = $_POST['busi'];
-        $fun = $_POST['fun']; 
-        $casual = $_POST['casu'];
+        $intimate = isset($_POST['intimate']) ? 1 : 0;
+        $business = isset($_POST['business']) ? 1 : 0;
+        $fun = isset($_POST['fun']) ? 1 : 0;
+        $casual = isset($_POST['casual']) ? 1 : 0;
         // availabilityDays will have a predefined set of values
         $validOptions = ['Everyday', 'Everyday (except holidays)', 'Weekdays only','Weekends only', 'Monday to Saturday'];
         $availabilityDays = $_POST['availabilityDays'];
@@ -40,73 +35,65 @@
         $nnAvail = overlaps($nnStart, $nnEnd, $start, $end) ? 1 : 0;
         $pmAvail = overlaps($pmStart, $pmEnd, $start, $end) ? 1 : 0;
 
-        $eventPlanner = $_POST['evntPlan']; 
-        $equipRentals = $_POST['EqmRentals']; 
-        $decorateServices = $_POST['DecServ']; 
-        $onsiteStaff = $_POST['siteStaff'];
-        $techSupport = $_POST['techsup']; 
-        $pwdFriendly = $_POST['pwdFriendly'];
+        $eventPlanner = isset($_POST['eventPlanner']) ? 1 : 0;
+        $equipRentals = isset($_POST['equipRentals']) ? 1 : 0;
+        $decoServices = isset($_POST['decoServices']) ? 1:0; 
+        $onsiteStaff = isset($_POST['onsiteStaff']) ? 1: 0;
+        $techSupport = isset($_POST['techSupport']) ? 1 : 0;
+        $pwdFriendly = isset($_POST['pwdFriendly']) ? 1 : 0;
         // price range will have a predefined set of values 
-        $priceRange = $_POST['priceRange'];
+        $priceRangeID = $_POST['priceRangeID'];
         $validRanges = ['1', '2', '3', '4', '5'];
-        if (!in_array($priceRange, $validRanges)) {
-            $priceRange = 'NULL';
+        if (!in_array($priceRangeID, $validRanges)) {
+            $priceRangeID = Null;
         }
-        $contactEmail = $_POST['contactEmail'];
-        $contactNum = $_POST['contactNum']; 
-        $managerLname = $_POST['venueManagerLname'];
-        $managerFname = $_POST['venueManagerFname'];
-        $fbLink = $_POST['facebookLink'];
-        $igLink = $_POST['instagramLink'];
-        $webLink = $_POST['websiteLink'];
-        $walkInBook = $_POST['walkInBook'];
-        $onlineBook = $_POST['onlineBook'];
-        $phoneBook = $_POST['phoneBook'];
-        $payCash = $_POST['payCash'];
-        $payBank = $_POST['payBank'];
-        $payElectronic = $_POST['payElectronic'];
+        $contactEmail = $_POST['contactEmail'] ?? NULL;
+        $contactNum = $_POST['contactNum'] ?? NULL; 
+        $managerID = $_POST['managerID'];
+        $facebookLink = $_POST['facebookLink'] ?? NULL;
+        $instagramLink = $_POST['instagramLink'] ?? NULL;
+        $websiteLink = $_POST['websiteLink'] ?? NULL;
+        $walkInBook = isset($_POST['walkInBook']) ? 1 : 0;
+        $onlineBook = isset($_POST['onlineBook']) ? 1 : 0;
+        $phoneBook = isset($_POST['phoneBook']) ? 1 : 0;
+        $payCash = isset($_POST['payCash']) ? 1 : 0;
+        $payBank = isset($_POST['payBank']) ? 1 : 0;
+        $payElectronic = isset($_POST['payElectronic']) ? 1 : 0;
         $gmaps = $_POST['gmaps'];
         $publicTranspo = $_POST['publicTranspo'];
         $routes = $_POST['routes'];
-        $landmarks = $_POST['landmarks'];
-        $imgs = $_POST['imgs'];
+        $landmarks = $_POST['landmarks'] ?? NULL;
+        $imgs = $_POST['imgs'] ?? NULL;
 
-        $sql  = "INSERT INTO venueData (
+        $sql = "INSERT INTO venueData (
             venueName, barangayAddress, cityAddress, maxCapacity, intimate, business, fun, casual, 
-            availabilityDays, startTime, endTime, amAvail, nnAvail, pmAvail, eventPlanner, equipRentals, 
-            decorateServices, onsiteStaff, techSupport, pwdFriendly, priceRange, contactEmail, contactNum,
-            managerLname, managerFname, fbLink, igLink, webLink, walkInBook, onlineBook,
+            availabilityDays, amAvail, nnAvail, pmAvail, eventPlanner, equipRentals, 
+            decoServices, onsiteStaff, techSupport, pwdFriendly, priceRangeID, contactEmail, contactNum, managerID,
+            facebookLink, instagramLink, websiteLink, walkInBook, onlineBook,
             phoneBook, payCash, payBank, payElectronic, gmaps, publicTranspo, routes, landmarks, imgs
         ) VALUES (
-            '$venueName', '$barangayAddress', '$cityAddress', '$maxCapacity',
-            '$intimate','$business','$fun','$casual','$availabilityDays','$startTime','$endTime',
-            '$amAvail','$nnAvail','$pmAvail','$eventPlanner','$equipRentals','$decorateServices',
-            '$onsiteStaff','$techSupport','$pwdFriendly','$priceRange','$contactEmail','$contactNum',
-            '$managerLname','$managerFname','$fbLink','$igLink','$webLink','$walkInBook',
-            '$onlineBook','$phoneBook','$payCash','$payBank','$payElectronic','$gmaps','$publicTranspo',
+            '$venueName', '$barangayAddress', '$cityAddress', '$maxCapacity', '$intimate', '$business', '$fun', '$casual',
+            '$availabilityDays', '$amAvail', '$nnAvail', '$pmAvail', '$eventPlanner', '$equipRentals',
+            '$decoServices', '$onsiteStaff', '$techSupport', '$pwdFriendly', '$priceRangeID', '$contactEmail', '$contactNum', '$managerID',
+            '$facebookLink', '$instagramLink', '$websiteLink', '$walkInBook', '$onlineBook',
+            '$phoneBook', '$payCash', '$payBank', '$payElectronic', '$gmaps', '$publicTranspo',
             '$routes', '$landmarks', '$imgs'
-        )";        
-    
+        )";
+        
         try {
             $conn->query($sql);
             $newVenueID = $conn->insert_id;
             echo "<script>
                 alert('New venue record added successfully! Venue ID: $newVenueID');
-                window.location.href = 'index.php';
+                window.location.href = 'manager_read.php';
             </script>";
         } catch (mysqli_sql_exception $e) {
-            if (strpos($e->getMessage(), 'Duplicate entry') !== false) {
-                echo "<script>
-                    alert('Error: Venue already exists.');
-                    window.history.back();
-                </script>";
-            } else {
-                echo "<script>
-                    alert('An unexpected error occurred. Please try again later.');
-                    window.history.back();
-                </script>";
-            }
+            error_log($e->getMessage());
+            echo "<script>
+                alert('An unexpected error occurred. Please try again later.');
+                window.history.back();
+            </script>";
         }
-    
+        
     }
 ?>
