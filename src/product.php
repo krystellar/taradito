@@ -28,6 +28,11 @@
     </nav>
   </header>
 
+  <form method="GET" action="">
+        <input type="text" name="query" placeholder="Search for a venue..." required>
+        <button type="submit">Search</button>
+  </form>
+
   <!-- Category Navigation -->
   <nav class="bg-[#fbe9e7] border-b border-[#a0c4ff] py-4 shadow-sm">
   <div class="flex justify-center gap-3 px-6 overflow-x-auto">
@@ -124,3 +129,23 @@
   </main>
 </body>
 </html>
+
+<?php
+include('db_connection.php');
+
+if (isset($_GET['query'])) {
+    $searchTerm = $conn->real_escape_string($_GET['query']);
+
+    $sql = "SELECT * FROM venueData WHERE venueName LIKE '%$searchTerm%'";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        echo "<h3>Search Results:</h3>";
+        while ($row = $result->fetch_assoc()) {
+            echo "<p><strong>{$row['venueName']}</strong> - {$row['cityAddress']}</p>";
+        }
+    } else {
+        echo "<p>No results found.</p>";
+    }
+}
+?>
