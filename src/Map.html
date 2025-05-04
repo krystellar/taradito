@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Map with Leaflet</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+  <style>
+    #map {
+      height: 400px;
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Where you'll be</h2>
+  <p class="location-description">Gurugram, Haryana, India</p>
+
+  <div id="map"></div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    const map = L.map('map').setView([28.4183, 77.0473], 13);
+
+    // Use OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Add a marker
+    L.marker([28.4183, 77.0473]).addTo(map)
+      .bindPopup('Your Location')
+      .openPopup();
+  </script>
+</body>
+</html>
