@@ -1,3 +1,19 @@
+<?php
+  include('db_connection.php');
+
+  $searchTerm = isset($_GET['query']) ? $conn->real_escape_string($_GET['query']) : '';
+  $sql = "SELECT v.*, p.priceRangeText, m.firstName, m.lastName 
+          FROM venueData v
+          LEFT JOIN priceRange p ON v.priceRangeID = p.priceRangeID
+          LEFT JOIN managerData m ON v.managerID = m.managerID";
+
+  if (!empty($searchTerm)) {
+      $sql .= " WHERE v.venueName LIKE '%$searchTerm%'";
+  }
+
+  $result = $conn->query($sql);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -58,94 +74,34 @@
   <!-- Listings Grid -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
 
-    <!-- Listing Card -->
-    <a href="listing.php?id=2" class="block transition-transform hover:scale-105">
-      <div class="bg-white rounded-xl shadow-md overflow-hidden">
-        <img src="https://source.unsplash.com/400x300/?villa" class="w-full h-48 object-cover" alt="Stay" />
-        <div class="p-4">
-          <h3 class="font-semibold text-lg text-[#F28B82]">Balamban, Philippines</h3>
-          <p class="text-sm text-gray-600">Featured in Forbes</p>
-          <p class="text-sm text-gray-600">May 27 – Jun 1</p>
-          <p class="text-sm font-medium mt-1 text-[#1e40af]">₱68,000 for 5 nights</p>
-          <div class="flex items-center justify-between mt-2">
-            <span class="text-sm text-yellow-600">⭐ 4.92</span>
-            <button class="text-pink-500 text-xl hover:text-red-500 transition">♡</button>
-          </div>
-        </div>
-      </div>
-    </a>
-
-    <!-- Listing Card -->
-    <a href="listing.php?id=2" class="block transition-transform hover:scale-105">
-      <div class="bg-white rounded-xl shadow-md overflow-hidden">
-        <img src="https://source.unsplash.com/400x300/?villa" class="w-full h-48 object-cover" alt="Stay" />
-        <div class="p-4">
-          <h3 class="font-semibold text-lg text-[#F28B82]">Balamban, Philippines</h3>
-          <p class="text-sm text-gray-600">Featured in Forbes</p>
-          <p class="text-sm text-gray-600">May 27 – Jun 1</p>
-          <p class="text-sm font-medium mt-1 text-[#1e40af]">₱68,000 for 5 nights</p>
-          <div class="flex items-center justify-between mt-2">
-            <span class="text-sm text-yellow-600">⭐ 4.92</span>
-            <button class="text-pink-500 text-xl hover:text-red-500 transition">♡</button>
-          </div>
-        </div>
-      </div>
-    </a>
-
-    <!-- Listing Card -->
-    <a href="listing.php?id=2" class="block transition-transform hover:scale-105">
-      <div class="bg-white rounded-xl shadow-md overflow-hidden">
-        <img src="https://source.unsplash.com/400x300/?villa" class="w-full h-48 object-cover" alt="Stay" />
-        <div class="p-4">
-          <h3 class="font-semibold text-lg text-[#F28B82]">Balamban, Philippines</h3>
-          <p class="text-sm text-gray-600">Featured in Forbes</p>
-          <p class="text-sm text-gray-600">May 27 – Jun 1</p>
-          <p class="text-sm font-medium mt-1 text-[#1e40af]">₱68,000 for 5 nights</p>
-          <div class="flex items-center justify-between mt-2">
-            <span class="text-sm text-yellow-600">⭐ 4.92</span>
-            <button class="text-pink-500 text-xl hover:text-red-500 transition">♡</button>
-          </div>
-        </div>
-      </div>
-    </a>
-
-    <!-- Listing Card -->
-    <a href="listing.php?id=2" class="block transition-transform hover:scale-105">
-      <div class="bg-white rounded-xl shadow-md overflow-hidden">
-        <img src="https://source.unsplash.com/400x300/?villa" class="w-full h-48 object-cover" alt="Stay" />
-        <div class="p-4">
-          <h3 class="font-semibold text-lg text-[#F28B82]">Balamban, Philippines</h3>
-          <p class="text-sm text-gray-600">Featured in Forbes</p>
-          <p class="text-sm text-gray-600">May 27 – Jun 1</p>
-          <p class="text-sm font-medium mt-1 text-[#1e40af]">₱68,000 for 5 nights</p>
-          <div class="flex items-center justify-between mt-2">
-            <span class="text-sm text-yellow-600">⭐ 4.92</span>
-            <button class="text-pink-500 text-xl hover:text-red-500 transition">♡</button>
-          </div>
-        </div>
-      </div>
-    </a>
+  <?php
+    if ($result && $result->num_rows > 0):
+        while ($row = $result->fetch_assoc()):
+            $imageURL = !empty($row['imgs']) ? $row['imgs'] : "https://source.unsplash.com/400x300/?villa";
+            ?>
+            <a href="listing.php?id=<?= $row['venueID'] ?>" class="block transition-transform hover:scale-105">
+              <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <img src="<?= $imageURL ?>" class="w-full h-48 object-cover" alt="Stay" />
+                <div class="p-4">
+                  <h3 class="font-semibold text-lg text-[#F28B82]"><?= htmlspecialchars($row['venueName']) ?></h3>
+                  <p class="text-sm text-gray-600"><?= htmlspecialchars($row['cityAddress']) ?></p>
+                  <p class="text-sm text-gray-600"><?= $row['availabilityDays'] ?: "Available Daily" ?></p>
+                  <p class="text-sm font-medium mt-1 text-[#1e40af]">₱<?= htmlspecialchars($row['priceRangeText'] ?? 'N/A') ?></p>
+                  <div class="flex items-center justify-between mt-2">
+                    <span class="text-sm text-yellow-600">⭐ <?= number_format(rand(4.5, 5), 2) ?></span>
+                    <button class="text-pink-500 text-xl hover:text-red-500 transition">♡</button>
+                  </div>
+                </div>
+              </div>
+            </a>
+        <?php
+        endwhile;
+    else:
+        echo "<p class='col-span-full text-center text-gray-500'>No venues found.</p>";
+    endif;
+    $conn->close();
+  ?>
 
   </main>
 </body>
 </html>
-
-<?php
-include('db_connection.php');
-
-if (isset($_GET['query'])) {
-    $searchTerm = $conn->real_escape_string($_GET['query']);
-
-    $sql = "SELECT * FROM venueData WHERE venueName LIKE '%$searchTerm%'";
-    $result = $conn->query($sql);
-
-    if ($result->num_rows > 0) {
-        echo "<h3>Search Results:</h3>";
-        while ($row = $result->fetch_assoc()) {
-            echo "<p><strong>{$row['venueName']}</strong> - {$row['cityAddress']}</p>";
-        }
-    } else {
-        echo "<p>No results found.</p>";
-    }
-}
-?>
