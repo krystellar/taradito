@@ -11,19 +11,25 @@
 
 </head>
 <body>
-  <!-- Navbar -->
-	<header id="navbar" class="w-full sticky top-0 z-50 transition-colors duration-300">
+<!-- Navbar -->
+<header id="navbar" class="w-full sticky top-0 z-50 transition-colors duration-300">
   <nav class="max-w-[1320px] mx-auto flex items-center justify-between py-6 px-4 md:px-12">
-    <!-- Logo on the left, using absolute positioning -->
-    <a href="#" class="flex items-center gap-2 absolute left-10 pl-4">
-      <img src="Images/Logo/LogoNav.png" alt="TaraDito Logo" class="h-[60px] w-auto" /> <!-- Increase logo size if needed -->
+    
+    <!-- Logo on the left -->
+    <a href="#" class="flex items-center gap-2">
+    <img src="Images/Logo/LogoNav.png" alt="TaraDito Logo" style="height: 30px; width: auto;" />
+
+
     </a>
-    <ul class="flex gap-6 md:gap-8 flex-grow justify-center">
+
+    <!-- Navigation Links on the right -->
+    <ul class="flex gap-6 md:gap-8 ml-auto">
       <li><a href="#" class="text-lg font-medium text-gray-800 hover:text-white hover:bg-[#a0c4ff] py-2 px-4 rounded-full transition-all duration-300">Home</a></li>
       <li><a href="product.php" class="text-lg font-medium text-gray-800 hover:text-white hover:bg-[#a0c4ff] py-2 px-4 rounded-full transition-all duration-300">Venues</a></li>
       <li><a href="#" class="text-lg font-medium text-gray-800 hover:text-white hover:bg-[#a0c4ff] py-2 px-4 rounded-full transition-all duration-300">Explore</a></li>
       <li><a href="#" class="text-lg font-medium text-gray-800 hover:text-white hover:bg-[#a0c4ff] py-2 px-4 rounded-full transition-all duration-300">Contact</a></li>
     </ul>
+
   </nav>
 </header>
 

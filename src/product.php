@@ -57,71 +57,116 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Design Stays</title>
   <link href="output.css" rel="stylesheet">
+  <link href="listing.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Roboto:wght@400;500&family=Nunito:wght@400;600&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+	<script defer src="second.js"></script>
+  <style>
+ 
+</style>
+  
 </head>
-<body class="bg-[#f0f4ff] text-gray-900 font-[Nunito, sans-serif]">
+<body class="bg-white text-gray-900 font-[Nunito, sans-serif]">
 
-  <!-- Navigation Bar -->
-  <header id="navbar" class="w-full sticky top-0 z-50 transition-colors duration-300 bg-[#dbeafe] shadow-sm">
-    <nav class="max-w-[1320px] mx-auto flex items-center justify-between py-6 px-4 md:px-12">
-      <a href="#" class="flex items-center gap-2 absolute left-10 pl-4">
-        <img src="Images/Logo/LogoNav.png" alt="TaraDito Logo" class="h-[60px] w-auto" />
-      </a>
-      <ul class="flex gap-6 md:gap-8 flex-grow justify-center">
-        <li><a href="#" class="text-lg font-medium text-gray-800 hover:text-white hover:bg-[#a0c4ff] py-2 px-4 rounded-full transition-all duration-300">Home</a></li>
-        <li><a href="product.php" class="text-lg font-medium text-gray-800 hover:text-white hover:bg-[#a0c4ff] py-2 px-4 rounded-full transition-all duration-300">Venues</a></li>
-        <li><a href="#" class="text-lg font-medium text-gray-800 hover:text-white hover:bg-[#a0c4ff] py-2 px-4 rounded-full transition-all duration-300">Explore</a></li>
-        <li><a href="#" class="text-lg font-medium text-gray-800 hover:text-white hover:bg-[#a0c4ff] py-2 px-4 rounded-full transition-all duration-300">Contact</a></li>
-      </ul>
-    </nav>
-  </header>
+<!-- Navbar -->
+<header class="w-full top-0 z-50 bg-white shadow-sm">
+  <nav class="max-w-[1320px] mx-auto flex items-center justify-between py-4 px-4 md:px-8">
+    
+    <!-- Logo -->
+    <a href="#" class="flex items-center gap-2">
+		<img src="Images/Logo/LogoNav.png" alt="TaraDito Logo" style="height: 30px; width: auto;" />
+    </a>
 
-  <!-- Search Form -->
-  <form method="GET" action="" class="text-center my-6">
-    <input type="text" name="query" placeholder="Search for a venue..." value="<?= htmlspecialchars($searchTerm) ?>" required>
-    <button type="submit">Search</button>
-  </form>
-
-  <!-- Category Navigation -->
-  <nav class="bg-[#fbe9e7] border-b border-[#a0c4ff] py-4 shadow-sm">
-    <div class="flex justify-center gap-3 px-6 overflow-x-auto">
-      <?php foreach ($validCategory as $category): ?>
-        <?php $active = in_array($category, $cats, true); ?>
-        <a href="<?= toggleCatLink($category) ?>" class="text-sm font-medium px-4 py-2 rounded-full transition flex flex-col items-center <?= $active ? 'bg-[#a0c4ff] text-white hover:bg-[#8bb3ff]' : 'bg-[#f5f5f5] hover:bg-[#a0c4ff] hover:text-white text-[#333]' ?>">
-          <i class="fas fa-<?= $category === 'intimate' ? 'heart' : ($category === 'business' ? 'briefcase' : ($category === 'fun' ? 'smile' : 't-shirt')) ?> text-lg"></i>
-          <span><?= ucfirst($category) ?></span>
-        </a>
-      <?php endforeach; ?>
-    </div>
+    <!-- Navigation Links -->
+    <ul class="flex gap-4 md:gap-6 ml-auto items-center">
+      <li><a href="#" class="text-sm font-medium text-gray-700 hover:text-black">Home</a></li>
+      <li><a href="product.php" class="text-sm font-medium text-gray-700 hover:text-black">Venues</a></li>
+      <li><a href="#" class="text-sm font-medium text-gray-700 hover:text-black">Explore</a></li>
+      <li><a href="#" class="text-sm font-medium text-gray-700 hover:text-black">Contact</a></li>
+    </ul>
   </nav>
+</header>
+
+
+<!-- Search Bar -->
+<div class="w-full bg-white py-4 shadow-sm">
+  <div class="flex justify-center">
+  <form method="GET" action="" class="form-container">
+
+
+  <input 
+        type="text" 
+        name="query" 
+        placeholder="Search for a venue..." 
+        value="<?= htmlspecialchars($searchTerm) ?>"
+        class="w-full px-3 py-1.5 text-sm text-gray-800 placeholder-gray-500 focus:outline-none" 
+        required>
+      
+      <button type="submit" 
+              class="bg-[#ff385c] text-white rounded-full p-2 hover:bg-[#e03154] transition ml-2">
+        <i class="fas fa-search text-sm"></i>
+      </button>
+    </form>
+  </div>
+</div>
+
+
+<!-- Category Navigation -->
+<nav class="category-nav">
+  <div class="category-container">
+    <?php foreach ($validCategory as $category): ?>
+      <?php 
+        $active = in_array($category, $cats, true); 
+        $class = $active ? "category-item active {$category}" : "category-item {$category}";
+      ?>
+      <a href="<?= toggleCatLink($category) ?>" class="<?= $class ?>">
+        <i class="fas fa-<?= $category === 'intimate' ? 'heart' : ($category === 'business' ? 'briefcase' : ($category === 'fun' ? 'smile' : 'tshirt')) ?>"></i>
+        <?= ucfirst($category) ?>
+      </a>
+    <?php endforeach; ?>
+  </div>
+</nav>
+
+
+
+
+
+      
 
   <!-- Listings Grid -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-    <?php if ($result && $result->num_rows > 0): ?>
-      <?php while ($row = $result->fetch_assoc()): ?>
-        <?php $imageURL = !empty($row['imgs']) ? $row['imgs'] : "https://source.unsplash.com/400x300/?villa"; ?>
-        <a href="listing.php?id=<?= $row['venueID'] ?>" class="block transition-transform hover:scale-105 listing-card">
-          <div class="bg-white rounded-xl shadow-md overflow-hidden">
-            <img src="<?= $imageURL ?>" class="w-full h-48 object-cover" alt="Stay" />
-            <div class="p-4">
+  <?php if ($result && $result->num_rows > 0): ?>
+    <?php while ($row = $result->fetch_assoc()): ?>
+      <?php $imageURL = !empty($row['imgs']) ? $row['imgs'] : ""; ?>
+      
+      <!-- Set h-full here -->
+      <a href="listing.php?id=<?= $row['venueID'] ?>" class="block transition-transform hover:scale-105 h-full">
+        <!-- Make sure this is also h-full and flex column -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden flex flex-col h-full">
+          <img src="<?= $imageURL ?>" class="w-full h-48 object-cover" alt="Stay" />
+          <div class="p-4 flex flex-col justify-between flex-grow">
+            <div>
               <h3 class="font-semibold text-lg text-[#F28B82]"><?= htmlspecialchars($row['venueName']) ?></h3>
               <p class="text-sm text-gray-600"><?= htmlspecialchars($row['cityAddress']) ?></p>
               <p class="text-sm text-gray-600"><?= $row['availabilityDays'] ?: "Available Daily" ?></p>
               <p class="text-sm font-medium mt-1 text-[#1e40af]">₱<?= htmlspecialchars($row['priceRangeText'] ?? 'N/A') ?></p>
-              <div class="flex items-center justify-between mt-2">
-                <span class="text-sm text-yellow-600">⭐ <?= number_format(rand(4.5, 5), 2) ?></span>
-                <button class="text-pink-500 text-xl hover:text-red-500 transition">♡</button>
-              </div>
+            </div>
+            <div class="flex items-center justify-between mt-4">
+              <span class="text-sm text-yellow-600">⭐ <?= number_format(rand(4.5, 5), 2) ?></span>
+              <button class="text-pink-500 text-xl hover:text-red-500 transition">♡</button>
             </div>
           </div>
-        </a>
-      <?php endwhile; ?>
-    <?php else: ?>
-      <p class="col-span-full text-center text-gray-500">No venues found.</p>
-    <?php endif; ?>
-    <?php $conn->close(); ?>
-  </main>
+        </div>
+      </a>
+
+    <?php endwhile; ?>
+  <?php else: ?>
+    <p class="col-span-full text-center text-gray-500">No venues found.</p>
+  <?php endif; ?>
+  <?php $conn->close(); ?>
+</main>
+
 
 </body>
 </html>
