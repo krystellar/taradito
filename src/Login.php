@@ -1,3 +1,33 @@
+<?php
+session_start();
+include('db_connection.php');
+
+$error = '';
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $email = $_POST['email'] ?? '';
+    $password = $_POST['password'] ?? '';
+
+    if (empty($email) || empty($password)) {
+        $error = "Please fill in both fields.";
+    } else {
+        $stmt = $conn->execute_query(
+            "SELECT managerID, managerPass FROM managerData WHERE managerEmail = ?",
+            [$email]
+        );
+        $user = $stmt->fetch_assoc();
+
+        if ($user && $user['managerPass'] === $password) {
+            $_SESSION['managerID'] = $user['managerID'];
+            header("Location: DashboardAdmin.php");
+            exit;
+        } else {
+            $error = "Invalid email or password.";
+        }
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,7 +44,10 @@
       <h2 class="text-3xl font-extrabold text-[#1089D3]">Sign In</h2>
     </div>
     
-    <form action="#" class="space-y-4">
+    <form action="#" method="POST" class="space-y-4">
+      <?php if (!empty($error)): ?>
+        <div class="text-red-600 text-sm font-medium"><?= htmlspecialchars($error) ?></div>
+      <?php endif; ?>
       <div class="space-y-2">
         <input required type="email" name="email" id="email" placeholder="E-mail" 
           class="w-full p-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#12B1D1] shadow-sm transition duration-200 text-gray-700">
@@ -33,18 +66,20 @@
     <div class="text-center mt-6">
       <span class="text-sm text-gray-500">Or Sign in with</span>
       <div class="flex justify-center gap-4 mt-2">
-        <button class="bg-black text-white p-2 rounded-full shadow-lg hover:scale-110 transition-all duration-200">
-        </button>
-        <button class="bg-black text-white p-2 rounded-full shadow-lg hover:scale-110 transition-all duration-200">
-        </button>
-        <button class="bg-black text-white p-2 rounded-full shadow-lg hover:scale-110 transition-all duration-200">
-        </button>
+        <button class="bg-black text-white p-2 rounded-full shadow-lg hover:scale-110 transition-all duration-200"></button>
+        <button class="bg-black text-white p-2 rounded-full shadow-lg hover:scale-110 transition-all duration-200"></button>
+        <button class="bg-black text-white p-2 rounded-full shadow-lg hover:scale-110 transition-all duration-200"></button>
       </div>
     </div>
-    
     <div class="text-center mt-4">
       <span class="text-sm text-gray-500">By signing in, you agree to our <a href="#" class="text-blue-600">user licence agreement</a>.</span>
     </div>
+
+    <!-- sign up here -->
+    <div class="text-center mt-4">
+      <span class="text-sm text-gray-500">Don't have an account? <a href="Signup.php" class="text-blue-600">Sign Up</a></span>
+    </div>
+
   </div>
 </body>
 </html>

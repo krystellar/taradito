@@ -63,7 +63,9 @@ if (!$venue) {
     </div>
   </div>
 
-  <p id="villa-location" class="text-gray-700 text-lg mb-2"><?= htmlspecialchars($venue['cityAddress']) ?></p>
+  <p id="villa-location" class="text-gray-700 text-lg mb-2">
+  <?= htmlspecialchars($venue['barangayAddress']) . ', ' . htmlspecialchars($venue['cityAddress']) ?>
+  </p>
   <p id="villa-specs" class="text-sm mb-1">Capacity: <?= htmlspecialchars($venue['maxCapacity']) ?> guests</p>
   <p id="villa-rating" class="mb-2 text-yellow-600">⭐ <?= number_format($venue['rating'] ?? 0, 2) ?></p>
   <p id="villa-price" class="text-xl font-semibold text-pink-600">₱<?= htmlspecialchars($venue['priceRangeText']) ?></p>
