@@ -13,4 +13,13 @@ const navbar = document.getElementById('navbar');
   window.addEventListener('scroll', updateNavbar);
   window.addEventListener('load', updateNavbar);
 
-  
+ document.addEventListener("DOMContentLoaded", function () {
+    const buttons = document.querySelectorAll(".category-nav .button");
+
+    buttons.forEach(button => {
+      button.addEventListener("click", function () {
+        buttons.forEach(btn => btn.classList.remove("active")); // remove from all
+        this.classList.add("active"); // add to clicked one
+      });
+    });
+  });

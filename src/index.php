@@ -7,6 +7,7 @@
   <link href="new.css" rel="stylesheet">
 	<script defer src="second.js"></script>
 	<style>
+    
   </style>
 
 </head>

@@ -1,95 +1,134 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rotating Images with Tailwind & CSS Animation</title>
-  <link href="./output.css" rel="stylesheet">
-  <style>
-    /* Define the slow spin animation */
-    @keyframes spin-slow {
-      0% {
-        transform: rotate(0deg);
-      }
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-
-    /* Apply the spin-slow animation to the grid container */
-    .animate-spin-slow {
-      animation: spin-slow 6s linear infinite;
-    }
-
-    .container {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, #0000 18.75%, #3b82f6 0 31.25%, #0000 0),
-    linear-gradient(45deg, #0000 18.75%, #3b82f6 0 31.25%, #0000 0),
-    linear-gradient(135deg, #0000 18.75%, #3b82f6 0 31.25%, #0000 0),
-    linear-gradient(45deg, #0000 18.75%, #3b82f6 0 31.25%, #0000 0);
-  background-size: 60px 60px;
-  background-position:
-    0 0,
-    0 0,
-    30px 30px,
-    30px 30px;
-  animation: slide 4s linear infinite;
-}
-
-@keyframes slide {
-  to {
-    background-position:
-      60px 0,
-      60px 0,
-      90px 30px,
-      90px 30px;
+<style>
+  .listings-grid {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.5rem;
   }
-}
 
-  </style>
-</head>
-<body class="bg-blue-100 flex justify-center items-center min-h-screen">
+  .card {
+    --card-bg: #ffffff;
+    --card-accent: #f28b82;
+    --card-text: #1e293b;
+    --card-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.15);
 
-    <section class="w-full px-12 bg-blue-50 flex items-center py-50 container">
-        <div class="max-w-[1320px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-      
-          <!-- Hero Text -->
-          <div class="space-y-8 animate-fade-left md:pr-12 lg:pr-20">
-            <h1 class="text-5xl md:text-6xl leading-tight text-black font-light">
-              Providing affordable <br />cloud services
-            </h1>
-            <p class="text-lg text-gray-700">
-              Discover secure, affordable, and efficient cloud solutions. Simplify storage, enhance productivity, and focus on your growth.
-            </p>
-            <button class="bg-black text-white text-lg font-medium py-3 px-6 rounded-full border-2 border-[#002053] hover:bg-[#a0c4ff] hover:text-black hover:border-periwinkle-400 transition-all duration-300">
-              Login/Create Account
-            </button>
+    background: var(--card-bg);
+    border-radius: 1rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    box-shadow: var(--card-shadow);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 30px 40px -10px rgba(0, 0, 0, 0.2);
+  }
+
+  .card__image {
+    width: 100%;
+    height: 12rem;
+    object-fit: cover;
+    border-bottom: 1px solid #eee;
+  }
+
+  .card__content {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-between;
+  }
+
+  .card__title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--card-accent);
+    margin-bottom: 0.25rem;
+  }
+
+  .card__description {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+  }
+
+  .card__price {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1e40af;
+  }
+
+  .card__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+  }
+
+  .card__star {
+    color: #fbbf24;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .card__fav {
+    color: #ec4899;
+    font-size: 1.25rem;
+    transition: color 0.3s;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  .card__fav:hover {
+    color: #ef4444;
+  }
+
+  @keyframes shine {
+    0% {
+      background-position: -100% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+</style>
+
+<main class="listings-grid">
+  <?php if ($result && $result->num_rows > 0): ?>
+    <?php while ($row = $result->fetch_assoc()): ?>
+      <?php $imageURL = !empty($row['imgs']) ? $row['imgs'] : ""; ?>
+
+      <a href="listing.php?id=<?= $row['venueID'] ?>" class="card">
+        <img src="<?= htmlspecialchars($imageURL) ?>" alt="Stay" class="card__image">
+
+        <div class="card__content">
+          <div>
+            <h3 class="card__title"><?= htmlspecialchars($row['venueName']) ?></h3>
+            <p class="card__description"><?= htmlspecialchars($row['cityAddress']) ?></p>
+            <p class="card__description"><?= $row['availabilityDays'] ?: "Available Daily" ?></p>
+            <p class="card__price">₱<?= htmlspecialchars($row['priceRangeText'] ?? 'N/A') ?></p>
           </div>
-      
-          <!-- 2x2 Square Image Grid -->
-    
-                <div class="grid grid-cols-2 grid-rows-2 gap-2 w-[500px] h-[500px] animate-spin-slow">
-                    <div class="w-full h-full">
-                        <img src="Images/Logo/Pink.png" alt="Box 1" class="w-full h-full object-cover rounded-md shadow" />
-                    </div>
-                    <div class="w-full h-full">
-                        <img src="Images/Logo/Yellow.png" alt="Box 2" class="w-full h-full object-cover rounded-md shadow" />
-                    </div>
-                    <div class="w-full h-full">
-                        <img src="Images/Logo/Blue.png" alt="Box 3" class="w-full h-full object-cover rounded-md shadow" />
-                    </div>
-                    <div class="w-full h-full">
-                        <img src="Images/Logo/Green.png" alt="Box 4" class="w-full h-full object-cover rounded-md shadow" />
-                    </div>
-                </div>
-    
-    
-    
-      
-        </div>
-      </section>
-      
 
-</body>
-</html>
+          <div class="card__footer">
+            <span class="card__star">⭐ <?= number_format(rand(4.5, 5), 2) ?></span>
+            <button type="button" class="card__fav">♡</button>
+          </div>
+        </div>
+      </a>
+
+    <?php endwhile; ?>
+  <?php else: ?>
+    <p style="grid-column: 1 / -1; text-align: center; color: #6b7280;">No venues found.</p>
+  <?php endif; ?>
+  <?php $conn->close(); ?>
+</main>

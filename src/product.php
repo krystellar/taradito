@@ -57,20 +57,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Design Stays</title>
   <link href="output.css" rel="stylesheet">
-  <link href="listing.css" rel="stylesheet">
+  <link href="prouduct.css" rel="stylesheet">
+  <script defer src="second.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Roboto:wght@400;500&family=Nunito:wght@400;600&display=swap" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
 	<script defer src="second.js"></script>
   <style>
- 
+
 </style>
   
 </head>
 <body class="bg-white text-gray-900 font-[Nunito, sans-serif]">
 
 <!-- Navbar -->
-<header class="w-full top-0 z-50 bg-white shadow-sm">
+<header class="w-full top-0 z-50 bg-white">
   <nav class="max-w-[1320px] mx-auto flex items-center justify-between py-4 px-4 md:px-8">
     
     <!-- Logo -->
@@ -104,57 +104,70 @@
         required>
       
       <button type="submit" 
-              class="bg-[#ff385c] text-white rounded-full p-2 hover:bg-[#e03154] transition ml-2">
-        <i class="fas fa-search text-sm"></i>
+        class="rounded-full p-2 hover:bg-[#e03154] transition ml-2">
+        <img src="Images/location.png" alt="Search" class="w-5 h-5 object-contain" />
       </button>
+
     </form>
   </div>
 </div>
 
+<!-- Faint Line -->
+<hr class="border-t border-gray-200 mx-4 my-2">
+
 
 <!-- Category Navigation -->
-<nav class="category-nav">
-  <div class="category-container">
+<nav class="category-nav bg-white overflow-hidden mb-0 pb-0 border-none shadow-none">
+  <div class="container mx-auto px-4 border-none shadow-none m-0 p-0">
     <?php foreach ($validCategory as $category): ?>
       <?php 
         $active = in_array($category, $cats, true); 
-        $class = $active ? "category-item active {$category}" : "category-item {$category}";
+        $typeClass = match ($category) {
+          'intimate' => 'type--A',
+          'business' => 'type--B',
+          'fun' => 'type--C',
+          'casual' => 'type--D',
+          default => 'type--A',
+        };
       ?>
-      <a href="<?= toggleCatLink($category) ?>" class="<?= $class ?>">
-        <i class="fas fa-<?= $category === 'intimate' ? 'heart' : ($category === 'business' ? 'briefcase' : ($category === 'fun' ? 'smile' : 'tshirt')) ?>"></i>
-        <?= ucfirst($category) ?>
+      <a href="<?= toggleCatLink($category) ?>" class="button <?= $typeClass ?> <?= $active ? 'active' : '' ?>">
+        <div class="button__line"></div>
+        <div class="button__line"></div>
+        <span class="button__text"><?= ucfirst($category) ?></span>
+        <div class="button__drow1"></div>
+        <div class="button__drow2"></div>
       </a>
     <?php endforeach; ?>
   </div>
 </nav>
-
-
-
-
-
       
 
   <!-- Listings Grid -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 font-sans">
+
+  
   <?php if ($result && $result->num_rows > 0): ?>
     <?php while ($row = $result->fetch_assoc()): ?>
       <?php $imageURL = !empty($row['imgs']) ? $row['imgs'] : ""; ?>
       
-      <!-- Set h-full here -->
-      <a href="listing.php?id=<?= $row['venueID'] ?>" class="block transition-transform hover:scale-105 h-full">
-        <!-- Make sure this is also h-full and flex column -->
-        <div class="bg-white rounded-xl shadow-md overflow-hidden flex flex-col h-full">
-          <img src="<?= $imageURL ?>" class="w-full h-48 object-cover" alt="Stay" />
-          <div class="p-4 flex flex-col justify-between flex-grow">
+      <a href="listing.php?id=<?= $row['venueID'] ?>" class="group h-full block transition-all duration-500 transform hover:-translate-y-2">
+      <div class="relative h-full bg-white rounded-2xl border border-gray-200 shadow-md overflow-hidden flex flex-col transition-all duration-500 hover:[border-color:#7BAAF7] hover:shadow-[0_4px_20px_#7BAAF7,0_0_2px_#7BAAF7]">
+
+
+          <!-- Image -->
+          <img src="<?= $imageURL ?>" class="w-full h-48 object-cover z-20" alt="Stay" />
+
+          <!-- Content -->
+          <div class="p-4 flex flex-col justify-between flex-grow z-20 text-black">
             <div>
-              <h3 class="font-semibold text-lg text-[#F28B82]"><?= htmlspecialchars($row['venueName']) ?></h3>
+              <h3 class="font-semibold text-lg text-black group-hover:[color:#5A90D0] transition"><?= htmlspecialchars($row['venueName']) ?></h3>
               <p class="text-sm text-gray-600"><?= htmlspecialchars($row['cityAddress']) ?></p>
-              <p class="text-sm text-gray-600"><?= $row['availabilityDays'] ?: "Available Daily" ?></p>
-              <p class="text-sm font-medium mt-1 text-[#1e40af]">₱<?= htmlspecialchars($row['priceRangeText'] ?? 'N/A') ?></p>
+              <p class="text-sm text-gray-500"><?= $row['availabilityDays'] ?: "Available Daily" ?></p>
+              <p class="text-sm font-semibold mt-2 text-blue-700 group-hover:text-blue-900 transition">Price:<?= htmlspecialchars($row['priceRangeText'] ?? 'N/A') ?></p>
             </div>
             <div class="flex items-center justify-between mt-4">
               <span class="text-sm text-yellow-600">⭐ <?= number_format(rand(4.5, 5), 2) ?></span>
-              <button class="text-pink-500 text-xl hover:text-red-500 transition">♡</button>
+              <button class="text-pink-500 text-xl hover:text-red-500 transition duration-300">♡</button>
             </div>
           </div>
         </div>

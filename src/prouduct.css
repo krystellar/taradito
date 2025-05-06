@@ -1,0 +1,261 @@
+main {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+
+/*Search Bar*/
+.form-container {
+  display: flex;
+  align-items: center;
+  border: 2px solid black; /* Thicker black border */
+  border-radius: 9999px;
+  background-color: #ffffff;
+  padding: 0.625rem 1rem;
+  width: 100%;
+  max-width: 500px;
+
+  /* 3D effect */
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3), -2px -2px 6px rgba(255, 255, 255, 0.8);
+  transition: all 0.3s ease;
+}
+
+.form-container:hover {
+  border-color: #000000;
+  box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.4), -3px -3px 8px rgba(255, 255, 255, 0.9); /* Deeper 3D on hover */
+}
+
+
+
+  .category-nav {
+    background-color: white;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 0.75rem 0;
+  }
+  
+  .category-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    padding: 0 1.5rem;
+    overflow-x: auto;
+  }
+  
+  .category-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    white-space: nowrap;
+    color: #4b5563; /* text-gray-600 */
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .category-item:hover {
+    color: black;
+  }
+  
+  /* Active States by Category */
+  .category-item.active.intimate {
+    color: #333333;
+    background-color: #FFF7F3;
+    border-bottom: 2px solid #F28B82;
+    font-family: 'Playfair Display', serif;
+  }
+  
+  .category-item.active.business {
+    color: #2D3A56;
+    background-color: #F8F8F8;
+    border-bottom: 2px solid #7BAAF7;
+    font-family: 'Roboto', sans-serif;
+  }
+  
+  .category-item.active.fun {
+    color: #333333;
+    background-color: #FFF9E3;
+    border-bottom: 2px solid #FFE066;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .category-item.active.casual {
+    color: #2F4F2F;
+    background-color: #FAF8F1;
+    border-bottom: 2px solid #5CAC64;
+    font-family: 'Nunito', sans-serif;
+  }
+  
+
+  /*Category Nav*/
+
+  .type--A { /* Intimate - Soft Rose */
+    --line_color: #F28B82;
+    --back_color: #F28B82;
+  }
+  
+  .type--B { /* Business - Modern Sky Blue */
+    --line_color: #7BAAF7;
+    --back_color: #7BAAF7;
+  }
+  
+  .type--C { /* Fun - Pastel Amber */
+    --line_color: #FFE066;
+    --back_color: #FFE066;
+  }
+  
+  .type--D { /* Casual - Verdant Green */
+    --line_color: #5CAC64;
+    --back_color: #5CAC64;
+  }
+  
+  /* CONTAINER STYLING */
+  .container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 2rem 0;
+  }
+  
+  /* CATEGORY NAVIGATION */
+  .category-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 2rem 0;
+  }
+  
+  .category-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 0 !important;
+    padding: 2rem 0 1.5rem 0 !important; /* Top and side padding stays, slight bottom spacing added */
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent; /* Ensures no unwanted background */
+  }
+  
+  .container {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+    margin: 0 auto; /* centers it horizontally */
+    padding: 0 !important; /* resets any padding */
+    margin-bottom: 1.5rem; /* gives breathing space below the category nav */
+  }
+  
+  
+  /* BASE BUTTON STYLES */
+  .button {
+    position: relative;
+    z-index: 0;
+    width: 240px;
+    height: 56px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--line_color);
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+    background: transparent;
+  }
+  
+  /* CENTERED TEXT */
+  .button__text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* LINE DECORATIONS */
+  .button::before,
+  .button::after,
+  .button__text::before,
+  .button__text::after {
+    content: "";
+    position: absolute;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--line_color);
+    transition: all 0.5s ease;
+  }
+  
+  .button::before {
+    top: 0;
+    left: 54px;
+    width: calc(100% - 56px * 2 - 16px);
+  }
+  .button::after {
+    top: 0;
+    right: 54px;
+    width: 8px;
+  }
+  .button__text::before {
+    bottom: 0;
+    right: 54px;
+    width: calc(100% - 56px * 2 - 16px);
+  }
+  .button__text::after {
+    bottom: 0;
+    left: 54px;
+    width: 8px;
+  }
+  
+  /* LEFT AND RIGHT LINES */
+  .button__line {
+    position: absolute;
+    top: 0;
+    width: 56px;
+    height: 100%;
+    overflow: hidden;
+  }
+  .button__line::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 150%;
+    height: 100%;
+    box-sizing: border-box;
+    border-radius: 300px;
+    border: solid 3px var(--line_color);
+  }
+  .button__line:nth-child(1),
+  .button__line:nth-child(1)::before {
+    left: 0;
+  }
+  .button__line:nth-child(2),
+  .button__line:nth-child(2)::before {
+    right: 0;
+  }
+  
+  /* HOVER EFFECTS (no streaks) */
+  .button:hover {
+    background-color: var(--back_color);
+    color: #fff; /* Optional: ensure text is readable on hover */
+  }
+  .button:hover::before,
+  .button:hover .button__text::before {
+    width: 8px;
+  }
+  .button:hover::after,
+  .button:hover .button__text::after {
+    width: calc(100% - 56px * 2 - 16px);
+  }
+  
+  /* Active styles (persistent after click) */
+  .button.active {
+    background-color: var(--back_color);
+    color: #fff; /* or match the hover text color for contrast */
+  }
+  
+  
