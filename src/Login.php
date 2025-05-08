@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         );
         $user = $stmt->fetch_assoc();
 
-        if ($user && $user['managerPass'] === $password) {
+        if ($user && password_verify($password, $user['managerPass'])) {
             $_SESSION['managerID'] = $user['managerID'];
             header("Location: DashboardAdmin.php");
             exit;
@@ -27,6 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

@@ -1,26 +1,22 @@
 <?php
-include('db_connection.php');
+  include('db_connection.php');
+  $venueID = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
-// 1. Get the venue ID from URL
-$venueID = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+  $sql = "SELECT v.*, p.priceRangeText, m.firstName, m.lastName
+          FROM venueData v
+          LEFT JOIN priceRange p ON v.priceRangeID = p.priceRangeID
+          LEFT JOIN managerVenue mv ON v.venueID = mv.venueID
+          LEFT JOIN managerData m ON mv.managerID = m.managerID
+          WHERE v.venueID = ?";
 
-// 2. Fetch venue details
-$sql = "SELECT v.*, p.priceRangeText, m.firstName, m.lastName
-        FROM venueData v
-        LEFT JOIN priceRange p ON v.priceRangeID = p.priceRangeID
-        LEFT JOIN managerData m ON v.managerID = m.managerID
-        WHERE v.venueID = ?";
+  $result = $conn->execute_query($sql, [$venueID]);
+  $venue = $result->fetch_assoc();
+  $conn->close();
 
-// Execute query using prepared statement
-$result = $conn->execute_query($sql, [$venueID]);
-$venue = $result->fetch_assoc();
-$conn->close();
-
-// If no venue found, show message and stop
-if (!$venue) {
-    echo "<p class='text-center text-red-600 mt-10'>Venue not found.</p>";
-    exit;
-}
+  if (!$venue) {
+      echo "<p class='text-center text-red-600 mt-10'>Venue not found.</p>";
+      exit;
+  }
 ?>
 <!DOCTYPE html>
 <html lang="en">

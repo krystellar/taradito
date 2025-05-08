@@ -1,6 +1,6 @@
-userID,venueID
-1,7
-1,1
-2,6
-3,9
-3,2
+reservationID,userID,venueID,statusID
+1,1,7,1
+2,1,1,2
+3,2,6,3
+4,3,9,4
+5,3,2,5

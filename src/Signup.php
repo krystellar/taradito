@@ -10,22 +10,28 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['signup'])) {
     $lastName = $_POST['lastName'] ?? '';
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
+    $confirmPassword = $_POST['confirm_password'] ?? '';
 
-    if (empty($firstName) || empty($lastName) || empty($email) || empty($password)) {
+    if (empty($firstName) || empty($lastName) || empty($email) || empty($password) || empty($confirmPassword)) {
         $error = "All fields are required.";
+    } elseif ($password !== $confirmPassword) {
+        $error = "Passwords do not match.";
     } else {
-        // error handling for email
         $stmt = $conn->execute_query("SELECT managerEmail FROM managerData WHERE managerEmail = ?", [$email]);
         if ($stmt->num_rows > 0) {
             $error = "Email is already registered.";
         } else {
-            // insert new manager data
+            $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
             $insertSql = "INSERT INTO managerData (firstName, lastName, managerEmail, managerPass) VALUES (?, ?, ?, ?)";
-            $conn->execute_query($insertSql, [$firstName, $lastName, $email, $password]);
+            $result = $conn->execute_query($insertSql, [$firstName, $lastName, $email, $hashedPassword]);
 
-            $success = "Manager added successfully!";
-            header("Location: Login.php");
-            exit;
+            if ($result) {
+                $success = "Manager added successfully!";
+                header("Location: Login.php");
+                exit;
+            } else {
+                $error = "An error occurred while adding the manager.";
+            }
         }
     }
 }
@@ -51,20 +57,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['signup'])) {
       <div class="text-red-600 text-sm font-medium"><?= htmlspecialchars($error) ?></div>
     <?php endif; ?>
     
-    <?php if (!empty($successMessage)): ?>
-      <div class="text-green-600 text-sm font-medium"><?= htmlspecialchars($successMessage) ?></div>
+    <?php if (!empty($success)): ?>
+      <div class="text-green-600 text-sm font-medium"><?= htmlspecialchars($success) ?></div>
     <?php endif; ?>
     
-    <form action="sign_up.php" method="POST" class="space-y-4">
+    <form action="Signup.php" method="POST" class="space-y-4">
       <div class="space-y-2">
-        <input required type="text" name="first_name" placeholder="First Name" class="w-full p-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#12B1D1] shadow-sm text-gray-700">
-        <input required type="text" name="last_name" placeholder="Last Name" class="w-full p-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#12B1D1] shadow-sm text-gray-700">
+        <input required type="text" name="firstName" placeholder="First Name" class="w-full p-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#12B1D1] shadow-sm text-gray-700">
+        <input required type="text" name="lastName" placeholder="Last Name" class="w-full p-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#12B1D1] shadow-sm text-gray-700">
         <input required type="email" name="email" placeholder="Email" class="w-full p-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#12B1D1] shadow-sm text-gray-700">
         <input required type="password" name="password" placeholder="Password" class="w-full p-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#12B1D1] shadow-sm text-gray-700">
         <input required type="password" name="confirm_password" placeholder="Confirm Password" class="w-full p-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#12B1D1] shadow-sm text-gray-700">
       </div>
       
-      <input type="submit" value="Sign Up" class="w-full p-4 mt-4 text-white font-semibold bg-gradient-to-r from-[#1089D3] to-[#12B1D1] rounded-xl cursor-pointer shadow-lg hover:scale-105 transition-all duration-200 transform">
+      <input type="submit" name="signup" value="Sign Up" class="w-full p-4 mt-4 text-white font-semibold bg-gradient-to-r from-[#1089D3] to-[#12B1D1] rounded-xl cursor-pointer shadow-lg hover:scale-105 transition-all duration-200 transform">
     </form>
     
     <div class="text-center mt-4">

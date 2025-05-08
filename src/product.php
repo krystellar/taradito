@@ -9,10 +9,10 @@
   $cats = array_values(array_intersect($validCategory, $selectedCategory));
 
   // Editing SQL query to fetch venues with the category
-  $sql = "SELECT v.*, p.priceRangeText, m.firstName, m.lastName
-          FROM venueData v
-          LEFT JOIN priceRange p ON v.priceRangeID = p.priceRangeID
-          LEFT JOIN managerData m ON v.managerID = m.managerID";
+  $sql = "SELECT v.*, p.priceRangeText
+        FROM venueData v
+        LEFT JOIN priceRange p ON v.priceRangeID = p.priceRangeID";
+
   $wheres = [];
   // For the search terms
   if ($searchTerm !== '') {
