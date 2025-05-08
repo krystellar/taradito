@@ -82,6 +82,10 @@
     <?php if ($venue['decoServices']): ?><div><p class="font-medium">Decoration Services</p></div><?php endif; ?>
     <?php if ($venue['onsiteStaff']): ?><div><p class="font-medium">On-site Staff</p></div><?php endif; ?>
     <?php if ($venue['techSupport']): ?><div><p class="font-medium">Tech Support</p></div><?php endif; ?>
+    <?php if ($venue['pwdFriendly']): ?><div><p class="font-medium">Persons With Disability Accessible</p></div><?php endif; ?>
+    <?php if ($venue['parking']): ?><div><p class="font-medium">Parking Available</p></div><?php endif; ?>
+    <?php if ($venue['securityStaff']): ?><div><p class="font-medium">Security Personnel</p></div><?php endif; ?>
+    <?php if ($venue['wifiAccess']): ?><div><p class="font-medium">Wi-Fi Connectivity</p></div><?php endif; ?>
   </div>
 
   <!-- Map -->

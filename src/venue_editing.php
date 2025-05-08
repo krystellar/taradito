@@ -2,21 +2,23 @@
 include('db_connection.php');
 
 $venueID = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-
-$sql = "SELECT v.*, p.priceRangeText, m.firstName, m.lastName
-        FROM venueData v
-        LEFT JOIN priceRange p ON v.priceRangeID = p.priceRangeID
-        LEFT JOIN managerData m ON v.managerID = m.managerID
-        WHERE v.venueID = ?";
-
-$result = $conn->execute_query($sql, [$venueID]);
-$venue = $result->fetch_assoc();
+$sql = "SELECT v.*,p.priceRangeText,
+      m.firstName AS managerFirstName,
+      m.lastName AS managerLastName
+    FROM venueData v
+    LEFT JOIN priceRange p ON v.priceRangeID = p.priceRangeID
+    LEFT JOIN managerVenue mv ON v.venueID = mv.venueID
+    LEFT JOIN managerData m ON mv.managerID = m.managerID
+    WHERE v.venueID = ?";
+$stmt  = $conn->execute_query($sql, [$venueID]);
+$venue  = $stmt->fetch_assoc();
 $conn->close();
 
 if (!$venue) {
     echo "<p class='text-center text-red-600 mt-10'>Venue not found.</p>";
     exit;
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -169,6 +171,34 @@ if (!$venue) {
                     ?>
                 </div>
             </div>
+            <!-- Category -->
+            <div class="section">
+            <h2 class="text-xl font-semibold text-[#333333]">Category</h2>
+            <div class="checkbox-group grid grid-cols-2 gap-4">
+                <?php 
+                $categories = [
+                    'intimate' => 'Intimate',
+                    'business' => 'Business',
+                    'casual'   => 'Casual',
+                    'fun'      => 'Fun'
+                ];
+                foreach ($categories as $col => $label):
+                    $isChecked = !empty($venue[$col]) ? 'checked' : '';
+                ?>
+                <label class="flex items-center">
+                    <input 
+                    type="checkbox" 
+                    name="<?= $col ?>" 
+                    value="1" 
+                    <?= $isChecked ?> 
+                    class="h-5 w-5 mr-2"
+                    />
+                    <?= htmlspecialchars($label) ?>
+                </label>
+                <?php endforeach; ?>
+            </div>
+            </div>
+
 
             <!-- Amenities -->
             <div class="section">
@@ -180,7 +210,12 @@ if (!$venue) {
                         'equipRentals' => 'Equipment Rentals',
                         'decoServices' => 'Decoration Services',
                         'onsiteStaff' => 'On-site Staff',
-                        'techSupport' => 'Tech Support'
+                        'techSupport' => 'Tech Support',
+                        'pwdFriendly' => 'PWD Friendly',
+                        'parking' => 'Parking',
+                        'cateringServices' => 'Catering Services',
+                        'securityStaff' => 'Security Staff',
+                        'wifiAccess' => 'Wi-Fi Access'
                     ];
                     foreach ($amenities as $key => $label) {
                         $checked = $venue[$key] ? 'checked' : '';
