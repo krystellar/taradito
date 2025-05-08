@@ -130,7 +130,7 @@
             </div>
 
             <!-- Edit form: hidden by default -->
-            <form id="edit_form" action="update_manager.php" method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 hidden">
+            <form id="edit_form" action="update_manager.php" method="POST" class="grid-cols-1 md:grid-cols-2 gap-6 mt-6 hidden">
                 <!-- First Name -->
                 <div class="bg-gray-50 p-4 rounded-xl shadow-inner">
                     <label for="firstName" class="block text-xs text-gray-500 mb-1">First Name</label>
