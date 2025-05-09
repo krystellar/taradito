@@ -163,7 +163,7 @@
               <h3 class="font-semibold text-lg text-black group-hover:[color:#5A90D0] transition"><?= htmlspecialchars($row['venueName']) ?></h3>
               <p class="text-sm text-gray-600"><?= htmlspecialchars($row['cityAddress']) ?></p>
               <p class="text-sm text-gray-500"><?= $row['availabilityDays'] ?: "Available Daily" ?></p>
-              <p class="text-sm font-semibold mt-2 text-blue-700 group-hover:text-blue-900 transition">Price:<?= htmlspecialchars($row['priceRangeText'] ?? 'N/A') ?></p>
+              <p class="text-sm font-semibold mt-2 text-blue-700 group-hover:text-blue-900 transition">Price: <?= htmlspecialchars($row['priceRangeText'] ?? 'N/A') ?></p>
             </div>
             <div class="flex items-center justify-between mt-4">
               <span class="text-sm text-yellow-600">⭐ <?= number_format(rand(4.5, 5), 2) ?></span>
