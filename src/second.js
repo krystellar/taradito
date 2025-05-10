@@ -23,3 +23,25 @@ const navbar = document.getElementById('navbar');
       });
     });
   });
+
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const categoryLabels = document.querySelectorAll('.category-label');
+    
+    categoryLabels.forEach(label => {
+        const checkbox = label.querySelector('input[type="checkbox"]');
+        const button = label.querySelector('.category-button');
+
+        // Add click event to toggle the "active" class
+        label.addEventListener('click', function() {
+            // Toggle the active state of the label (which persists the color)
+            label.classList.toggle('active');
+            
+            // Also toggle the checkbox checked state to keep it consistent
+            checkbox.checked = !checkbox.checked;
+        });
+
+        // Optional: Update the button color dynamically based on the "data-color" attribute
+        button.style.backgroundColor = label.getAttribute('data-color');
+    });
+});

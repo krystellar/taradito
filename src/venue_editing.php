@@ -29,79 +29,101 @@ if (!$venue) {
     <title>Edit <?= htmlspecialchars($venue['venueName']) ?> | Design Stays</title>
     <link href="output.css" rel="stylesheet">
     <style>
-        /* Add some custom styles for modern design */
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f8f8f8;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .card {
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            margin-top: 20px;
-        }
-        .card-header {
-            font-size: 1.75rem;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .form-input, .form-textarea, .form-select {
-            width: 100%;
-            padding: 12px 16px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            margin-top: 8px;
-            margin-bottom: 16px;
-            box-sizing: border-box;
-            font-size: 1rem;
-        }
-        .form-input:focus, .form-textarea:focus, .form-select:focus {
-            outline: none;
-            border-color: #a0c4ff;
-            box-shadow: 0 0 5px rgba(160, 196, 255, 0.7);
-        }
-        .form-button {
-            background-color: #7BAAF7;
-            color: white;
-            padding: 12px 24px;
-            font-size: 1.125rem;
-            font-weight: 600;
-            border-radius: 8px;
-            width: 100%;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            border: none;
-        }
-        .form-button:hover {
-            background-color: #5a90d0;
-        }
-        .section {
-            margin-bottom: 30px;
-        }
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-        }
-        .checkbox-group label {
-            display: flex;
-            align-items: center;
-            font-size: 1rem;
-            color: #333;
-        }
-        .checkbox-group input {
-            margin-right: 10px;
-        }
+       /* Add some custom styles for modern design */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f4f8; /* Slightly lighter background */
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.card {
+    background-color: #ffffff;
+    border-radius: 12px; /* Slightly more rounded corners */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    padding: 30px; /* Increased padding for better spacing */
+    margin-top: 20px;
+}
+
+.card-header {
+    font-size: 2rem; /* Increased font size */
+    font-weight: 700; /* Bolder font weight */
+    color: #2c3e50; /* Darker text color */
+    margin-bottom: 30px; /* Increased margin for better separation */
+    text-align: center;
+}
+
+.form-input, .form-textarea, .form-select {
+    width: 100%;
+    padding: 14px 18px; /* Increased padding for better touch targets */
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    margin-top: 8px;
+    margin-bottom: 20px; /* Increased bottom margin */
+    box-sizing: border-box;
+    font-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s; /* Smooth transition */
+}
+
+.form-input:focus, .form-textarea:focus, .form-select:focus {
+    outline: none;
+    border-color: #3498db; /* Changed focus border color */
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5); /* Changed focus shadow color */
+}
+
+.form-button {
+    background-color: #3498db; /* Changed button color */
+    color: white;
+    padding: 14px 28px; /* Increased padding */
+    font-size: 1.125rem;
+    font-weight: 600;
+    border-radius: 8px;
+    width: 100%;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s; /* Added transform for hover effect */
+    border: none;
+}
+
+.form-button:hover {
+    background-color: #2980b9; /* Darker shade on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+}
+
+.section {
+    margin-bottom: 40px; /* Increased margin for better separation */
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    color: #333;
+}
+
+.checkbox-group input {
+    margin-right: 10px;
+}
+
+h2 {
+    font-size: 1.5rem; /* Increased font size for section headers */
+    color: #2c3e50; /* Darker color for better contrast */
+    margin-bottom: 10px; /* Added margin for spacing */
+}
+
+
+
     </style>
 </head>
 <body>
@@ -171,39 +193,49 @@ if (!$venue) {
                     ?>
                 </div>
             </div>
+            
             <!-- Category -->
-            <div class="section">
-            <h2 class="text-xl font-semibold text-[#333333]">Category</h2>
-            <div class="checkbox-group grid grid-cols-2 gap-4">
-                <?php 
-                $categories = [
-                    'intimate' => 'Intimate',
-                    'business' => 'Business',
-                    'casual'   => 'Casual',
-                    'fun'      => 'Fun'
-                ];
-                foreach ($categories as $col => $label):
-                    $isChecked = !empty($venue[$col]) ? 'checked' : '';
-                ?>
-                <label class="flex items-center">
-                    <input 
+<div class="section bg-white p-6 rounded-2xl shadow-md mt-6">
+    <h2 class="text-2xl font-semibold text-[#333333] mb-4">Category</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <?php 
+        $categories = [
+            'intimate' => ['label' => 'Intimate', 'color' => '#F28B82'],
+            'business' => ['label' => 'Business', 'color' => '#7BAAF7'],
+            'casual'   => ['label' => 'Casual', 'color' => '#5CAC64'],
+            'fun'      => ['label' => 'Fun', 'color' => '#FFE066']
+        ];
+        foreach ($categories as $col => $data):
+            $isChecked = !empty($venue[$col]) ? 'checked' : '';
+            $primaryColor = $data['color'];
+        ?>
+        <div class="category-container p-4 rounded-lg border-2 transition duration-300 hover:scale-105 relative"
+            style="border-color: <?= $primaryColor ?>; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+            <label class="flex items-center space-x-3 text-[#333] group relative overflow-hidden transition duration-300">
+                <input 
                     type="checkbox" 
                     name="<?= $col ?>" 
                     value="1" 
                     <?= $isChecked ?> 
-                    class="h-5 w-5 mr-2"
-                    />
-                    <?= htmlspecialchars($label) ?>
-                </label>
-                <?php endforeach; ?>
-            </div>
-            </div>
+                    class="h-5 w-5 text-blue-600 rounded focus:ring-blue-500 border-2 border-transparent transition-all duration-300 group-hover:border-<?= $col ?>-500 group-hover:ring-2 group-hover:ring-<?= $col ?>-500"
+                />
+                <span class="text-base font-medium" style="color: <?= $primaryColor ?>"><?= htmlspecialchars($data['label']) ?></span>
+            </label>
+            <!-- Hover background, set to z-index -1 to keep it behind the checkbox -->
+            <span class="absolute inset-0 opacity-0 group-hover:opacity-30 transition-all duration-300" 
+                  style="background-color: <?= $primaryColor ?>; z-index: -1;"></span>
+        </div>
+        <?php endforeach; ?>
+    </div>
+</div>
 
 
-            <!-- Amenities -->
-            <div class="section">
-                <h2 class="text-xl font-semibold text-[#333333]">Amenities</h2>
-                <div class="checkbox-group">
+
+
+          <!-- Amenities -->
+            <div class="section bg-white p-6 rounded-2xl shadow-md">
+                <h2 class="text-2xl font-semibold text-[#333333] mb-4">Amenities</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     <?php
                     $amenities = [
                         'eventPlanner' => 'Event Planner',
@@ -220,14 +252,15 @@ if (!$venue) {
                     foreach ($amenities as $key => $label) {
                         $checked = $venue[$key] ? 'checked' : '';
                         echo "
-                        <label>
-                            <input type='checkbox' name='$key' $checked class='h-5 w-5'>
-                            $label
+                        <label class='flex items-center space-x-3 text-[#333]'>
+                            <input type='checkbox' name='$key' $checked class='h-5 w-5 text-blue-600 rounded focus:ring-blue-500 border-gray-300'>
+                            <span class='text-sm'>$label</span>
                         </label>";
                     }
                     ?>
                 </div>
             </div>
+
 
             <!-- Submit Button -->
             <button type="submit" class="form-button">Save Changes</button>
