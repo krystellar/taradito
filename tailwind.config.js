@@ -123,11 +123,14 @@ module.exports = {
   'text-yellow-600',
   'text-xl',
   'hover:text-red-500',
+  
   ],
   theme: {
     extend: {
       animation: {
         'spin-slow': 'spin 6s linear infinite',
+      }, colors: {
+        verdantGreen: '#5CAC64',
       },
     },
   },

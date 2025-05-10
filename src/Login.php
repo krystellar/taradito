@@ -37,6 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   <title>Sign In</title>
   <link href="./output.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/tailwindcss@3.0.0/dist/tailwind.min.js"></script>
+  
 </head>
 <body class="bg-gradient-to-r from-[#F28B82] via-[#7BAAF7] to-[#5CAC64] flex items-center justify-center min-h-screen">
 

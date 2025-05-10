@@ -47,9 +47,10 @@
         <p class="text-lg text-gray-700">
           Whether you're planning a cozy dinner, a professional meetup, a birthday bash, or a cause-driven event—find the perfect venue, fast and hassle-free.
         </p>
-        <button class="bg-black text-white text-lg font-medium py-3 px-6 rounded-full border-2 border-[#002053] hover:bg-[#a0c4ff] hover:text-black hover:border-periwinkle-400 transition-all duration-300">
+        <a href="login.php" class="bg-black text-white text-lg font-medium py-3 px-6 rounded-full border-2 border-[#002053] hover:bg-[#a0c4ff] hover:text-black hover:border-periwinkle-400 transition-all duration-300 inline-block text-center">
           Get Started / Sign In
-        </button>
+        </a>
+
       </div>
 
       <!-- 2x2 Square Image Grid -->
