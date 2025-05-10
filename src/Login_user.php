@@ -8,26 +8,31 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
 
+    // Check for empty fields
     if (empty($email) || empty($password)) {
         $error = "Please fill in both fields.";
     } else {
+        // Execute the query to find the user by email
         $stmt = $conn->execute_query(
             "SELECT userID, userPass FROM userData WHERE userEmail = ?",
             [$email]
         );
-
-        if ($stmt && $stmt->num_rows > 0) {
-            $user = $stmt->fetch_assoc();
-
-            if (password_verify($password, $user['userPass'])) {
-                $_SESSION['userID'] = $user['userID'];
-                header("Location: Dashboard.php");
-                exit;
+        if ($stmt) {
+            if ($stmt->num_rows > 0) {
+                $user = $stmt->fetch_assoc();
+                if (password_verify($password, $user['userPass'])) {
+                    $_SESSION['userID'] = $user['userID']; // Start session with user ID
+                    header("Location: Dashboard.php"); // Redirect to the dashboard
+                    exit;
+                } else {
+                    $error = "Invalid email or password.";
+                }
+            } else {
+                $error = "Invalid email or password.";
             }
+        } else {
+            $error = "An error occurred with the database query.";
         }
-
-        // If login fails
-        $error = "Invalid email or password.";
     }
 }
 ?>
@@ -88,3 +93,5 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   </div>
 </body>
 </html>
+
+

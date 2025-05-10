@@ -1,5 +1,10 @@
 <?php
+  session_start();
   include('db_connection.php');
+  if (!isset($_SESSION['userID'])) {
+      header("Location: Login_user.php");
+      exit;
+  }
 
   // Search feature
   $searchTerm = isset($_GET['query']) ? $conn->real_escape_string($_GET['query']) : '';
@@ -8,27 +13,29 @@
   // Filter feature 
   $cats = array_values(array_intersect($validCategory, $selectedCategory));
 
-  // Editing SQL query to fetch venues with the category
-  $sql = "SELECT v.*, p.priceRangeText
+  $sql = "SELECT 
+          v.*, 
+          p.priceRangeText,
+          AVG(r.rating) AS averageRating
         FROM venueData v
-        LEFT JOIN priceRange p ON v.priceRangeID = p.priceRangeID";
+        LEFT JOIN priceRange p ON v.priceRangeID = p.priceRangeID
+        LEFT JOIN userRatings r ON v.venueID = r.venueID";
 
   $wheres = [];
-  // For the search terms
   if ($searchTerm !== '') {
       $wheres[] = "v.venueName LIKE '%" . $conn->real_escape_string($searchTerm) . "%'";
   }
-  // For the selected categories (AND operation)
   if (count($cats) > 0) {
-    foreach ($cats as $c) {
-        $wheres[] = "v.$c = 1";
-    }
+      foreach ($cats as $c) {
+          $wheres[] = "v.$c = 1";
+      }
   }
   if (count($wheres) > 0) {
-    $sql .= ' WHERE ' . implode(' AND ', $wheres);
+      $sql .= ' WHERE ' . implode(' AND ', $wheres);
   }
 
-  $sql .= ' ORDER BY v.venueID ASC';
+  $sql .= ' GROUP BY v.venueID ORDER BY v.venueID ASC';
+
   $result = $conn->query($sql);
 
   // For toggling category links
@@ -83,7 +90,7 @@
       <li><a href="#" class="text-sm font-medium text-gray-700 hover:text-black">Home</a></li>
       <li><a href="product.php" class="text-sm font-medium text-gray-700 hover:text-black">Venues</a></li>
       <li><a href="#" class="text-sm font-medium text-gray-700 hover:text-black">Explore</a></li>
-      <li><a href="#" class="text-sm font-medium text-gray-700 hover:text-black">Contact</a></li>
+      <li><a href="Dashboard.php" class="text-sm font-medium text-gray-700 hover:text-black">Dashboard</a></li>
     </ul>
   </nav>
 </header>
@@ -166,8 +173,9 @@
               <p class="text-sm font-semibold mt-2 text-blue-700 group-hover:text-blue-900 transition">Price: <?= htmlspecialchars($row['priceRangeText'] ?? 'N/A') ?></p>
             </div>
             <div class="flex items-center justify-between mt-4">
-              <span class="text-sm text-yellow-600">⭐ <?= number_format(rand(4.5, 5), 2) ?></span>
-              <button class="text-pink-500 text-xl hover:text-red-500 transition duration-300">♡</button>
+              <span class="text-sm text-yellow-600">
+                ⭐ <?= $row['averageRating'] !== null ? number_format($row['averageRating'], 2) : 'No Ratings' ?>
+              </span>
             </div>
           </div>
         </div>

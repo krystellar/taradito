@@ -97,6 +97,9 @@
             class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-2 rounded-full shadow-sm transition duration-200 flex items-center justify-center edit-button">
             <img src="Images/EditIcon.png" alt="Edit" class="w-5 h-5">
         </button>
+        <form action="logout.php" method="POST">
+        <button type="submit" class="btn btn-danger">Log Out</button>
+        </form>
 
         </div>
             <!-- Display Profile Info (No Form) -->
