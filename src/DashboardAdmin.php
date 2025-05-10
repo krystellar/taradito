@@ -3,30 +3,39 @@
     session_start();
     include('db_connection.php');
     define('PROJECT_ROOT', rtrim(dirname($_SERVER['SCRIPT_NAME'], 2), '/')); // for file
+    
     if (!isset($_SESSION['managerID'])) {
-        echo "Manager not logged in.";
+        header("Location: Login.php");
         exit;
     }
+
     $managerID = $_SESSION['managerID'];
-    $stmt = $conn->execute_query("SELECT firstName, lastName, managerEmail, managerAbout FROM managerData WHERE managerID = ?", [$managerID]);
-    $manager = $stmt->fetch_assoc();
+    
+    // Manager profile query
+    $stmt = $conn->prepare("SELECT firstName, lastName, managerEmail, managerAbout FROM managerData WHERE managerID = ?");
+    $stmt->bind_param("i", $managerID);  // "i" for integer
+    $stmt->execute();
+    $manager = $stmt->get_result()->fetch_assoc();
+
     if (!$manager) {
         echo "Manager profile not found!";
         exit;
     }
 
-    // venues under the manager
-    $sql = " SELECT v.venueID, v.venueName, v.barangayAddress, v.cityAddress, v.maxCapacity, v.priceRangeID, pr.priceRangeText
-        FROM venueData v
-        JOIN managerVenue mv ON v.venueID = mv.venueID
-        JOIN priceRange pr ON v.priceRangeID = pr.priceRangeID
-        WHERE mv.managerID = ?
-    ";
-    $stmt = $conn->execute_query($sql, [$managerID]);
-    $venues = $stmt->fetch_all(MYSQLI_ASSOC);
+    // Fetch venues under the manager
+    $sql = "SELECT v.venueID, v.venueName, v.barangayAddress, v.cityAddress, v.maxCapacity, v.priceRangeID, pr.priceRangeText
+            FROM venueData v
+            JOIN managerVenue mv ON v.venueID = mv.venueID
+            JOIN priceRange pr ON v.priceRangeID = pr.priceRangeID
+            WHERE mv.managerID = ?";
+    
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $managerID);  // "i" for integer
+    $stmt->execute();
+    $venues = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
-    // reservations for the manager's venues
-        $sql = "SELECT ur.reservationID, ur.reservationDate, rs.statusText,
+    // Fetch reservations for the manager's venues
+    $sql = "SELECT ur.reservationID, ur.reservationDate, rs.statusText,
                 u.firstName, u.lastName, v.venueName
             FROM userReserved ur
             JOIN reservationStatus rs ON ur.statusID = rs.statusID
@@ -34,37 +43,49 @@
             JOIN venueData v ON ur.venueID = v.venueID
             JOIN managerVenue mv ON v.venueID = mv.venueID
             WHERE mv.managerID = ?
-            ORDER BY ur.reservationDate DESC
-        ";
+            ORDER BY ur.reservationDate DESC";
+    
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $managerID);  // "i" for integer
+    $stmt->execute();
+    $reservations = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
-        $stmt = $conn->execute_query($sql, [$managerID]);
-        $reservations = $stmt->fetch_all(MYSQLI_ASSOC);
-
-    // reservation manager interactions
-    $statusStmt = $conn->execute_query("SELECT statusID, statusText FROM reservationStatus WHERE statusID >= 2 AND statusID <= 6");
-    $statuses = $statusStmt->fetch_all(MYSQLI_ASSOC);
+    // Fetch available reservation statuses
+    $statusStmt = $conn->prepare("SELECT statusID, statusText FROM reservationStatus WHERE statusID >= 2 AND statusID <= 6");
+    $statusStmt->execute();
+    $statuses = $statusStmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Handle accepting a reservation
         if (isset($_POST['accept_reservation'])) {
             $reservationID = $_POST['reservationID'];
-            $conn->execute_query("UPDATE userReserved SET statusID = 3 WHERE reservationID = ?", [$reservationID]);
+            $stmt = $conn->prepare("UPDATE userReserved SET statusID = 3 WHERE reservationID = ?");
+            $stmt->bind_param("i", $reservationID);  // "i" for integer
+            $stmt->execute();
         }
 
+        // Handle rejecting a reservation
         if (isset($_POST['reject_reservation'])) {
             $reservationID = $_POST['reservationID'];
-            $conn->execute_query("UPDATE userReserved SET statusID = 2 WHERE reservationID = ?", [$reservationID]);
+            $stmt = $conn->prepare("UPDATE userReserved SET statusID = 2 WHERE reservationID = ?");
+            $stmt->bind_param("i", $reservationID);  // "i" for integer
+            $stmt->execute();
         }
+
+        // Handle updating reservation status
         if (isset($_POST['update_status'])) {
             $reservationID = $_POST['reservationID'];
             $newStatusID = $_POST['new_status'];
-            $conn->execute_query("UPDATE userReserved SET statusID = ? WHERE reservationID = ?", [$newStatusID, $reservationID]);
+            $stmt = $conn->prepare("UPDATE userReserved SET statusID = ? WHERE reservationID = ?");
+            $stmt->bind_param("ii", $newStatusID, $reservationID);  // "ii" for two integers
+            $stmt->execute();
         }
 
         header("Location: " . $_SERVER['PHP_SELF']);
         exit;
     }
-    
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -217,34 +238,38 @@
     
 
     </div>
-<!-- Venues Managed Section -->
-<div class="border-2 border-[#B4741E] bg-[#FFE066] p-6 mb-8 rounded-lg" style="background-color: #FFE066;">
-    <h2 class="text-xl font-semibold mb-4">Venues Managed</h2>
+    <!-- Venues Managed Section -->
+    <div class="border-2 border-[#B4741E] bg-[#FFE066] p-6 mb-8 rounded-lg" style="background-color: #FFE066;">
+        <h2 class="text-xl font-semibold mb-4">Venues Managed</h2>
 
-    <?php if (empty($venues)): ?>
-        <p class="text-gray-600">No venues managed yet.</p>
-    <?php else: ?>
-        <div class="grid gap-6">
-            <?php foreach ($venues as $venue): ?>
-                <div class="border-2 border-[#B4741E] rounded-lg p-6" style="background-color: #FFF6CF;">
-                    <div class="flex justify-between items-center mb-4">
-                        <div>
-                            <h3 class="text-lg font-bold text-gray-800"><?php echo htmlspecialchars($venue['venueName']); ?></h3>
-                            <p class="text-sm text-gray-600"><?php echo htmlspecialchars($venue['barangayAddress']); ?>, <?php echo htmlspecialchars($venue['cityAddress']); ?></p>
-                            <p class="text-sm text-gray-600">Capacity: <?php echo htmlspecialchars($venue['maxCapacity']); ?> | Price: <?php echo htmlspecialchars($venue['priceRangeText']); ?></p>
+        <a href="<?= PROJECT_ROOT ?>/src/venue_add.php" 
+            class="inline-block mb-4 px-4 py-2 bg-[#B4741E] text-white rounded hover:bg-[#a16216] transition">
+            + Add Venue
+        </a>
+
+        <?php if (empty($venues)): ?>
+            <p class="text-gray-600">No venues managed yet.</p>
+        <?php else: ?>
+            <div class="grid gap-6">
+                <?php foreach ($venues as $venue): ?>
+                    <div class="border-2 border-[#B4741E] rounded-lg p-6" style="background-color: #FFF6CF;">
+                        <div class="flex justify-between items-center mb-4">
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-800"><?php echo htmlspecialchars($venue['venueName']); ?></h3>
+                                <p class="text-sm text-gray-600"><?php echo htmlspecialchars($venue['barangayAddress']); ?>, <?php echo htmlspecialchars($venue['cityAddress']); ?></p>
+                                <p class="text-sm text-gray-600">Capacity: <?php echo htmlspecialchars($venue['maxCapacity']); ?> | Price: <?php echo htmlspecialchars($venue['priceRangeText']); ?></p>
+                            </div>
+                            <a 
+                                href="<?= PROJECT_ROOT ?>/src/venue_editing.php?id=<?php echo $venue['venueID']; ?>" 
+                                class="edit-button">
+                                Edit
+                            </a>
                         </div>
-                        <a 
-    href="<?= PROJECT_ROOT ?>/src/venue_editing.php?id=<?php echo $venue['venueID']; ?>" 
-    class="edit-button">
-    Edit
-</a>
-
                     </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
-    <?php endif; ?>
-</div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </div>
 
    <!-- Reservation Messages Section -->
 <div class="reservation-section">

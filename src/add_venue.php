@@ -2,14 +2,13 @@
 include('db_connection.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $venueID = (int)$_POST['venueID'];
     $venueName = mysqli_real_escape_string($conn, $_POST['venueName']);
     $barangayAddress = mysqli_real_escape_string($conn, $_POST['barangayAddress']);
     $cityAddress = mysqli_real_escape_string($conn, $_POST['cityAddress']);
-
+    $venueDesc = mysqli_real_escape_string($conn, $_POST['venueDesc']);
+    
     $landmarks = mysqli_real_escape_string($conn, $_POST['landmarks']);
     $routes = mysqli_real_escape_string($conn, $_POST['routes']);
-    $venueDesc = mysqli_real_escape_string($conn, $_POST['venueDesc']);
 
     $intimate  = isset($_POST['intimate'])  ? 1 : 0;
     $business  = isset($_POST['business'])  ? 1 : 0;
@@ -33,41 +32,67 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $img5 = mysqli_real_escape_string($conn, $_POST['img5']);
 
     $sql = "
-        UPDATE venueData SET
-            venueName = '$venueName',
-            barangayAddress = '$barangayAddress',
-            cityAddress = '$cityAddress',
-            landmarks = '$landmarks',
-            routes = '$routes',
-            venueDesc = '$venueDesc',
-            intimate = $intimate,
-            business = $business,
-            casual = $casual,
-            fun = $fun,
-            eventPlanner = $eventPlanner,
-            equipRentals = $equipRentals,
-            decoServices = $decoServices,
-            onsiteStaff = $onsiteStaff,
-            techSupport = $techSupport,
-            pwdFriendly = $pwdFriendly,
-            parking = $parking,
-            cateringServices = $cateringServices,
-            securityStaff = $securityStaff,
-            wifiAccess = $wifiAccess,
-            imgs = '$imgs',
-            img2 = '$img2',
-            img3 = '$img3',
-            img4 = '$img4',
-            img5 = '$img5'
-        WHERE venueID = $venueID;
+        INSERT INTO venueData (
+            venueName,
+            barangayAddress,
+            cityAddress,
+            venueDesc,
+            landmarks,
+            routes,
+            intimate,
+            business,
+            casual,
+            fun,
+            eventPlanner,
+            equipRentals,
+            decoServices,
+            onsiteStaff,
+            techSupport,
+            pwdFriendly,
+            parking,
+            cateringServices,
+            securityStaff,
+            wifiAccess,
+            imgs,
+            img2,
+            img3,
+            img4,
+            img5
+        ) VALUES (
+            '$venueName',
+            '$barangayAddress',
+            '$cityAddress',
+            '$venueDesc',
+            '$landmarks',
+            '$routes',
+            $intimate,
+            $business,
+            $casual,
+            $fun,
+            $eventPlanner,
+            $equipRentals,
+            $decoServices,
+            $onsiteStaff,
+            $techSupport,
+            $pwdFriendly,
+            $parking,
+            $cateringServices,
+            $securityStaff,
+            $wifiAccess,
+            '$imgs',
+            '$img2',
+            '$img3',
+            '$img4',
+            '$img5'
+        );
     ";
 
     if ($conn->query($sql)) {
-        echo "<p class='text-green-600 text-center mt-4'>Venue updated successfully.</p>";
+        echo "<p class='text-green-600 text-center mt-4'>Venue added successfully.</p>";
         header("Location: DashboardAdmin.php");
         exit;
     } else {
-        echo "<p class='text-red-600 text-center mt-4'>Error updating venue: " . $conn->error . "</p>";
+        echo "<p class='text-red-600 text-center mt-4'>Error adding venue: " . $conn->error . "</p>";
     }
 
     $conn->close();

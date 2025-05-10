@@ -1,5 +1,10 @@
 <?php
+session_start();
 include('db_connection.php');
+if (!isset($_SESSION['managerID'])) {
+    header("Location: Login.php");
+    exit;
+}
 
 $venueID = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $sql = "SELECT v.*,p.priceRangeText,
@@ -10,6 +15,17 @@ $sql = "SELECT v.*,p.priceRangeText,
     LEFT JOIN managerVenue mv ON v.venueID = mv.venueID
     LEFT JOIN managerData m ON mv.managerID = m.managerID
     WHERE v.venueID = ?";
+
+$priceRangeSql = "SELECT * FROM priceRange";
+$resultPriceRange = $conn->query($priceRangeSql);
+
+if ($resultPriceRange->num_rows > 0) {
+    // Price ranges found
+    $priceRanges = $resultPriceRange->fetch_all(MYSQLI_ASSOC);
+} else {
+    $priceRanges = [];
+}
+
 $stmt  = $conn->execute_query($sql, [$venueID]);
 $venue  = $stmt->fetch_assoc();
 $conn->close();
@@ -168,14 +184,37 @@ h2 {
                         <label for="cityAddress" class="form-label">City Address</label>
                         <input type="text" name="cityAddress" id="cityAddress" value="<?= htmlspecialchars($venue['cityAddress']) ?>" class="form-input" required>
                     </div>
+
+                    <div>
+                        <label for="landmarks" class="form-label">Nearby Landmark</label>
+                        <input type="text" name="landmarks" id="landmarks" value="<?= htmlspecialchars($venue['landmarks']) ?>" class="form-input">
+                    </div>
+
+                    <div>
+                        <label for="routes" class="form-label">Route Description</label>
+                        <input type="text" name="routes" id="routes" value="<?= htmlspecialchars($venue['routes']) ?>" class="form-input">
+                    </div>
                 </div>
             </div>
+
 
             <!-- Venue Description -->
             <div class="section">
                 <label for="venueDesc" class="form-label">Venue Description</label>
                 <textarea name="venueDesc" id="venueDesc" rows="4" class="form-textarea"><?= htmlspecialchars($venue['venueDesc']) ?></textarea>
             </div>
+
+            <label for="priceRange">Price Range:</label>
+                <select name="priceRange" id="priceRange" required>
+                    <option value="">Select Price Range</option>
+                    <?php foreach ($priceRanges as $range): ?>
+                        <option value="<?= $range['priceRangeID']; ?>"
+                            <?php if (isset($venue['priceRangeID']) && $venue['priceRangeID'] == $range['priceRangeID']) echo 'selected'; ?>>
+                            <?= $range['priceRangeText']; ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+
 
             <!-- Image URLs -->
             <div class="section">
