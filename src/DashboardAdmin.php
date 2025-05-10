@@ -25,14 +25,27 @@
     // Fetch venues under the manager
     $sql = "SELECT v.venueID, v.venueName, v.barangayAddress, v.cityAddress, v.maxCapacity, v.priceRangeID, pr.priceRangeText
             FROM venueData v
-            JOIN managerVenue mv ON v.venueID = mv.venueID
+            JOIN managervenue mv ON v.venueID = mv.venueID
             JOIN priceRange pr ON v.priceRangeID = pr.priceRangeID
             WHERE mv.managerID = ?";
-    
+
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $managerID);  // "i" for integer
+    $stmt->bind_param("i", $managerID);
     $stmt->execute();
-    $venues = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+    if ($stmt->errno) {
+        error_log("Error executing venue query: (" . $stmt->errno . ") " . $stmt->error);
+        echo "<p class='text-red-600'>Database error fetching venues.</p>"; // Display a user-friendly error
+    }
+
+    $result = $stmt->get_result();
+    if (!$result) {
+        error_log("Error getting venue result: " . $conn->error);
+        echo "<p class='text-red-600'>Error retrieving venue data.</p>";
+    }
+
+    $venues = $result->fetch_all(MYSQLI_ASSOC);
+    $stmt->close();
 
     // Fetch reservations for the manager's venues
     $sql = "SELECT ur.reservationID, ur.reservationDate, rs.statusText,
@@ -264,6 +277,10 @@
                                 class="edit-button">
                                 Edit
                             </a>
+                            <form action="venue_delete.php" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this venue?');">
+                                <input type="hidden" name="venueID" value="<?= $venue['venueID']; ?>">
+                                <button type="submit" class="delete-button">Delete</button>
+                            </form>
                         </div>
                     </div>
                 <?php endforeach; ?>

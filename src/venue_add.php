@@ -6,6 +6,15 @@ if (!isset($_SESSION['managerID'])) {
     exit;
 }
 
+$priceRangeSql = "SELECT * FROM priceRange";
+    $resultPriceRange = $conn->query($priceRangeSql);
+
+    if ($resultPriceRange->num_rows > 0) {
+        $priceRanges = $resultPriceRange->fetch_all(MYSQLI_ASSOC);
+    } else {
+        $priceRanges = [];
+    }
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $managerID = $_SESSION['managerID']; 
     $venueName = mysqli_real_escape_string($conn, $_POST['venueName']);
@@ -14,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $venueDesc = mysqli_real_escape_string($conn, $_POST['venueDesc']);
     $landmarks = mysqli_real_escape_string($conn, $_POST['landmarks']);
     $routes = mysqli_real_escape_string($conn, $_POST['routes']);
-
+    $priceRangeID = mysqli_real_escape_string($conn, $_POST['priceRange']); 
     $intimate  = isset($_POST['intimate'])  ? 1 : 0;
     $business  = isset($_POST['business'])  ? 1 : 0;
     $casual    = isset($_POST['casual'])    ? 1 : 0;
@@ -46,6 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             venueDesc,
             landmarks,
             routes,
+            priceRangeID,
             intimate,
             business,
             casual,
@@ -75,6 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             '$venueDesc',
             '$landmarks',
             '$routes',
+            '$priceRangeID',
             $intimate,
             $business,
             $casual,
@@ -154,12 +165,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <label for="routes">Routes:</label>
         <input type="text" name="routes" id="routes">
         
+        <label for="priceRange" class="form-label">Price Range:</label>
+            <select name="priceRange" id="priceRange" class="form-select" required>
+                <option value="">Select Price Range</option>
+                <?php foreach ($priceRanges as $range): ?>
+                    <option value="<?= $range['priceRangeID']; ?>">
+                        <?= $range['priceRangeText']; ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
 
         <!-- Categories (Checkboxes) -->
-        <label><input type="checkbox" name="intimate"> Intimate</label>
-        <label><input type="checkbox" name="business"> Business</label>
-        <label><input type="checkbox" name="casual"> Casual</label>
-        <label><input type="checkbox" name="fun"> Fun</label>
+        <label><input type="checkbox" name="intimate" id="intimate"> Intimate</label>
+        <label><input type="checkbox" name="business" id="business"> Business</label>
+        <label><input type="checkbox" name="casual" id="casual"> Casual</label>
+        <label><input type="checkbox" name="fun" id="fun"> Fun</label>
 
         <!-- Amenities (Checkboxes) -->
         <label><input type="checkbox" name="eventPlanner"> Event Planner</label>
@@ -201,3 +221,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 </body>
 </html>
+<script>
+document.querySelector("form").addEventListener("submit", function (e) {
+    const checkboxes = ["intimate", "casual", "fun", "business"];
+    const oneChecked = checkboxes.some(id => document.getElementById(id)?.checked);
+    if (!oneChecked) {
+        e.preventDefault();
+        alert("Please select at least one category: Intimate, Casual, Fun, or Business.");
+    }
+});
+</script>
