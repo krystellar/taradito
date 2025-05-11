@@ -3,32 +3,52 @@
     session_start();
     include('db_connection.php');
     define('PROJECT_ROOT', rtrim(dirname($_SERVER['SCRIPT_NAME'], 2), '/')); // for file
+    
     if (!isset($_SESSION['managerID'])) {
-        echo "Manager not logged in.";
+        header("Location: Login.php");
         exit;
     }
+
     $managerID = $_SESSION['managerID'];
-    $stmt = $conn->execute_query("SELECT firstName, lastName, managerEmail, managerAbout FROM managerData WHERE managerID = ?", [$managerID]);
-    $manager = $stmt->fetch_assoc();
+    
+    // Manager profile query
+    $stmt = $conn->prepare("SELECT firstName, lastName, managerEmail, managerAbout FROM managerData WHERE managerID = ?");
+    $stmt->bind_param("i", $managerID);  // "i" for integer
+    $stmt->execute();
+    $manager = $stmt->get_result()->fetch_assoc();
+
     if (!$manager) {
         echo "Manager profile not found!";
         exit;
     }
 
+    // Fetch venues under the manager
+    $sql = "SELECT v.venueID, v.venueName, v.barangayAddress, v.cityAddress, v.maxCapacity, v.priceRangeID, pr.priceRangeText
+            FROM venueData v
+            JOIN managervenue mv ON v.venueID = mv.venueID
+            JOIN priceRange pr ON v.priceRangeID = pr.priceRangeID
+            WHERE mv.managerID = ?";
 
-    // venues under the manager
-    $sql = " SELECT v.venueID, v.venueName, v.barangayAddress, v.cityAddress, v.maxCapacity, v.priceRangeID, pr.priceRangeText
-        FROM venueData v
-        JOIN managerVenue mv ON v.venueID = mv.venueID
-        JOIN priceRange pr ON v.priceRangeID = pr.priceRangeID
-        WHERE mv.managerID = ?
-    ";
-    $stmt = $conn->execute_query($sql, [$managerID]);
-    $venues = $stmt->fetch_all(MYSQLI_ASSOC);
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $managerID);
+    $stmt->execute();
 
+    if ($stmt->errno) {
+        error_log("Error executing venue query: (" . $stmt->errno . ") " . $stmt->error);
+        echo "<p class='text-red-600'>Database error fetching venues.</p>"; // Display a user-friendly error
+    }
 
-    // reservations for the manager's venues
-        $sql = "SELECT ur.reservationID, ur.reservationDate, rs.statusText,
+    $result = $stmt->get_result();
+    if (!$result) {
+        error_log("Error getting venue result: " . $conn->error);
+        echo "<p class='text-red-600'>Error retrieving venue data.</p>";
+    }
+
+    $venues = $result->fetch_all(MYSQLI_ASSOC);
+    $stmt->close();
+
+    // Fetch reservations for the manager's venues
+    $sql = "SELECT ur.reservationID, ur.reservationDate, rs.statusText,
                 u.firstName, u.lastName, v.venueName
             FROM userReserved ur
             JOIN reservationStatus rs ON ur.statusID = rs.statusID
@@ -36,43 +56,48 @@
             JOIN venueData v ON ur.venueID = v.venueID
             JOIN managerVenue mv ON v.venueID = mv.venueID
             WHERE mv.managerID = ?
-            ORDER BY ur.reservationDate DESC
-        ";
+            ORDER BY ur.reservationDate DESC";
+    
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $managerID);  // "i" for integer
+    $stmt->execute();
+    $reservations = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
-
-        $stmt = $conn->execute_query($sql, [$managerID]);
-        $reservations = $stmt->fetch_all(MYSQLI_ASSOC);
-
-
-    // reservation manager interactions
-    $statusStmt = $conn->execute_query("SELECT statusID, statusText FROM reservationStatus WHERE statusID >= 2 AND statusID <= 6");
-    $statuses = $statusStmt->fetch_all(MYSQLI_ASSOC);
-
+    // Fetch available reservation statuses
+    $statusStmt = $conn->prepare("SELECT statusID, statusText FROM reservationStatus WHERE statusID >= 2 AND statusID <= 6");
+    $statusStmt->execute();
+    $statuses = $statusStmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Handle accepting a reservation
         if (isset($_POST['accept_reservation'])) {
             $reservationID = $_POST['reservationID'];
-            $conn->execute_query("UPDATE userReserved SET statusID = 3 WHERE reservationID = ?", [$reservationID]);
+            $stmt = $conn->prepare("UPDATE userReserved SET statusID = 3 WHERE reservationID = ?");
+            $stmt->bind_param("i", $reservationID);  // "i" for integer
+            $stmt->execute();
         }
 
-
+        // Handle rejecting a reservation
         if (isset($_POST['reject_reservation'])) {
             $reservationID = $_POST['reservationID'];
-            $conn->execute_query("UPDATE userReserved SET statusID = 2 WHERE reservationID = ?", [$reservationID]);
+            $stmt = $conn->prepare("UPDATE userReserved SET statusID = 2 WHERE reservationID = ?");
+            $stmt->bind_param("i", $reservationID);  // "i" for integer
+            $stmt->execute();
         }
+
+        // Handle updating reservation status
         if (isset($_POST['update_status'])) {
             $reservationID = $_POST['reservationID'];
             $newStatusID = $_POST['new_status'];
-            $conn->execute_query("UPDATE userReserved SET statusID = ? WHERE reservationID = ?", [$newStatusID, $reservationID]);
+            $stmt = $conn->prepare("UPDATE userReserved SET statusID = ? WHERE reservationID = ?");
+            $stmt->bind_param("ii", $newStatusID, $reservationID);  // "ii" for two integers
+            $stmt->execute();
         }
-
 
         header("Location: " . $_SERVER['PHP_SELF']);
         exit;
     }
-   
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -153,6 +178,12 @@
                 <label class="block text-sm font-medium text-[#333333]">About</label>
                 <p class="mt-1 text-[#333333]"><?php echo htmlspecialchars($manager['managerAbout']); ?></p>
             </div>
+
+            <!--Log out -->
+            <form action="logout.php" method="POST">
+                <button type="submit" class="btn btn-danger">Log Out</button>
+            </form>
+
         </div>
     </div>
    
@@ -232,6 +263,10 @@
 <div class="border-2 border-[#B4741E] bg-[#FFE066] p-6 mb-8 rounded-lg" style="background-color: #FFE066;">
     <h2 class="text-xl font-semibold mb-4">Venues Managed</h2>
 
+    <!-- add button-->
+    <a href="<?= PROJECT_ROOT ?>/src/venue_add.php" class="inline-block mb-4 px-4 py-2 bg-[#B4741E] text-white rounded hover:bg-[#a16216] transition">
+    + Add Venue
+    </a>
 
     <?php if (empty($venues)): ?>
         <p class="text-gray-600">No venues managed yet.</p>
@@ -245,12 +280,13 @@
                             <p class="text-sm text-gray-600"><?php echo htmlspecialchars($venue['barangayAddress']); ?>, <?php echo htmlspecialchars($venue['cityAddress']); ?></p>
                             <p class="text-sm text-gray-600">Capacity: <?php echo htmlspecialchars($venue['maxCapacity']); ?> | Price: <?php echo htmlspecialchars($venue['priceRangeText']); ?></p>
                         </div>
-                        <a
-    href="<?= PROJECT_ROOT ?>/src/venue_editing.php?id=<?php echo $venue['venueID']; ?>"
-    class="edit-button">
-    Edit
-</a>
-
+                        <a href="<?= PROJECT_ROOT ?>/src/venue_editing.php?id=<?php echo $venue['venueID']; ?>" class="edit-button">
+                            Edit
+                        </a>
+                        <form action="venue_delete.php" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this venue?');">
+                            <input type="hidden" name="venueID" value="<?= $venue['venueID']; ?>">
+                            <button type="submit" class="delete-button">Delete</button>
+                        </form>
 
                     </div>
                 </div>
