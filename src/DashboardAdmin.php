@@ -119,174 +119,100 @@
 <div class="max-w-6xl mx-auto p-6">
 
 
+<link rel="stylesheet" href="style.css">
 
+<div class="dashboard">
+    <h1 class="dashboard-title">Manager Dashboard</h1>
 
-           
-    <!-- Manager Profile Dashboard -->
-    <div class="p-8 rounded-xl border-2 border-[#D36A6A] mb-8" style="background-color: #FDE8E5;">
-    <h1 class="text-4xl font-bold mb-6 text-[#333333] tracking-tight leading-tight">
-        Manager Dashboard
-    </h1>
-
-
-    <div class="flex items-center justify-between mb-6">
-        <div class="flex items-center gap-4">
-            <img src="Images/1.jpg" alt="Profile Avatar"
-                class="w-16 h-16 rounded-full border-2 border-[#D36A6A] object-cover">
+    <div class="profile-header">
+        <div class="profile-info">
+            <img src="Images/1.jpg" alt="Profile Avatar" class="profile-avatar">
             <div>
-                <h2 class="text-2xl font-bold text-[#333333]">
-                    <?php echo htmlspecialchars($manager['firstName'] . ' ' . $manager['lastName']); ?>
-                </h2>
-                <p class="text-sm text-[#D36A6A]">Venue Manager</p>
+                <h2 class="manager-name"><?php echo htmlspecialchars($manager['firstName'] . ' ' . $manager['lastName']); ?></h2>
+                <p class="role">Venue Manager</p>
             </div>
         </div>
-     <button onclick="document.getElementById('edit_form').classList.toggle('hidden'); this.classList.toggle('hidden');"
-    class="bg-[#D36A6A] hover:bg-[#A94444] text-white font-semibold px-6 py-2 rounded-md transition duration-200 flex items-center justify-center">
-    <img src="Images/EditIcon.png" alt="Edit" class="w-5 h-5">
-</button>
-
-
+        <button onclick="document.getElementById('edit_form').classList.toggle('hidden'); this.classList.toggle('hidden');"
+                class="edit-button">
+            <img src="Images/EditIcon.png" alt="Edit" class="edit-icon">
+        </button>
     </div>
 
-
-    <!-- Display Profile Info -->
-    <div id="profile_info">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- First Name -->
-            <div class="p-4 rounded-md border-2 border-[#D36A6A]" style="background-color: #FFF7F3;">
-                <label class="block text-sm font-medium text-[#333333]">First Name</label>
-                <p class="mt-1 text-[#333333]"><?php echo htmlspecialchars($manager['firstName']); ?></p>
-            </div>
-
-
-            <!-- Last Name -->
-            <div class="p-4 rounded-md border-2 border-[#D36A6A]" style="background-color: #FFF7F3;">
-                <label class="block text-sm font-medium text-[#333333]">Last Name</label>
-                <p class="mt-1 text-[#333333]"><?php echo htmlspecialchars($manager['lastName']); ?></p>
-            </div>
-
-
-            <!-- Email -->
-            <div class="p-4 rounded-md border-2 border-[#D36A6A] col-span-1 md:col-span-2" style="background-color: #FFF7F3;">
-                <label class="block text-sm font-medium text-[#333333]">Email</label>
-                <p class="mt-1 text-[#333333]"><?php echo htmlspecialchars($manager['managerEmail']); ?></p>
-            </div>
-
-
-            <!-- About -->
-            <div class="p-4 rounded-md border-2 border-[#D36A6A] col-span-1 md:col-span-2" style="background-color: #FFF7F3;">
-                <label class="block text-sm font-medium text-[#333333]">About</label>
-                <p class="mt-1 text-[#333333]"><?php echo htmlspecialchars($manager['managerAbout']); ?></p>
-            </div>
-
-            <!--Log out -->
-            <form action="logout.php" method="POST">
-                <button type="submit" class="btn btn-danger">Log Out</button>
-            </form>
-
+    <!-- Profile Info -->
+    <div id="profile_info" class="profile-info-grid">
+        <div class="info-card">
+            <label class="info-label">First Name</label>
+            <p class="info-text"><?php echo htmlspecialchars($manager['firstName']); ?></p>
+        </div>
+        <div class="info-card">
+            <label class="info-label">Last Name</label>
+            <p class="info-text"><?php echo htmlspecialchars($manager['lastName']); ?></p>
+        </div>
+        <div class="info-card full-width">
+            <label class="info-label">Email</label>
+            <p class="info-text"><?php echo htmlspecialchars($manager['managerEmail']); ?></p>
+        </div>
+        <div class="info-card full-width">
+            <label class="info-label">About</label>
+            <p class="info-text"><?php echo htmlspecialchars($manager['managerAbout']); ?></p>
         </div>
     </div>
-   
-<!-- Edit form: hidden by default -->
-<form id="edit_form" action="update_manager.php" method="POST" class="grid-cols-1 md:grid-cols-2 gap-8 mt-8 hidden">
-    <!-- First Name -->
-    <div class="bg-gray-50 p-6 rounded-xl shadow-inner">
-        <label for="firstName" class="block text-xs text-gray-500 mb-2">First Name</label>
-        <input
-            type="text"
-            name="firstName"
-            id="firstName"
-            value="<?php echo htmlspecialchars($manager['firstName']); ?>"
-            class="w-full bg-white p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-300"
-            required
-        >
-    </div>
+
+    <!-- Edit Form -->
+    <form id="edit_form" action="update_manager.php" method="POST" class="edit-form hidden">
+        <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input type="text" name="firstName" id="firstName" value="<?php echo htmlspecialchars($manager['firstName']); ?>" required>
+        </div>
+        <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" name="lastName" id="lastName" value="<?php echo htmlspecialchars($manager['lastName']); ?>" required>
+        </div>
+        <div class="form-group full-width">
+            <label for="managerEmail">Email</label>
+            <input type="email" name="managerEmail" id="managerEmail" value="<?php echo htmlspecialchars($manager['managerEmail']); ?>" required>
+        </div>
+        <div class="form-group full-width">
+            <label for="managerAbout">About</label>
+            <textarea name="managerAbout" id="managerAbout" rows="5" required><?php echo htmlspecialchars($manager['managerAbout']); ?></textarea>
+        </div>
+        <button type="submit" name="update_manager" class="save-button">Save Changes</button>
+    </form>
+</div>
 
 
-    <!-- Last Name -->
-    <div class="bg-gray-50 p-6 rounded-xl shadow-inner">
-        <label for="lastName" class="block text-xs text-gray-500 mb-2">Last Name</label>
-        <input
-            type="text"
-            name="lastName"
-            id="lastName"
-            value="<?php echo htmlspecialchars($manager['lastName']); ?>"
-            class="w-full bg-white p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-300"
-            required
-        >
-    </div>
 
+  <!-- Venues Managed Section -->
+<div class="dashboard subsection">
+    <h2 class="dashboard-title">Venues Managed</h2>
 
-    <!-- Email -->
-    <div class="bg-gray-50 p-6 rounded-xl shadow-inner col-span-1 md:col-span-2">
-        <label for="managerEmail" class="block text-xs text-gray-500 mb-2">Email</label>
-        <input
-            type="email"
-            name="managerEmail"
-            id="managerEmail"
-            value="<?php echo htmlspecialchars($manager['managerEmail']); ?>"
-            class="w-full bg-white p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-300"
-            required
-        >
-    </div>
-
-
-    <!-- About -->
-    <div class="bg-gray-50 p-6 rounded-xl shadow-inner col-span-1 md:col-span-2">
-        <label for="managerAbout" class="block text-xs text-gray-500 mb-2">About</label>
-        <textarea
-            name="managerAbout"
-            id="managerAbout"
-            rows="5"
-            class="w-full bg-white p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-300"
-            required
-        ><?php echo htmlspecialchars($manager['managerAbout']); ?></textarea>
-    </div>
-
-
-    <!-- Save Button -->
-    <button
-        type="submit"
-        name="update_manager"
-        class="inline-flex items-center gap-3 bg-green-500 hover:bg-green-600 text-white font-medium px-8 py-4 rounded-full shadow-lg transition-all duration-300 transform save-button"
-    >
-        Save Changes
-    </button>
-</form>
-
-
-   
-
-
-    </div>
-<!-- Venues Managed Section -->
-<div class="border-2 border-[#B4741E] bg-[#FFE066] p-6 mb-8 rounded-lg" style="background-color: #FFE066;">
-    <h2 class="text-xl font-semibold mb-4">Venues Managed</h2>
-
-    <!-- add button-->
-    <a href="<?= PROJECT_ROOT ?>/src/venue_add.php" class="inline-block mb-4 px-4 py-2 bg-[#B4741E] text-white rounded hover:bg-[#a16216] transition">
-    + Add Venue
+    <!-- Add button -->
+    <a href="<?= PROJECT_ROOT ?>/src/venue_add.php" class="add-venue-button">
+        + Add Venue
     </a>
 
     <?php if (empty($venues)): ?>
-        <p class="text-gray-600">No venues managed yet.</p>
+        <p class="no-venues-message">No venues managed yet.</p>
     <?php else: ?>
-        <div class="grid gap-6">
+        <div class="venues-list">
             <?php foreach ($venues as $venue): ?>
-                <div class="border-2 border-[#B4741E] rounded-lg p-6" style="background-color: #FFF6CF;">
-                    <div class="flex justify-between items-center mb-4">
-                        <div>
-                            <h3 class="text-lg font-bold text-gray-800"><?php echo htmlspecialchars($venue['venueName']); ?></h3>
-                            <p class="text-sm text-gray-600"><?php echo htmlspecialchars($venue['barangayAddress']); ?>, <?php echo htmlspecialchars($venue['cityAddress']); ?></p>
-                            <p class="text-sm text-gray-600">Capacity: <?php echo htmlspecialchars($venue['maxCapacity']); ?> | Price: <?php echo htmlspecialchars($venue['priceRangeText']); ?></p>
+                <div class="venue-card">
+                    <div class="venue-card-header">
+                        <div class="venue-card-info">
+                            <h3 class="venue-name"><?php echo htmlspecialchars($venue['venueName']); ?></h3>
+                            <p class="venue-address"><?php echo htmlspecialchars($venue['barangayAddress']); ?>, <?php echo htmlspecialchars($venue['cityAddress']); ?></p>
+                            <p class="venue-capacity-price">Capacity: <?php echo htmlspecialchars($venue['maxCapacity']); ?> | Price: <?php echo htmlspecialchars($venue['priceRangeText']); ?></p>
                         </div>
-                        <a href="<?= PROJECT_ROOT ?>/src/venue_editing.php?id=<?php echo $venue['venueID']; ?>" class="edit-button">
+                       <div class="button-container">
+                        <a href="<?= PROJECT_ROOT ?>/src/venue_editing.php?id=<?php echo $venue['venueID']; ?>" class="venue-edit-button">
                             Edit
                         </a>
-                        <form action="venue_delete.php" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this venue?');">
+                        <form action="venue_delete.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this venue?');">
                             <input type="hidden" name="venueID" value="<?= $venue['venueID']; ?>">
                             <button type="submit" class="delete-button">Delete</button>
                         </form>
+                        </div>
+
 
                     </div>
                 </div>
@@ -294,18 +220,24 @@
         </div>
     <?php endif; ?>
 </div>
-
-
-   <!-- Reservation Messages Section -->
-<div class="reservation-section">
-    <h2 class="reservation-title">Reservations</h2>
-
+<!-- Reservation Messages Section -->
+<div class="dashboard subsection">
+    <h2 class="dashboard-title">Reservations</h2>
 
     <?php if (empty($reservations)): ?>
         <p class="no-reservations">No reservations yet.</p>
     <?php else: ?>
         <?php foreach ($reservations as $reservation): ?>
-            <div class="reservation-item">
+            <div class="reservation-item <?php 
+                // Apply the appropriate class based on the reservation's status
+                if ($reservation['statusText'] === 'Not Accepted') {
+                    echo 'not-accepted';
+                } elseif (in_array($reservation['statusText'], ['Happened', 'Paid'])) {
+                    echo 'happened-paid';
+                } elseif (in_array($reservation['statusText'], ['Confirmed', 'Deposited'])) {
+                    echo 'confirmed-deposited';
+                }
+            ?>">
                 <span>
                     <strong>
                         <?php echo htmlspecialchars($reservation['firstName'] . ' ' . $reservation['lastName']); ?>
@@ -313,7 +245,6 @@
                     (<?php echo htmlspecialchars($reservation['venueName']); ?>) –
                     Status: <span class="status"><?php echo htmlspecialchars($reservation['statusText']); ?></span>
                 </span>
-
 
                 <div class="actions">
                     <?php if ($reservation['statusText'] === 'Pending'): ?>
@@ -341,7 +272,6 @@
         <?php endforeach; ?>
     <?php endif; ?>
 </div>
-
 
 
 

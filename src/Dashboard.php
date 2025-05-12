@@ -85,14 +85,14 @@
   <style>
 /* General Card Styling */
 .card {
-  width: 100%;
-  max-width: 900px;
-  padding: 20px;
-  background: #fff;
-  border: 6px solid #000;
-  box-shadow: 12px 12px 0 #000;
-  margin: 0 auto; /* Center the card horizontally */
-  border-radius: 10px; /* Rounded corners for a softer look */
+    width: 100%;
+    max-width: 1280px;
+    border: 4px solid #000;
+    background-color: #fff;
+    padding: 2rem;
+    box-shadow: 10px 10px 0 #000;
+    font-family: "Arial", sans-serif;
+    margin-bottom: 2rem;
 }
 
 /* Title Styling */
@@ -258,14 +258,18 @@
 }
 
 /* Container for the reservation history section */
+.sub-container {
+    border: 4px solid #000;
+    background-color: #fff;
+    padding: 2rem;
+    box-shadow: 10px 10px 0 #000;
+    font-family: "Arial", sans-serif;
+    margin-bottom: 2rem;
+    margin-top: 2rem;
+}
+
 .reservation-history {
   background-color: #e0f7fa; /* Lighter blue background */
-  box-shadow: 0 15px 30px rgba(173, 216, 230, 0.4);
-  border-radius: 0px;
-  padding: 20px;
-  margin-top: 10px;
-  max-width: 100%;
-  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .reservation-history:hover {
@@ -275,21 +279,24 @@
 
 
 /* Title for the reservation section */
-.reservation-title {
-  font-size: 24px;
-  font-weight: 700;
-  color: black;
-  margin-bottom: 20px;
-  text-align: center;
+.title {
+    font-size: 2rem;
+    font-weight: 900;
+    color: #000;
+    text-transform: uppercase;
+    border-bottom: 2px solid #000;
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 /* Table container styling */
 .table-container {
   overflow-x: auto;
+  background-color: white;
 }
 
 /* Table styling */
-.reservation-table {
+.table {
   width: 100%;
   border-collapse: collapse;
 }
@@ -319,6 +326,15 @@
   padding: 12px;
   text-align: left;
 }
+
+.liked {
+  background-color: lightpink;
+}
+
+.recents {
+  background-color: #e6ccff; /* light purple */
+}
+
 
 /* Status badge styles based on reservation status */
 .status {
@@ -360,7 +376,7 @@
 
 
 /* No reservations message */
-.no-reservations {
+.no-content {
   color: #6b7280;
   text-align: center;
   font-size: 16px;
@@ -376,47 +392,48 @@
 
 /* Update Button */
 .update-button {
-  background-color: #3498db; /* Blue tone */
-  color: white;
-  padding: 8px 15px; /* Increase padding for more space */
-  border: 2px solid #2980b9; /* Darker blue border */
-  border-radius: 8px; /* Slightly larger border radius */
-  font-weight: bold;
-  font-size: 14px; /* Slightly smaller font */
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-  margin: 0; /* Remove any default margins */
+    background-color: #36aef4;
+    display: inline-block;
+    padding: 0.75rem 1.25rem;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    border: 3px solid #000;
+    color: #000;
+    position: relative;
+    transition: all 0.2s ease;
+    box-shadow: 5px 5px 0 #000;
+    cursor: pointer;
+    margin-bottom: 10px;
 }
 
 .update-button:hover {
-  background-color: #2980b9; /* Darker blue on hover */
-  border-color: #1d6f9b;
+  background-color: #81bde6;
+    transform: scale(1.05);
 }
 
-.update-button:focus {
-  outline: none;
-  box-shadow: 0 0 5px rgba(52, 152, 219, 0.6);
-}
 
 /* Delete Button */
 .delete-button {
-  background-color: #e74c3c; /* Red tone */
-  color: white;
-  padding: 8px 15px; /* Increase padding for more space */
-  border: 2px solid #c0392b; /* Darker red border */
-  border-radius: 8px; /* Slightly larger border radius */
-  font-weight: bold;
-  font-size: 14px; /* Slightly smaller font */
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-  margin-top: 10px; /* Adds space above the button */
+    background-color: #F44336;
+    display: inline-block;
+    padding: 0.75rem 1.25rem;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    border: 3px solid #000;
+    color: #000;
+    position: relative;
+    transition: all 0.2s ease;
+    box-shadow: 5px 5px 0 #000;
+    cursor: pointer;
 }
 
 .delete-button:hover {
-  background-color: #c0392b; /* Darker red on hover */
-  border-color: #a93226;
+  background-color: #D32F2F;
+  transform: scale(1.05);
 }
 
 .delete-button:focus {
@@ -424,15 +441,9 @@
   box-shadow: 0 0 5px rgba(231, 76, 60, 0.6);
 }
 
-
 /* General Styles for Liked Venues */
 .liked-section {
   background-color: #f8bbd0; /* Light pink background */
-  box-shadow: 0 15px 30px rgba(173, 216, 230, 0.4); /* Light blue shadow */
-  border-radius: 15px;
-  padding: 1.5rem;
-  margin-top: 1.5rem;
-  transition: box-shadow 0.3s ease, transform 0.3s ease; /* Add transition for hover effect */
 }
 
 .liked-section:hover {
@@ -440,75 +451,30 @@
   transform: translateY(-5px); /* Lift effect on hover */
 }
 
-.liked-title {
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  color: black ; /* Dark blue color for the title */
-  text-align: center; /* Center align the title */
+.view-button {
+    display: inline-block;
+    padding: 0.75rem 1.25rem;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    border: 3px solid #000;
+    background-color: #fff;
+    color: #000;
+    position: relative;
+    transition: all 0.2s ease;
+    box-shadow: 5px 5px 0 #000;
+    cursor: pointer;
 }
 
-
-.liked-table-container {
-  background: #fff;
-}
-
-.liked-venues-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.liked-table-header {
-  background-color: #f8d7da; /* Light red background */
-  color: #721c24; /* Dark red text */
-  font-size: 0.875rem;
-  padding: 12px 16px;
-  font-weight: bold;
-  text-align: left;
-  text-transform: uppercase;
-}
-
-.liked-table-header th {
-  padding: 0.75rem;
-  text-align: left;
-}
-
-.liked-table-cell {
-  padding: 0.75rem;
-  font-size: 0.875rem;
-}
-
-.liked-table-body tr {
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.liked-no-venues {
-  padding: 1rem;
-  text-align: center;
-  color: #6c757d; /* Gray text for no venues message */
-  font-size: 0.875rem;
-}
-
-.liked-view-button {
-  color: #007bff; /* Blue color for the view link */
-  text-decoration: none;
-  font-weight: 600;
-  transition: color 0.3s ease;
-}
-
-.liked-view-button:hover {
-  color: #0056b3; /* Darker blue on hover */
+.view-button:hover {
+  background-color: #36aef4;
 }
 
 
 /* General Styles for Wishlisted Venues */
 .wishlisted-section {
   background-color: #e0f7fa; /* Light blue background */
-  box-shadow: 0 15px 30px rgba(173, 216, 230, 0.4); /* Light blue shadow */
-  border-radius: 15px;
-  padding: 1.5rem;
-  margin-top: 1.5rem;
-  transition: box-shadow 0.3s ease, transform 0.3s ease; /* Add transition for hover effect */
 }
 
 .wishlisted-section:hover {
@@ -516,72 +482,11 @@
   transform: translateY(-5px); /* Lift effect on hover */
 }
 
-.wishlisted-title {
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  text-align: center;
-}
 
-.wishlisted-table-container {
-  background: white;
-}
-
-.wishlisted-venues-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.wishlisted-table-header {
-  background-color: #b3d9ff; /* Light blue background */
-  color: #1c3c58; /* Dark blue text */
-  font-size: 0.875rem;
-  padding: 12px 16px;
-  font-weight: bold;
-  text-align: left;
-  text-transform: uppercase;
-}
-
-.wishlisted-table-header th {
-  padding: 0.75rem;
-  text-align: left;
-}
-
-.wishlisted-table-cell {
-  padding: 0.75rem;
-  font-size: 0.875rem;
-}
-
-.wishlisted-table-body tr {
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.wishlisted-no-venues {
-  padding: 1rem;
-  text-align: center;
-  color: #6c757d; /* Gray text for no venues message */
-  font-size: 0.875rem;
-}
-
-.wishlisted-view-button {
-  color: #007bff; /* Blue color for the view link */
-  text-decoration: none;
-  font-weight: 600;
-  transition: color 0.3s ease;
-}
-
-.wishlisted-view-button:hover {
-  color: #0056b3; /* Darker blue on hover */
-}
 
 /* General Styles for Recently Viewed Venues */
 .recents-section {
   background-color: #f3e8ff; /* Light purple background */
-  box-shadow: 0 15px 30px rgba(179, 136, 255, 0.4); /* Purple-toned shadow */
-  border-radius: 15px;
-  padding: 1.5rem;
-  margin-top: 1.5rem;
-  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .recents-section:hover {
@@ -589,64 +494,6 @@
   transform: translateY(-5px); /* Lift effect */
 }
 
-.recents-title {
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  text-align: center;
-}
-
-
-.recents-table-container {
-  background: white;
-}
-
-.recents-venues-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.recents-table-header {
-  background-color: #e1bee7; /* Light purple background */
-  color: #4a148c; /* Dark purple text */
-  font-size: 0.875rem;
-  padding: 12px 16px;
-  font-weight: bold;
-  text-align: left;
-  text-transform: uppercase;
-}
-
-.recents-table-header th {
-  padding: 0.75rem;
-  text-align: left;
-}
-
-.recents-table-cell {
-  padding: 0.75rem;
-  font-size: 0.875rem;
-}
-
-.recents-table-body tr {
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.recents-no-venues {
-  padding: 1rem;
-  text-align: center;
-  color: #6c757d; /* Gray text for no venues message */
-  font-size: 0.875rem;
-}
-
-.recents-view-button {
-  color: #007bff; /* Blue color for the view link */
-  text-decoration: none;
-  font-weight: 600;
-  transition: color 0.3s ease;
-}
-
-.recents-view-button:hover {
-  color: #0056b3; /* Darker blue on hover */
-}
 
 
   </style>
@@ -742,8 +589,8 @@
 </form>
 
 <!-- Reservation History -->
-<section class="reservation-history">
-  <h2 class="reservation-title">Recent Reservations</h2>
+<section class="sub-container reservation-history">
+  <h2 class="title">Recent Reservations</h2>
   <div class="table-container">
     <table class="reservation-table">
       <thead>
@@ -761,7 +608,7 @@
         <!-- Loop through reservations -->
         <?php if ($resQuery->num_rows === 0): ?>
           <tr>
-            <td colspan="7" class="table-cell no-reservations">No reservations found.</td>
+            <td colspan="7" class="no-content">No reservations found.</td>
           </tr>
         <?php else: ?>
           <?php while ($row = $resQuery->fetch_assoc()): ?>
@@ -818,16 +665,16 @@
 
 
   <!-- Liked -->
-<section class="liked-section bg-white shadow rounded-xl p-6 mt-6">
-  <h2 class="liked-title">Liked Venues</h2>
-  <div class="liked-table-container">
-    <table class="liked-venues-table">
-      <thead class="liked-table-header">
+<section class="sub-container liked-section ">
+  <h2 class="title">Liked Venues</h2>
+  <div class="table-container">
+    <table class="table">
+      <thead class="table-header liked">
         <tr>
-          <th class="liked-table-cell">Venue</th>
-          <th class="liked-table-cell">Location</th>
-          <th class="liked-table-cell">Price Range</th>
-          <th class="liked-table-cell">Actions</th>
+          <th class="table-cell">Venue</th>
+          <th class="table-cell">Location</th>
+          <th class="table-cell">Price Range</th>
+          <th class="table-cell">Actions</th>
         </tr>
       </thead>
       <tbody class="liked-table-body">
@@ -838,11 +685,11 @@
         <?php else: ?>
           <?php while ($row = $likedVenues->fetch_assoc()): ?>
             <tr>
-              <td class="liked-table-cell"><?= htmlspecialchars($row['venueName']) ?></td>
-              <td class="liked-table-cell"><?= htmlspecialchars($row['cityAddress']) ?></td>
-              <td class="liked-table-cell"><?= htmlspecialchars($row['priceRangeText']) ?></td>
-              <td class="liked-table-cell">
-                <a href="listing.php?id=<?= $row['venueID'] ?>" class="liked-view-button">View</a>
+              <td class="table-cell"><?= htmlspecialchars($row['venueName']) ?></td>
+              <td class="table-cell"><?= htmlspecialchars($row['cityAddress']) ?></td>
+              <td class="table-cell"><?= htmlspecialchars($row['priceRangeText']) ?></td>
+              <td class="table-cell">
+                <a href="listing.php?id=<?= $row['venueID'] ?>" class="view-button">View</a>
               </td>
             </tr>
           <?php endwhile; ?>
@@ -854,31 +701,31 @@
 
 
 <!-- Wishlisted -->
-<section class="wishlisted-section bg-white shadow rounded-xl p-6 mt-6">
-  <h2 class="wishlisted-title">Wishlisted Venues</h2>
-  <div class="wishlisted-table-container">
-    <table class="wishlisted-venues-table">
-      <thead class="wishlisted-table-header">
+<section class="sub-container wishlisted-section">
+  <h2 class="title">Wishlisted Venues</h2>
+  <div class="table-container">
+    <table class="table">
+      <thead class="table-header">
         <tr>
-          <th class="wishlisted-table-cell">Venue</th>
-          <th class="wishlisted-table-cell">Location</th>
-          <th class="wishlisted-table-cell">Price Range</th>
-          <th class="wishlisted-table-cell">Actions</th>
+          <th class="table-cell">Venue</th>
+          <th class="table-cell">Location</th>
+          <th class="table-cell">Price Range</th>
+          <th class="table-cell">Actions</th>
         </tr>
       </thead>
       <tbody class="wishlisted-table-body">
         <?php if ($wishlistedVenues->num_rows === 0): ?>
           <tr>
-            <td colspan="4" class="wishlisted-no-venues">No venues in wishlist.</td>
+            <td colspan="4" class="no-content">No venues in wishlist.</td>
           </tr>
         <?php else: ?>
           <?php while ($row = $wishlistedVenues->fetch_assoc()): ?>
             <tr>
-              <td class="wishlisted-table-cell"><?= htmlspecialchars($row['venueName']) ?></td>
-              <td class="wishlisted-table-cell"><?= htmlspecialchars($row['cityAddress']) ?></td>
-              <td class="wishlisted-table-cell"><?= htmlspecialchars($row['priceRangeText']) ?></td>
-              <td class="wishlisted-table-cell">
-                <a href="listing.php?id=<?= $row['venueID'] ?>" class="wishlisted-view-button">View</a>
+              <td class="table-cell"><?= htmlspecialchars($row['venueName']) ?></td>
+              <td class="table-cell"><?= htmlspecialchars($row['cityAddress']) ?></td>
+              <td class="table-cell"><?= htmlspecialchars($row['priceRangeText']) ?></td>
+              <td class="table-cell">
+                <a href="listing.php?id=<?= $row['venueID'] ?>" class="view-button">View</a>
               </td>
             </tr>
           <?php endwhile; ?>
@@ -889,31 +736,31 @@
 </section>
 
 <!-- Recents -->
-<section class="recents-section bg-white shadow rounded-xl p-6 mt-6">
-  <h2 class="recents-title">Recently Viewed Venues</h2>
-  <div class="recents-table-container">
-    <table class="recents-venues-table">
-      <thead class="recents-table-header">
+<section class="sub-container recents-section">
+  <h2 class="title">Recently Viewed Venues</h2>
+  <div class="table-container">
+    <table class="table">
+      <thead class="table-header recents">
         <tr>
-          <th class="recents-table-cell">Venue</th>
-          <th class="recents-table-cell">Location</th>
-          <th class="recents-table-cell">Price Range</th>
-          <th class="recents-table-cell">Viewed At</th>
-          <th class="recents-table-cell">Actions</th>
+          <th class="table-cell">Venue</th>
+          <th class="table-cell">Location</th>
+          <th class="table-cell">Price Range</th>
+          <th class="table-cell">Viewed At</th>
+          <th class="table-cell">Actions</th>
         </tr>
       </thead>
       <tbody class="recents-table-body">
         <?php if ($recentlyViewed->num_rows === 0): ?>
-          <tr><td colspan="5" class="recents-no-venues">No venues viewed yet.</td></tr>
+          <tr><td colspan="5" class="no-content">No venues viewed yet.</td></tr>
         <?php else: ?>
           <?php while ($row = $recentlyViewed->fetch_assoc()): ?>
             <tr>
-              <td class="recents-table-cell"><?= htmlspecialchars($row['venueName']) ?></td>
-              <td class="recents-table-cell"><?= htmlspecialchars($row['cityAddress']) ?></td>
-              <td class="recents-table-cell"><?= htmlspecialchars($row['priceRangeText']) ?></td>
-              <td class="recents-table-cell"><?= date('M j, Y H:i', strtotime($row['lastViewed'])) ?></td>
-              <td class="recents-table-cell">
-                <a href="listing.php?id=<?= $row['venueID'] ?>" class="recents-view-button">View Again</a>
+              <td class="table-cell"><?= htmlspecialchars($row['venueName']) ?></td>
+              <td class="table-cell"><?= htmlspecialchars($row['cityAddress']) ?></td>
+              <td class="table-cell"><?= htmlspecialchars($row['priceRangeText']) ?></td>
+              <td class="table-cell"><?= date('M j, Y H:i', strtotime($row['lastViewed'])) ?></td>
+              <td class="table-cell">
+                <a href="listing.php?id=<?= $row['venueID'] ?>" class="view-button">View Again</a>
               </td>
             </tr>
           <?php endwhile; ?>

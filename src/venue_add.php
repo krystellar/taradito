@@ -136,36 +136,142 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Add Venue | TARADITO</title>
-    <link href="output.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Venue</title>
+    <style>
+   /* Brutalist form styling */
+body {
+    font-family: "Arial", sans-serif;
+    background-color: #fff;
+    color: #000;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 80%;
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 2rem;
+    background-color: #fff;
+    border: 4px solid #000;
+    box-shadow: 10px 10px 0 #000;
+}
+
+h1 {
+    font-weight: 900;
+    font-size: 2rem;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #000;
+    padding-bottom: 1rem;
+}
+
+label {
+    font-weight: 700;
+    font-size: 1rem;
+    margin-top: 1rem;
+    display: block;
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 0.75rem;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    border: 3px solid #000;
+    background-color: #fff;
+    color: #000;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+input[type="checkbox"], input[type="radio"] {
+    width: auto;
+    margin-right: 1rem;
+}
+
+input, select, textarea:focus {
+    outline: none;
+    border-color: #000;
+    box-shadow: 3px 3px 0 #000;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+}
+
+.checkbox-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.checkbox-group label {
+    display: inline-block;
+    margin-right: 2rem;
+    margin-top: 0.5rem;
+    font-weight: normal;
+    font-size: 1rem;
+}
+
+button {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    background-color: #fff;
+    color: #000;
+    border: 3px solid #000;
+    box-shadow: 5px 5px 0 #000;
+    margin-top: 2rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+button:hover {
+    background-color: #000;
+    color: #fff;
+    transform: translate(-2px, -2px);
+    box-shadow: 7px 7px 0 #000;
+}
+
+button:active {
+    transform: translate(5px, 5px);
+    box-shadow: none;
+}
+
+    </style>
 </head>
 <body>
+    <div class="container">
+        <h1>Add New Venue</h1>
+        <form action="venue_add.php" method="POST">
+            <!-- Venue Info -->
+            <label for="venueName">Venue Name:</label>
+            <input type="text" name="venueName" id="venueName" required>
 
-<div class="container">
-    <h1>Add New Venue</h1>
-    <form action="venue_add.php" method="POST">
-        <!-- Venue Info -->
-        <label for="venueName">Venue Name:</label>
-        <input type="text" name="venueName" id="venueName" required>
+            <label for="barangayAddress">Barangay Address:</label>
+            <input type="text" name="barangayAddress" id="barangayAddress" required>
 
-        <label for="barangayAddress">Barangay Address:</label>
-        <input type="text" name="barangayAddress" id="barangayAddress" required>
+            <label for="cityAddress">City Address:</label>
+            <input type="text" name="cityAddress" id="cityAddress" required>
 
-        <label for="cityAddress">City Address:</label>
-        <input type="text" name="cityAddress" id="cityAddress" required>
+            <label for="venueDesc">Venue Description:</label>
+            <textarea name="venueDesc" id="venueDesc" rows="4"></textarea>
 
-        <label for="venueDesc">Venue Description:</label>
-        <textarea name="venueDesc" id="venueDesc" rows="4"></textarea>
+            <label for="landmarks">Landmarks:</label>
+            <input type="text" name="landmarks" id="landmarks">
 
-        <label for="landmarks">Landmarks:</label>
-        <input type="text" name="landmarks" id="landmarks">
+            <label for="routes">Routes:</label>
+            <input type="text" name="routes" id="routes">
 
-        <label for="routes">Routes:</label>
-        <input type="text" name="routes" id="routes">
-        
-        <label for="priceRange" class="form-label">Price Range:</label>
+            <label for="priceRange" class="form-label">Price Range:</label>
             <select name="priceRange" id="priceRange" class="form-select" required>
                 <option value="">Select Price Range</option>
                 <?php foreach ($priceRanges as $range): ?>
@@ -175,52 +281,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php endforeach; ?>
             </select>
 
-        <!-- Categories (Checkboxes) -->
-        <label><input type="checkbox" name="intimate" id="intimate"> Intimate</label>
-        <label><input type="checkbox" name="business" id="business"> Business</label>
-        <label><input type="checkbox" name="casual" id="casual"> Casual</label>
-        <label><input type="checkbox" name="fun" id="fun"> Fun</label>
+            <!-- Categories (Checkboxes) -->
+            <div class="checkbox-group">
+                <p class="checkbox-title">Select your Event Categories:</p>
+                <label><input type="checkbox" name="intimate" id="intimate"> Intimate</label>
+                <label><input type="checkbox" name="business" id="business"> Business</label>
+                <label><input type="checkbox" name="casual" id="casual"> Casual</label>
+                <label><input type="checkbox" name="fun" id="fun"> Fun</label>
+            </div>
 
-        <!-- Amenities (Checkboxes) -->
-        <label><input type="checkbox" name="eventPlanner"> Event Planner</label>
-        <label><input type="checkbox" name="equipRentals"> Equipment Rentals</label>
-        <label><input type="checkbox" name="decoServices"> Decoration Services</label>
-        <label><input type="checkbox" name="onsiteStaff"> On-site Staff</label>
-        <label><input type="checkbox" name="techSupport"> Tech Support</label>
-        <label><input type="checkbox" name="pwdFriendly"> PWD Friendly</label>
-        <label><input type="checkbox" name="parking"> Parking</label>
-        <label><input type="checkbox" name="cateringServices"> Catering Services</label>
-        <label><input type="checkbox" name="securityStaff"> Security Staff</label>
-        <label><input type="checkbox" name="wifiAccess"> Wi-Fi Access</label>
+            <!-- Amenities (Checkboxes) -->
+            <div class="checkbox-group">
+                <p class="checkbox-title">Select Available Amenities:</p>
+                <label><input type="checkbox" name="eventPlanner"> Event Planner</label>
+                <label><input type="checkbox" name="equipRentals"> Equipment Rentals</label>
+                <label><input type="checkbox" name="decoServices"> Decoration Services</label>
+                <label><input type="checkbox" name="onsiteStaff"> On-site Staff</label>
+                <label><input type="checkbox" name="techSupport"> Tech Support</label>
+                <label><input type="checkbox" name="pwdFriendly"> PWD Friendly</label>
+                <label><input type="checkbox" name="parking"> Parking</label>
+                <label><input type="checkbox" name="cateringServices"> Catering Services</label>
+                <label><input type="checkbox" name="securityStaff"> Security Staff</label>
+                <label><input type="checkbox" name="wifiAccess"> Wi-Fi Access</label>
+            </div>
 
-        <!-- Payment Options (Checkboxes) -->
-        <label><input type="checkbox" name="payCash"> Cash</label>
-        <label><input type="checkbox" name="payElectronic"> Electronic Payment</label>
-        <label><input type="checkbox" name="payBank"> Bank Transfer</label>
+            <!-- Payment Options (Checkboxes) -->
+            <div class="checkbox-group">
+                <p class="checkbox-title">Select Available Payment Options:</p>
+                <label><input type="checkbox" name="payCash"> Cash</label>
+                <label><input type="checkbox" name="payElectronic"> Electronic Payment</label>
+                <label><input type="checkbox" name="payBank"> Bank Transfer</label>
+            </div>
 
-        <!-- Image URLs -->
-        <label for="imgs">Main Image URL:</label>
-        <input type="url" name="imgs" id="imgs">
 
-        <label for="img2">Second Image URL:</label>
-        <input type="url" name="img2" id="img2">
+            <!-- Image URLs -->
+            <label for="imgs">Main Image URL:</label>
+            <input type="url" name="imgs" id="imgs">
 
-        <label for="img3">Third Image URL:</label>
-        <input type="url" name="img3" id="img3">
+            <label for="img2">Second Image URL:</label>
+            <input type="url" name="img2" id="img2">
 
-        <label for="img4">Fourth Image URL:</label>
-        <input type="url" name="img4" id="img4">
+            <label for="img3">Third Image URL:</label>
+            <input type="url" name="img3" id="img3">
 
-        <label for="img5">Fifth Image URL:</label>
-        <input type="url" name="img5" id="img5">
+            <label for="img4">Fourth Image URL:</label>
+            <input type="url" name="img4" id="img4">
 
-        <!-- Submit Button -->
-        <button type="submit">Add Venue</button>
-    </form>
-</div>
+            <label for="img5">Fifth Image URL:</label>
+            <input type="url" name="img5" id="img5">
 
+            <!-- Submit Button -->
+            <button type="submit">Add Venue</button>
+        </form>
+    </div>
 </body>
 </html>
+
 <script>
 document.querySelector("form").addEventListener("submit", function (e) {
     const checkboxes = ["intimate", "casual", "fun", "business"];
