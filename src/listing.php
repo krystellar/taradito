@@ -2,6 +2,8 @@
   session_start();
   include('db_connection.php');
 
+  define('PROJECT_ROOT', rtrim(dirname($_SERVER['SCRIPT_NAME'], 2), '/'));
+
   $resFlash = $_SESSION['reservation_success'] ?? false;
   unset($_SESSION['reservation_success']);
 
@@ -692,20 +694,19 @@
 
 <!-- Navbar -->
 <header id="navbar" class="w-full sticky top-0 z-50 transition-colors duration-300 bg-[#dbeafe] shadow-sm" >
-  <nav class="max-w-[1320px] mx-auto flex items-center justify-between py-6 px-4 md:px-12">
-    <!-- Logo on the left, using absolute positioning -->
-    <a href="#" class="flex items-center gap-2 absolute left-10 pl-4">
-      <img src="Images/Logo/LogoNav.png" alt="TaraDito Logo" class="h-[60px] w-auto" /> <!-- Increase logo size if needed -->
-    </a>
-    <ul class="flex gap-6 md:gap-8 flex-grow justify-center">
-      <li><a href="#" class="text-lg font-medium text-gray-800 hover:text-white hover:bg-[#a0c4ff] py-2 px-4 rounded-full transition-all duration-300">Home</a></li>
-      <li><a href="product.php" class="text-lg font-medium text-gray-800 hover:text-white hover:bg-[#a0c4ff] py-2 px-4 rounded-full transition-all duration-300">Venues</a></li>
-      <li><a href="#" class="text-lg font-medium text-gray-800 hover:text-white hover:bg-[#a0c4ff] py-2 px-4 rounded-full transition-all duration-300">Explore</a></li>
-      <li><a href="Dashboard.php" class="text-lg font-medium text-gray-800 hover:text-white hover:bg-[#a0c4ff] py-2 px-4 rounded-full transition-all duration-300">Dashboard</a></li>
-    </ul>
-  </nav>
- 
-</header>
+    <nav class="max-w-[1320px] mx-auto flex items-center justify-between py-6 px-4 md:px-12">
+      <!-- Logo on the left, using absolute positioning -->
+      <a href="#" class="flex items-center gap-2 absolute left-10 pl-4">
+        <img src="Images/Logo/LogoNav.png" alt="TaraDito Logo" class="h-[60px] w-auto" /> <!-- Increase logo size if needed -->
+      </a> <!-- problem -->
+      <ul class="flex gap-6 md:gap-8 flex-grow justify-center">
+        <li><a href="#" class="text-lg font-medium text-gray-800 hover:text-white hover:bg-[#a0c4ff] py-2 px-4 rounded-full transition-all duration-300">Home</a></li>
+        <li><a href="<?= PROJECT_ROOT ?>/src/product.php" class="text-lg font-medium text-gray-800 hover:text-white hover:bg-[#a0c4ff] py-2 px-4 rounded-full transition-all duration-300">Venues</a></li>
+        <li><a href="#" class="text-lg font-medium text-gray-800 hover:text-white hover:bg-[#a0c4ff] py-2 px-4 rounded-full transition-all duration-300">Explore</a></li>
+        <li><a href="<?= PROJECT_ROOT ?>/src/Dashboard.php" class="text-lg font-medium text-gray-800 hover:text-white hover:bg-[#a0c4ff] py-2 px-4 rounded-full transition-all duration-300">Dashboard</a></li>
+      </ul>
+    </nav>
+  </header>
 
 <div class="container">
   <h1 id="villa-title" class="title"><?= htmlspecialchars($venue['venueName']) ?></h1>
