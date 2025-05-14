@@ -35,6 +35,7 @@ if (!$venue) {
     exit;
 }
 
+
 ?>
 
 <!DOCTYPE html>
@@ -164,7 +165,7 @@ h2 {
     <div class="card">
         <h1 class="card-header">Edit Venue: <?= htmlspecialchars($venue['venueName']) ?></h1>
 
-        <form action="update_venue.php" method="POST">
+        <form action="update_venue.php" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="venueID" value="<?= htmlspecialchars($venue['venueID']) ?>">
 
             <!-- Venue Info -->
@@ -216,62 +217,69 @@ h2 {
                 </select>
 
 
-            <!-- Image URLs -->
+            <!-- Image Upload Section -->
             <div class="section">
-                <h2 class="text-xl font-semibold text-[#333333]">Image URLs</h2>
-                <div class="grid-container">
-                    <?php
-                    $imageFields = ['imgs' => 'Main', 'img2' => 'Second', 'img3' => 'Third', 'img4' => 'Fourth', 'img5' => 'Fifth'];
-                    foreach ($imageFields as $name => $label) {
-                        echo "
-                        <div>
-                            <label for='$name' class='form-label'>$label Image URL</label>
-                            <input type='url' name='$name' id='$name' value='" . htmlspecialchars($venue[$name]) . "' class='form-input'>
-                        </div>";
-                    }
-                    ?>
-                </div>
+                <h2 class="text-xl font-semibold text-[#333333]">Images</h2>
+                <!-- Images -->
+                <label>Image 1:</label><br>
+                <?php if (!empty($venue['imgs'])): ?>
+                    <img src="<?= $venue['imgs'] ?>" width="100"><br>
+                <?php endif; ?>
+                <input type="file" name="img1"><br>
+
+                <label>Image 2:</label><br>
+                <?php if (!empty($venue['img2'])): ?>
+                    <img src="<?= $venue['img2'] ?>" width="100"><br>
+                <?php endif; ?>
+                <input type="file" name="img2"><br>
+
+                <label>Image 3:</label><br>
+                <?php if (!empty($venue['img3'])): ?>
+                    <img src="<?= $venue['img3'] ?>" width="100"><br>
+                <?php endif; ?>
+                <input type="file" name="img3"><br>
             </div>
+
+
             
             <!-- Category -->
-<div class="section bg-white p-6 rounded-2xl shadow-md mt-6">
-    <h2 class="text-2xl font-semibold text-[#333333] mb-4">Category</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <?php 
-        $categories = [
-            'intimate' => ['label' => 'Intimate', 'color' => '#F28B82'],
-            'business' => ['label' => 'Business', 'color' => '#7BAAF7'],
-            'casual'   => ['label' => 'Casual', 'color' => '#5CAC64'],
-            'fun'      => ['label' => 'Fun', 'color' => '#FFE066']
-        ];
-        foreach ($categories as $col => $data):
-            $isChecked = !empty($venue[$col]) ? 'checked' : '';
-            $primaryColor = $data['color'];
-        ?>
-        <div class="category-container p-4 rounded-lg border-2 transition duration-300 hover:scale-105 relative"
-            style="border-color: <?= $primaryColor ?>; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-            <label class="flex items-center space-x-3 text-[#333] group relative overflow-hidden transition duration-300">
-                <input 
-                    type="checkbox" 
-                    name="<?= $col ?>" 
-                    value="1" 
-                    <?= $isChecked ?> 
-                    class="h-5 w-5 text-blue-600 rounded focus:ring-blue-500 border-2 border-transparent transition-all duration-300 group-hover:border-<?= $col ?>-500 group-hover:ring-2 group-hover:ring-<?= $col ?>-500"
-                />
-                <span class="text-base font-medium" style="color: <?= $primaryColor ?>"><?= htmlspecialchars($data['label']) ?></span>
-            </label>
-            <!-- Hover background, set to z-index -1 to keep it behind the checkbox -->
-            <span class="absolute inset-0 opacity-0 group-hover:opacity-30 transition-all duration-300" 
-                  style="background-color: <?= $primaryColor ?>; z-index: -1;"></span>
-        </div>
-        <?php endforeach; ?>
-    </div>
-</div>
+            <div class="section bg-white p-6 rounded-2xl shadow-md mt-6">
+                <h2 class="text-2xl font-semibold text-[#333333] mb-4">Category</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <?php 
+                    $categories = [
+                        'intimate' => ['label' => 'Intimate', 'color' => '#F28B82'],
+                        'business' => ['label' => 'Business', 'color' => '#7BAAF7'],
+                        'casual'   => ['label' => 'Casual', 'color' => '#5CAC64'],
+                        'fun'      => ['label' => 'Fun', 'color' => '#FFE066']
+                    ];
+                    foreach ($categories as $col => $data):
+                        $isChecked = !empty($venue[$col]) ? 'checked' : '';
+                        $primaryColor = $data['color'];
+                        $checkboxId = "cat_$col";
+                    ?>
+                    <div class="category-container p-4 rounded-lg border-2 transition duration-300 hover:scale-105 relative"
+                        style="border-color: <?= $primaryColor ?>; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                        <label for="<?= $checkboxId ?>" class="flex items-center space-x-3 text-[#333] group relative overflow-hidden transition duration-300">
+                            <input 
+                                id="<?= $checkboxId ?>"
+                                type="checkbox" 
+                                name="<?= $col ?>" 
+                                value="1" 
+                                <?= $isChecked ?> 
+                                class="h-5 w-5 text-blue-600 rounded focus:ring-blue-500 border-2 border-transparent transition-all duration-300 group-hover:border-<?= $col ?>-500 group-hover:ring-2 group-hover:ring-<?= $col ?>-500"
+                            />
+                            <span class="text-base font-medium" style="color: <?= $primaryColor ?>"><?= htmlspecialchars($data['label']) ?></span>
+                        </label>
+                        <!-- Hover background, set to z-index -1 to keep it behind the checkbox -->
+                        <span class="absolute inset-0 opacity-0 group-hover:opacity-30 transition-all duration-300" 
+                            style="background-color: <?= $primaryColor ?>; z-index: -1;"></span>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
 
-
-
-
-          <!-- Amenities -->
+            <!-- Amenities -->
             <div class="section bg-white p-6 rounded-2xl shadow-md">
                 <h2 class="text-2xl font-semibold text-[#333333] mb-4">Amenities</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -289,10 +297,11 @@ h2 {
                         'wifiAccess' => 'Wi-Fi Access'
                     ];
                     foreach ($amenities as $key => $label) {
-                        $checked = $venue[$key] ? 'checked' : '';
+                        $checkboxId = "amenity_$key";
+                        $checked = !empty($venue[$key]) ? 'checked' : '';
                         echo "
-                        <label class='flex items-center space-x-3 text-[#333]'>
-                            <input type='checkbox' name='$key' $checked class='h-5 w-5 text-blue-600 rounded focus:ring-blue-500 border-gray-300'>
+                        <label for='$checkboxId' class='flex items-center space-x-3 text-[#333]'>
+                            <input id='$checkboxId' type='checkbox' name='$key' $checked class='h-5 w-5 text-blue-600 rounded focus:ring-blue-500 border-gray-300'>
                             <span class='text-sm'>$label</span>
                         </label>";
                     }

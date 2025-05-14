@@ -494,7 +494,9 @@
   transform: translateY(-5px); /* Lift effect */
 }
 
-
+#reserve {
+  margin-top: 5px;
+}
 
   </style>
 
@@ -634,28 +636,30 @@
           </tr>
 
           <!-- Hidden update form -->
-          <tr id="form-row-<?= $row['reservationID'] ?>" class="hidden-form">
-            <td colspan="7" class="form-container">
-              <form action="update_reservation.php" method="POST">
-                <input type="hidden" name="reservationID" value="<?= $row['reservationID'] ?>">
-                <input type="hidden" name="userID" value="<?= $_SESSION['userID'] ?>">
+           <tr id="form-row-<?= $row['reservationID'] ?>" class="hidden">
+                <td colspan="7" class="px-4 py-4">
+                  <form action="update_reservation.php" method="POST">
+                    <input type="hidden" name="reservationID" value="<?= $row['reservationID'] ?>">
+                    <input type="hidden" name="userID" value="<?= $_SESSION['userID'] ?>">
 
-                <label for="startDate">Start Date:</label>
-                <input name="startDate" type="date" value="<?= $row['startDate'] ?>" required class="input-field">
+                    <label for="startDate">Start Date:</label>
+                    <input name="startDate" type="date" value="<?= $row['startDate'] ?>" required class="border p-2 rounded" placeholder="Start Date">
 
-                <label for="startTime">Start Time:</label>
-                <input name="startTime" type="time" value="<?= $row['startTime'] ?>" required class="input-field">
+                    <label for="startTime">Start Time:</label>
+                    <input name="startTime" type="time" value="<?= $row['startTime'] ?>" required class="border p-2 rounded" placeholder="Start Time">
 
-                <label for="endDate">End Date:</label>
-                <input name="endDate" type="date" value="<?= $row['endDate'] ?>" required class="input-field">
+                    <label for="endDate">End Date:</label>
+                    <input name="endDate" type="date" value="<?= $row['endDate'] ?>" required class="border p-2 rounded" placeholder="End Date">
 
-                <label for="endTime">End Time:</label>
-                <input name="endTime" type="time" value="<?= $row['endTime'] ?>" required class="input-field">
+                    <label for="endTime">End Time:</label>
+                    <input name="endTime" type="time" value="<?= $row['endTime'] ?>" required class="border p-2 rounded" placeholder="End Time">
 
-                <button type="submit" class="update-button">Update Reservation</button>
-              </form>
-            </td>
-          </tr>
+                    <button id="reserve" type="submit" class="bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded w-full">
+                      Update Reservation
+                    </button>
+                  </form>
+                </td>
+              </tr>
           <?php endwhile; ?>
         <?php endif; ?>
       </tbody>

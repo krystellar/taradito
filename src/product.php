@@ -432,28 +432,28 @@
 <main class="listings-grid">
   <?php if ($result && $result->num_rows > 0): ?>
     <?php while ($row = $result->fetch_assoc()): ?>
-      <?php $imageURL = !empty($row['imgs']) ? $row['imgs'] : ""; ?>
+      <?php $imageURL = !empty($row['imgs']) ? 'src/uploads/' . htmlspecialchars($row['imgs']) : 'src/uploads/default.jpg'; ?>
 
-      <article class="listing-card">
+      <article class="listing-card" onclick="location.href='listing.php?id=<?= $row['venueID'] ?>';" style="cursor: pointer;">
         <!-- Date and Category -->
         <div class="listing-meta">
-          <time class="listing-date" datetime="<?= date('Y-m-d') ?>">
-            <?= date('M j, Y') ?>
-          </time>
-          <a class="listing-category" href="#">
-            Venue
-          </a>
+          <?php
+            $categories = ['intimate', 'business', 'fun', 'casual'];
+            foreach ($categories as $cat) {
+              if (!empty($row[$cat])) {
+                echo '<span class="listing-category">' . ucfirst($cat) . '</span>';
+              }
+            }
+          ?>
         </div>
 
         <!-- Image -->
-        <img src="<?= $imageURL ?>" alt="Stay" class="listing-image" />
+        <img class="listing-image" src="<?php echo $row['imgs']; ?>" alt="Venue Image">
 
         <!-- Content -->
         <div class="listing-body">
           <h3 class="listing-title">
-            <a href="listing.php?id=<?= $row['venueID'] ?>">
               <?= htmlspecialchars($row['venueName']) ?>
-            </a>
           </h3>
           <p class="listing-address"><?= htmlspecialchars($row['cityAddress']) ?></p>
           <p class="listing-availability"><?= $row['availabilityDays'] ?: "Available Daily" ?></p>

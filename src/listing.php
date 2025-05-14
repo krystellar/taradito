@@ -20,7 +20,7 @@
 
   $venueID = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
-  $sql = "SELECT v.*, p.priceRangeText, m.firstName, m.lastName
+  $sql = "SELECT v.*, p.priceRangeText, m.*
           FROM venueData v
           LEFT JOIN priceRange p ON v.priceRangeID = p.priceRangeID
           LEFT JOIN managerVenue mv ON v.venueID = mv.venueID
@@ -696,9 +696,7 @@
 <header id="navbar" class="w-full sticky top-0 z-50 transition-colors duration-300 bg-[#dbeafe] shadow-sm" >
     <nav class="max-w-[1320px] mx-auto flex items-center justify-between py-6 px-4 md:px-12">
       <!-- Logo on the left, using absolute positioning -->
-      <a href="#" class="flex items-center gap-2 absolute left-10 pl-4">
-        <img src="Images/Logo/LogoNav.png" alt="TaraDito Logo" class="h-[60px] w-auto" /> <!-- Increase logo size if needed -->
-      </a> <!-- problem -->
+        <img src="Images/Logo/LogoNav.png" alt="TaraDito Logo" class="flex-start gap-2 absolute left-10 pl-4 h-[60px] w-auto" /> <!-- Increase logo size if needed -->
       <ul class="flex gap-6 md:gap-8 flex-grow justify-center">
         <li><a href="#" class="text-lg font-medium text-gray-800 hover:text-white hover:bg-[#a0c4ff] py-2 px-4 rounded-full transition-all duration-300">Home</a></li>
         <li><a href="<?= PROJECT_ROOT ?>/src/product.php" class="text-lg font-medium text-gray-800 hover:text-white hover:bg-[#a0c4ff] py-2 px-4 rounded-full transition-all duration-300">Venues</a></li>
@@ -717,8 +715,6 @@
     <div class="sub-images">
       <?php if (!empty($venue['img2'])): ?><img src="<?= htmlspecialchars($venue['img2']) ?>" class="sub-image" /><?php endif; ?>
       <?php if (!empty($venue['img3'])): ?><img src="<?= htmlspecialchars($venue['img3']) ?>" class="sub-image" /><?php endif; ?>
-      <?php if (!empty($venue['img4'])): ?><img src="<?= htmlspecialchars($venue['img4']) ?>" class="sub-image" /><?php endif; ?>
-      <?php if (!empty($venue['img5'])): ?><img src="<?= htmlspecialchars($venue['img5']) ?>" class="sub-image" /><?php endif; ?>
     </div>
   </div>
 
@@ -895,6 +891,13 @@
   </section>
 <?php endif; ?>
 </section>
+
+<!-- MANAGER -->
+ <?php if (!empty($venue['firstName']) && !empty($venue['lastName'])): ?>
+  <p class="text-sm">Managed by <strong><?= htmlspecialchars($venue['firstName'] . ' ' . $venue['lastName']) ?></strong></p>
+  <p class="text-sm"><?= htmlspecialchars($venue['managerEmail']) ?></p>
+  <p class="text-sm"><?= htmlspecialchars($venue['managerAbout']) ?></p>
+<?php endif; ?>
 
 
 <div class="flex">
