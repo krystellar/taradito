@@ -64,12 +64,286 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Design Stays</title>
   <link href="output.css" rel="stylesheet">
-  <link href="prouduct.css" rel="stylesheet">
-  <script defer src="second.js"></script>
+  <script defer src=""></script>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Roboto:wght@400;500&family=Nunito:wght@400;600&display=swap" rel="stylesheet">
 
 	<script defer src="second.js"></script>
   <style>
+    /* Search Bar Container */
+/* From Uiverse.io by boryanakrasteva - Inspired Search Bar Style */
+.input-container {
+  width: 1000px;
+  position: relative;
+  margin: 20px auto;
+  margin-bottom: 2rem;
+}
+
+.input-container form {
+  position: relative;
+}
+
+.input {
+  width: 100%;
+  height: 40px;
+  padding: 10px 40px 10px 10px; /* space for the icon on the right */
+  border: 2.5px solid black;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: 0.2s linear;
+}
+
+.input:focus {
+  outline: none;
+  border: 0.5px solid black;
+  box-shadow: -5px -5px 0px black;
+}
+
+.search-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  position: absolute;
+  right: 10px;
+  top: calc(50% + 5px);
+  transform: translateY(calc(-50% - 5px));
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.2s ease;
+}
+
+
+@keyframes anim {
+  0%, 100% {
+    transform: translateY(calc(-50% - 5px)) scale(1);
+  }
+  50% {
+    transform: translateY(calc(-50% - 5px)) scale(1.1);
+  }
+}
+
+
+/*Category links*/
+//* Category Container Layout */
+.category-nav {
+  background-color: white;
+  overflow: hidden;
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border: none;
+  box-shadow: none;
+  align-content: center;
+}
+
+.category-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Core Button Style (from Uiverse.io) */
+.button {
+  display: inline-block;
+  text-decoration: none;
+  background: #fbca1f;
+  font-family: inherit;
+  padding: 0.6em 1.3em;
+  font-weight: 900;
+  font-size: 18px;
+  border: 3px solid black;
+  border-radius: 0.4em;
+  box-shadow: 4px 4px 0 0 black;
+  cursor: pointer;
+  color: black;
+  text-transform: uppercase;
+  position: relative;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.button:hover {
+  transform: translateY(-4px); /* Move the button up vertically */
+  box-shadow: 6px 6px 0 0 black; /* Keep the box-shadow visible */
+}
+
+/* Active Button */
+.button.active {
+  border-style: solid;
+  border-width: 4px; /* Slightly thicker border to indicate active state */
+  border-color: #333; /* Darker border color */
+}
+
+
+.button__text {
+  position: relative;
+  z-index: 1;
+}
+
+
+/* Category Types */
+.type--A {
+  background-color: #F28B82;
+  color: black;
+}
+
+.type--B {
+  background-color: #7BAAF7;
+  color: black;
+}
+
+.type--C {
+  background-color: #FFE066;
+  color: black;
+}
+
+.type--D {
+  background-color: #90CAF9;
+  color: black;
+}
+
+
+/* Active Button - Darker Shades */
+.button.active.type--A {
+  background-color: #D97A6A; /* Darker shade of #F28B82 */
+}
+
+.button.active.type--B {
+  background-color: #5D8DE1; /* Darker shade of #7BAAF7 */
+}
+
+.button.active.type--C {
+  background-color: #D1B24A; /* Darker shade of #FFE066 */
+}
+
+.button.active.type--D {
+  background-color: #6A9CC4; /* Darker shade of #90CAF9 */
+}
+
+/*Lisitngs*/
+
+.listings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 24px;
+    max-width: 1200px;
+    margin: auto;
+    padding: 2rem;
+  }
+
+  .listing-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 4px solid black;
+    background: linear-gradient(to bottom, white, #f3f4f6, #e5e7eb);
+    padding: 1.5rem;
+    box-shadow: 8px 8px 0 0 #000;
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
+  }
+
+  .listing-card:hover {
+    transform: scale(1.05);
+    background: linear-gradient(to bottom, #e5e7eb, white);
+    box-shadow: 12px 12px 0 0 #000;
+  }
+
+  .listing-meta {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  .listing-date,
+  .listing-category {
+    border: 2px solid black;
+    padding: 0.25rem 0.75rem;
+    font-weight: bold;
+    color: white;
+    background-color: #ef4444;
+    transition: transform 0.5s ease, background-color 0.5s ease;
+  }
+
+  .listing-date:hover,
+  .listing-category:hover {
+    transform: scale(1.1);
+    background-color: #1d4ed8;
+    color: #fde047;
+  }
+
+  .listing-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    margin: 1rem 0;
+    border: 2px solid black;
+  }
+
+  .listing-body {
+    flex-grow: 1;
+  }
+
+  .listing-title {
+    font-size: 1.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    margin: 1rem 0 0.5rem;
+    transition: transform 0.5s ease, color 0.5s ease;
+  }
+
+  .listing-title a {
+    color: black;
+    text-decoration: none;
+  }
+
+  .listing-title:hover {
+    color: #1e40af;
+    transform: scale(1.05);
+  }
+
+  .listing-address,
+  .listing-availability {
+    font-size: 0.95rem;
+    color: #374151;
+  }
+
+  .listing-price {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #1e3a8a;
+    border-left: 4px solid #ef4444;
+    padding-left: 0.5rem;
+    margin-top: 0.75rem;
+    transition: border-color 0.5s ease, color 0.5s ease;
+  }
+
+  .listing-price:hover {
+    border-color: #1d4ed8;
+    color: #4b5563;
+  }
+
+  .listing-footer {
+    margin-top: 1rem;
+  }
+
+  .listing-rating {
+    font-size: 0.9rem;
+    color: #eab308;
+    font-weight: bold;
+  }
+
+  .no-venues {
+    grid-column: span 4;
+    text-align: center;
+    color: #6b7280;
+  }
 
 </style>
   
@@ -97,35 +371,27 @@
 
 
 <!-- Search Bar -->
-<div class="w-full bg-white py-4 shadow-sm">
-  <div class="flex justify-center">
-  <form method="GET" action="" class="form-container">
-
-
-  <input 
-        type="text" 
-        name="query" 
-        placeholder="Search for a venue..." 
-        value="<?= htmlspecialchars($searchTerm) ?>"
-        class="w-full px-3 py-1.5 text-sm text-gray-800 placeholder-gray-500 focus:outline-none" 
-        required>
-      
-      <button type="submit" 
-        class="rounded-full p-2 hover:bg-[#e03154] transition ml-2">
-        <img src="Images/location.png" alt="Search" class="w-5 h-5 object-contain" />
-      </button>
-
-    </form>
-  </div>
+<div class="input-container">
+  <form method="GET" action="">
+    <input 
+      type="text" 
+      name="query" 
+      placeholder="Search for a venue..." 
+      value="<?= htmlspecialchars($searchTerm) ?>" 
+      class="input" 
+      required
+    >
+    <button type="submit" class="search-btn">
+      <img src="Images/location.png" alt="Search" class="icon" />
+    </button>
+  </form>
 </div>
 
-<!-- Faint Line -->
-<hr class="border-t border-gray-200 mx-4 my-2">
 
 
 <!-- Category Navigation -->
-<nav class="category-nav bg-white overflow-hidden mb-0 pb-0 border-none shadow-none">
-  <div class="container mx-auto px-4 border-none shadow-none m-0 p-0">
+<nav class="category-nav">
+  <div class="category-container">
     <?php foreach ($validCategory as $category): ?>
       <?php 
         $active = in_array($category, $cats, true); 
@@ -146,44 +412,65 @@
       </a>
     <?php endforeach; ?>
   </div>
+
+    <script>
+    // Select all buttons with the class 'button'
+    const buttons = document.querySelectorAll('.button');
+
+    // Add click event listener to each button
+    buttons.forEach(button => {
+      button.addEventListener('click', function() {
+        // Toggle the 'active' class when a button is clicked
+        button.classList.toggle('active');
+      });
+    });
+  </script>
 </nav>
       
 
-  <!-- Listings Grid -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 font-sans">
-
-  
+<!-- Listings Grid -->
+<main class="listings-grid">
   <?php if ($result && $result->num_rows > 0): ?>
     <?php while ($row = $result->fetch_assoc()): ?>
       <?php $imageURL = !empty($row['imgs']) ? $row['imgs'] : ""; ?>
-      
-      <a href="listing.php?id=<?= $row['venueID'] ?>" class="group h-full block transition-all duration-500 transform hover:-translate-y-2">
-      <div class="relative h-full bg-white rounded-2xl border border-gray-200 shadow-md overflow-hidden flex flex-col transition-all duration-500 hover:[border-color:#7BAAF7] hover:shadow-[0_4px_20px_#7BAAF7,0_0_2px_#7BAAF7]">
 
-
-          <!-- Image -->
-          <img src="<?= $imageURL ?>" class="w-full h-48 object-cover z-20" alt="Stay" />
-
-          <!-- Content -->
-          <div class="p-4 flex flex-col justify-between flex-grow z-20 text-black">
-            <div>
-              <h3 class="font-semibold text-lg text-black group-hover:[color:#5A90D0] transition"><?= htmlspecialchars($row['venueName']) ?></h3>
-              <p class="text-sm text-gray-600"><?= htmlspecialchars($row['cityAddress']) ?></p>
-              <p class="text-sm text-gray-500"><?= $row['availabilityDays'] ?: "Available Daily" ?></p>
-              <p class="text-sm font-semibold mt-2 text-blue-700 group-hover:text-blue-900 transition">Price: <?= htmlspecialchars($row['priceRangeText'] ?? 'N/A') ?></p>
-            </div>
-            <div class="flex items-center justify-between mt-4">
-              <span class="text-sm text-yellow-600">
-                ⭐ <?= $row['averageRating'] !== null ? number_format($row['averageRating'], 2) : 'No Ratings' ?>
-              </span>
-            </div>
-          </div>
+      <article class="listing-card">
+        <!-- Date and Category -->
+        <div class="listing-meta">
+          <time class="listing-date" datetime="<?= date('Y-m-d') ?>">
+            <?= date('M j, Y') ?>
+          </time>
+          <a class="listing-category" href="#">
+            Venue
+          </a>
         </div>
-      </a>
+
+        <!-- Image -->
+        <img src="<?= $imageURL ?>" alt="Stay" class="listing-image" />
+
+        <!-- Content -->
+        <div class="listing-body">
+          <h3 class="listing-title">
+            <a href="listing.php?id=<?= $row['venueID'] ?>">
+              <?= htmlspecialchars($row['venueName']) ?>
+            </a>
+          </h3>
+          <p class="listing-address"><?= htmlspecialchars($row['cityAddress']) ?></p>
+          <p class="listing-availability"><?= $row['availabilityDays'] ?: "Available Daily" ?></p>
+          <p class="listing-price">Price: <?= htmlspecialchars($row['priceRangeText'] ?? 'N/A') ?></p>
+        </div>
+
+        <!-- Footer -->
+        <div class="listing-footer">
+          <p class="listing-rating">
+            ⭐ <?= $row['averageRating'] !== null ? number_format($row['averageRating'], 2) : 'No Ratings' ?>
+          </p>
+        </div>
+      </article>
 
     <?php endwhile; ?>
   <?php else: ?>
-    <p class="col-span-full text-center text-gray-500">No venues found.</p>
+    <p class="no-venues">No venues found.</p>
   <?php endif; ?>
   <?php $conn->close(); ?>
 </main>
