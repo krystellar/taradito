@@ -44,54 +44,210 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign In</title>
-  <link href="./output.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/tailwindcss@3.0.0/dist/tailwind.min.js"></script>
-</head>
-<body class="bg-gradient-to-r from-[#F28B82] via-[#7BAAF7] to-[#5CAC64] flex items-center justify-center min-h-screen">
+  <style>
+   <style>
+  * {
+    box-sizing: border-box;
+  }
 
-  <div class="container bg-white p-8 rounded-2xl shadow-lg max-w-sm w-full">
-    <div class="text-center mb-6">
-      <h2 class="text-3xl font-extrabold text-[#1089D3]">Sign In</h2>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #F28B82, #7BAAF7, #5CAC64);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  .card {
+    width: 300px;
+    padding: 20px;
+    background: #fff;
+    border: 6px solid #000;
+    box-shadow: 12px 12px 0 #000;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .card:hover {
+    transform: translate(-5px, -5px);
+    box-shadow: 17px 17px 0 #000;
+  }
+
+  .card__title {
+    font-size: 32px;
+    font-weight: 900;
+    color: #000;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+    display: block;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card__title::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 90%;
+    height: 3px;
+    background-color: #000;
+    transform: translateX(-100%);
+    transition: transform 0.3s;
+  }
+
+  .card:hover .card__title::after {
+    transform: translateX(0);
+  }
+
+  .card__content {
+    font-size: 16px;
+    line-height: 1.4;
+    color: #000;
+    margin-bottom: 20px;
+  }
+
+  .card__form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .card__form input {
+    padding: 10px;
+    border: 3px solid #000;
+    font-size: 16px;
+    font-family: inherit;
+    transition: transform 0.3s;
+    width: calc(100% - 26px);
+  }
+
+  .card__form input:focus {
+    outline: none;
+    transform: scale(1.05);
+    background-color: #000;
+    color: #ffffff;
+  }
+
+  .card__button {
+    border: 3px solid #000;
+    background: #000;
+    color: #fff;
+    padding: 10px;
+    font-size: 18px;
+    left: 20%;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s;
+    width: 50%;
+    height: 100%;
+  }
+
+  .card__button::before {
+    content: "Sure?";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 105%;
+    background-color: #5ad641;
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateY(100%);
+    transition: transform 0.3s;
+  }
+
+  .card__button:hover::before {
+    transform: translateY(0);
+  }
+
+  .card__button:active {
+    transform: scale(0.95);
+  }
+
+  .terms,
+.signup {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 1.5rem;
+  line-height: 1.6;
+}
+
+.terms a,
+.signup a {
+  color: #7BAAF7; /* Modern Sky Blue */
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.terms a:hover,
+.signup a:hover {
+  color: #5A90D0; /* Slightly darker blue on hover */
+  text-decoration: underline;
+}
+
+
+  @keyframes glitch {
+    0% {
+      transform: translate(2px, 2px);
+    }
+    25% {
+      transform: translate(-2px, -2px);
+    }
+    50% {
+      transform: translate(-2px, 2px);
+    }
+    75% {
+      transform: translate(2px, -2px);
+    }
+    100% {
+      transform: translate(2px, 2px);
+    }
+  }
+
+  .glitch {
+    animation: glitch 0.3s infinite;
+  }
+</style>
+
+</head>
+<body>
+
+  <div class="card">
+    <div class="text-center">
+      <h2 class="card__title">Sign In</h2>
     </div>
-    
-    <form action="Login_user.php" method="POST" class="space-y-4">
+
+    <form action="#" method="POST" class="card__form">
       <?php if (!empty($error)): ?>
-        <div class="text-red-600 text-sm font-medium"><?= htmlspecialchars($error) ?></div>
+        <div class="error-message"><?= htmlspecialchars($error) ?></div>
       <?php endif; ?>
-      <div class="space-y-2">
-        <input required type="email" name="email" id="email" placeholder="E-mail" 
-          class="w-full p-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#12B1D1] shadow-sm transition duration-200 text-gray-700">
-        <input required type="password" name="password" id="password" placeholder="Password" 
-          class="w-full p-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#12B1D1] shadow-sm transition duration-200 text-gray-700">
-      </div>
-      
-      <span class="text-xs text-right block mt-1 text-blue-600">
-        <a href="#">Forgot Password?</a>
-      </span>
-      
-      <input type="submit" value="Sign In" 
-        class="w-full p-4 mt-4 text-white font-semibold bg-gradient-to-r from-[#1089D3] to-[#12B1D1] rounded-xl cursor-pointer shadow-lg hover:scale-105 transition-all duration-200 transform">
+
+      <input required type="email" name="email" id="email" placeholder="E-mail">
+      <input required type="password" name="password" id="password" placeholder="Password">
+
+      <button type="submit" class="card__button">Sign In</button>
     </form>
 
-    <div class="text-center mt-6">
-      <span class="text-sm text-gray-500">Or Sign in with</span>
-      <div class="flex justify-center gap-4 mt-2">
-        <button class="bg-black text-white p-2 rounded-full shadow-lg hover:scale-110 transition-all duration-200"></button>
-        <button class="bg-black text-white p-2 rounded-full shadow-lg hover:scale-110 transition-all duration-200"></button>
-        <button class="bg-black text-white p-2 rounded-full shadow-lg hover:scale-110 transition-all duration-200"></button>
-      </div>
-    </div>
-    <div class="text-center mt-4">
-      <span class="text-sm text-gray-500">By signing in, you agree to our <a href="#" class="text-blue-600">user licence agreement</a>.</span>
-    </div>
+  
 
-    <!-- sign up here -->
-    <div class="text-center mt-4">
-      <span class="text-sm text-gray-500">Don't have an account? <a href="Signup_user.php" class="text-blue-600">Sign Up</a></span>
+    <div class="terms">
+      By signing in, you agree to our <a href="#">user licence agreement</a>.
     </div>
-
+    <div class="signup">
+      Don't have an account? <a href="Signup.php">Sign Up</a>
+    </div>
   </div>
+
 </body>
+
 </html>
-
-

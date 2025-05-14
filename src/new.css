@@ -10,7 +10,6 @@
   .card {
     width: 150px;
     height: 500px;
-    border-radius: 1rem;
     background-size: cover;
     cursor: pointer;
     overflow: hidden;
@@ -18,7 +17,12 @@
     display: flex;
     align-items: flex-end;
     transition: all 0.3s ease-in-out;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    border: 4px solid #000;
+    background-color: #fff;
+    padding: 2rem;
+    box-shadow: 10px 10px 0 #000;
+    font-family: "Arial", sans-serif;
+    margin-bottom: 2rem;
   }
   
   .card:hover {
@@ -77,16 +81,16 @@
   }
   
   .card[for="c1"] {
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2), 0 0 20px #f28b82;
+    box-shadow: 10px 10px 0 #000, 0 0 50px #f28b82;
   }
   .card[for="c2"] {
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2), 0 0 20px #7baaf7;
+    box-shadow: 10px 10px 0 #000, 0 0 50px #7baaf7;
   }
   .card[for="c3"] {
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2), 0 0 20px #ffe066;
+    box-shadow: 10px 10px 0 #000, 0 0 50px #ffe066;
   }
   .card[for="c4"] {
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2), 0 0 20px #a8e6a3;
+    box-shadow: 10px 10px 0 #000, 0 0 50px #a8e6a3;
   }
   
   .card .row .description {
