@@ -44,8 +44,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $imgs = mysqli_real_escape_string($conn, $_POST['imgs']);
     $img2 = mysqli_real_escape_string($conn, $_POST['img2']);
     $img3 = mysqli_real_escape_string($conn, $_POST['img3']);
-    $img4 = mysqli_real_escape_string($conn, $_POST['img4']);
-    $img5 = mysqli_real_escape_string($conn, $_POST['img5']);
+    $latitude =  mysqli_real_escape_string($conn, $_POST['latitude']);
+    $longitude = mysqli_real_escape_string($conn, $_POST['longitude']);
 
     // Insert into venueData table
     $sql = "INSERT INTO venueData (
@@ -76,8 +76,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             imgs,
             img2,
             img3,
-            img4,
-            img5
+            latitude,
+            longitude
         ) VALUES (
             '$venueName',
             '$barangayAddress',
@@ -106,8 +106,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             '$imgs',
             '$img2',
             '$img3',
-            '$img4',
-            '$img5'
+            '$latitude',
+            '$longitude'
         );";
 
     if ($conn->query($sql)) {
@@ -249,6 +249,24 @@ button:active {
     </style>
 </head>
 <body>
+
+<!-- Navbar -->
+<header id="navbar">
+  <nav class="navbar-container">
+    
+    <!-- Logo on the left -->
+    <a href="#" class="logo">
+      <img src="Images/Logo/TaraDito.png" alt="TaraDito Logo" />
+    </a>
+
+    <!-- Navigation Links on the right -->
+    <ul class="nav-links">
+      <li><a href="DashboardAdmin.php" class="nav-link">Go Back</a></li>
+    </ul>
+
+  </nav>
+</header>
+
     <div class="container">
         <h1>Add New Venue</h1>
         <form action="venue_add.php" method="POST">
@@ -323,12 +341,6 @@ button:active {
 
             <label for="img3">Third Image URL:</label>
             <input type="url" name="img3" id="img3">
-
-            <label for="img4">Fourth Image URL:</label>
-            <input type="url" name="img4" id="img4">
-
-            <label for="img5">Fifth Image URL:</label>
-            <input type="url" name="img5" id="img5">
 
             <!-- Submit Button -->
             <button type="submit">Add Venue</button>

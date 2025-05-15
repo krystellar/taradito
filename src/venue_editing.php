@@ -48,95 +48,270 @@ if (!$venue) {
     <style>
        /* Add some custom styles for modern design */
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f0f4f8; /* Slightly lighter background */
+    font-family: "Arial", sans-serif;
+    background-color: #fff;
+    color: #000;
     margin: 0;
     padding: 0;
 }
 
 .container {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 20px;
+    width: 80%;
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 2rem;
+    background-color: #fff;
+    border: 4px solid #000;
+    box-shadow: 10px 10px 0 #000;
 }
 
-.card {
-    background-color: #ffffff;
-    border-radius: 12px; /* Slightly more rounded corners */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-    padding: 30px; /* Increased padding for better spacing */
-    margin-top: 20px;
+h1 {
+    font-weight: 900;
+    font-size: 2rem;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #000;
+    padding-bottom: 1rem;
 }
 
-.card-header {
-    font-size: 2rem; /* Increased font size */
-    font-weight: 700; /* Bolder font weight */
-    color: #2c3e50; /* Darker text color */
-    margin-bottom: 30px; /* Increased margin for better separation */
-    text-align: center;
-}
-
-.form-input, .form-textarea, .form-select {
-    width: 100%;
-    padding: 14px 18px; /* Increased padding for better touch targets */
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    margin-top: 8px;
-    margin-bottom: 20px; /* Increased bottom margin */
-    box-sizing: border-box;
+label {
+    font-weight: 700;
     font-size: 1rem;
-    transition: border-color 0.3s, box-shadow 0.3s; /* Smooth transition */
+    margin-top: 1rem;
+    display: block;
 }
 
-.form-input:focus, .form-textarea:focus, .form-select:focus {
-    outline: none;
-    border-color: #3498db; /* Changed focus border color */
-    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5); /* Changed focus shadow color */
-}
-
-.form-button {
-    background-color: #3498db; /* Changed button color */
-    color: white;
-    padding: 14px 28px; /* Increased padding */
-    font-size: 1.125rem;
-    font-weight: 600;
-    border-radius: 8px;
+input,
+textarea,
+select {
     width: 100%;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s; /* Added transform for hover effect */
-    border: none;
+    padding: 0.75rem;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    border: 3px solid #000;
+    background-color: #fff;
+    color: #000;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
 }
 
-.form-button:hover {
-    background-color: #2980b9; /* Darker shade on hover */
-    transform: translateY(-2px); /* Slight lift effect */
+input[type="checkbox"],
+input[type="radio"] {
+    width: auto;
+    margin-right: 1rem;
 }
 
-.section {
-    margin-bottom: 40px; /* Increased margin for better separation */
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: #000;
+    box-shadow: 3px 3px 0 #000;
 }
 
-.grid-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+}
+
+.checkbox-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
 }
 
 .checkbox-group label {
-    display: flex;
-    align-items: center;
+    display: inline-block;
+    margin-right: 2rem;
+    margin-top: 0.5rem;
+    font-weight: normal;
     font-size: 1rem;
-    color: #333;
 }
 
-.checkbox-group input {
-    margin-right: 10px;
+button {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    background-color: #fff;
+    color: #000;
+    border: 3px solid #000;
+    box-shadow: 5px 5px 0 #000;
+    margin-top: 2rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
 }
 
-h2 {
-    font-size: 1.5rem; /* Increased font size for section headers */
-    color: #2c3e50; /* Darker color for better contrast */
-    margin-bottom: 10px; /* Added margin for spacing */
+button:hover {
+    background-color: #000;
+    color: #fff;
+    transform: translate(-2px, -2px);
+    box-shadow: 7px 7px 0 #000;
+}
+
+button:active {
+    transform: translate(5px, 5px);
+    box-shadow: none;
+}
+
+.section {
+    margin-top: 2rem;
+    border: 4px solid #000;
+    background-color: #fff;
+    padding: 2rem;
+    box-shadow: 10px 10px 0 #000;
+    font-family: "Arial", sans-serif;
+    margin-bottom: 2rem;
+}
+
+   .section {
+        background-color: white;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-top: 1.5rem;
+    }
+
+    .section h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #333333;
+        margin-bottom: 1rem;
+    }
+
+    .category-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+   
+    .category-label {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: #333333;
+        position: relative;
+        overflow: hidden;
+        transition: 0.3s;
+    }
+
+    .category-label input[type="checkbox"] {
+        height: 1.25rem;
+        width: 1.25rem;
+        border: 2px solid transparent;
+        transition: all 0.3s;
+    }
+
+
+    .category-container:hover .category-hover-bg {
+        opacity: 0.3;
+    }
+
+    .amenities-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    @media (min-width: 640px) {
+        .amenities-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .amenities-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    .amenity-label {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: #333333;
+    }
+
+    .amenity-label input[type="checkbox"] {
+        height: 1.25rem;
+        width: 1.25rem;
+        border: 1px solid #ccc;
+        border-radius: 0.25rem;
+    }
+
+    .amenity-label span {
+        font-size: 0.875rem;
+    }
+
+    
+/* Floating sticky navbar */
+#navbar {
+  position: sticky;
+  top: 20px;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  pointer-events: none; /* allows shadow and border effects to float above */
+}
+
+.navbar-container {
+  pointer-events: auto; 
+  background-color: #fff;
+  max-width: 1100px;
+  width: 90%;
+  margin: 0 auto;
+  padding: 16px 24px;
+  box-shadow: 10px 10px 0 #000;
+  border: 4px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo */
+.logo img {
+  height: 50px;
+  width: 50px;
+}
+
+/* Navigation links */
+.nav-links {
+  display: flex;
+  gap: 24px;
+  margin-left: auto;
+  list-style: none;
+  padding: 0;
+}
+
+@media (min-width: 768px) {
+  .nav-links {
+    gap: 32px;
+  }
+}
+
+.nav-link {
+  text-decoration: none;
+  font-size: 1.125rem; /* ~18px */
+  font-weight: 500;
+  color: #000;
+  padding: 8px 16px;
+  text-transform: uppercase;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  border: 2px solid transparent; /* reserve space */
+  transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  will-change: transform;
+}
+
+.nav-link:hover {
+  color: #000;
+  background-color: #fff;
+  transform: translateY(-2px);
+  border-color: #000; /* no layout shift */
+  box-shadow: 4px 4px 0 #000;
 }
 
 
@@ -146,17 +321,19 @@ h2 {
 <body>
 
 <!-- Navbar -->
-<header id="navbar" class="w-full sticky top-0 z-50 bg-[#a0c4ff] shadow-sm">
-  <nav class="max-w-[1320px] mx-auto flex items-center justify-between py-6 px-4 md:px-12">
-    <a href="#" class="flex items-center gap-2 absolute left-10 pl-4">
-      <img src="Images/Logo/LogoNav.png" alt="TaraDito Logo" class="h-[60px] w-auto" />
+<header id="navbar">
+  <nav class="navbar-container">
+    
+    <!-- Logo on the left -->
+    <a href="#" class="logo">
+      <img src="Images/Logo/TaraDito.png" alt="TaraDito Logo" />
     </a>
-    <ul class="flex gap-6 md:gap-8 flex-grow justify-center">
-      <li><a href="#" class="text-lg font-medium text-white hover:bg-[#5CAC64] py-2 px-4 rounded-full transition-all duration-300">Home</a></li>
-      <li><a href="product.php" class="text-lg font-medium text-white hover:bg-[#5CAC64] py-2 px-4 rounded-full transition-all duration-300">Venues</a></li>
-      <li><a href="#" class="text-lg font-medium text-white hover:bg-[#5CAC64] py-2 px-4 rounded-full transition-all duration-300">Explore</a></li>
-      <li><a href="#" class="text-lg font-medium text-white hover:bg-[#5CAC64] py-2 px-4 rounded-full transition-all duration-300">Contact</a></li>
+
+    <!-- Navigation Links on the right -->
+    <ul class="nav-links">
+      <li><a href="DashboardAdmin.php" class="nav-link">Go Back</a></li>
     </ul>
+
   </nav>
 </header>
 
@@ -242,73 +419,71 @@ h2 {
 
 
             
-            <!-- Category -->
-            <div class="section bg-white p-6 rounded-2xl shadow-md mt-6">
-                <h2 class="text-2xl font-semibold text-[#333333] mb-4">Category</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <?php 
-                    $categories = [
-                        'intimate' => ['label' => 'Intimate', 'color' => '#F28B82'],
-                        'business' => ['label' => 'Business', 'color' => '#7BAAF7'],
-                        'casual'   => ['label' => 'Casual', 'color' => '#5CAC64'],
-                        'fun'      => ['label' => 'Fun', 'color' => '#FFE066']
-                    ];
-                    foreach ($categories as $col => $data):
-                        $isChecked = !empty($venue[$col]) ? 'checked' : '';
-                        $primaryColor = $data['color'];
-                        $checkboxId = "cat_$col";
-                    ?>
-                    <div class="category-container p-4 rounded-lg border-2 transition duration-300 hover:scale-105 relative"
-                        style="border-color: <?= $primaryColor ?>; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-                        <label for="<?= $checkboxId ?>" class="flex items-center space-x-3 text-[#333] group relative overflow-hidden transition duration-300">
-                            <input 
-                                id="<?= $checkboxId ?>"
-                                type="checkbox" 
-                                name="<?= $col ?>" 
-                                value="1" 
-                                <?= $isChecked ?> 
-                                class="h-5 w-5 text-blue-600 rounded focus:ring-blue-500 border-2 border-transparent transition-all duration-300 group-hover:border-<?= $col ?>-500 group-hover:ring-2 group-hover:ring-<?= $col ?>-500"
-                            />
-                            <span class="text-base font-medium" style="color: <?= $primaryColor ?>"><?= htmlspecialchars($data['label']) ?></span>
-                        </label>
-                        <!-- Hover background, set to z-index -1 to keep it behind the checkbox -->
-                        <span class="absolute inset-0 opacity-0 group-hover:opacity-30 transition-all duration-300" 
-                            style="background-color: <?= $primaryColor ?>; z-index: -1;"></span>
-                    </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
+           
+<!-- Category -->
+<div class="section">
+    <h2>Category</h2>
+    <div class="category-grid">
+        <?php 
+        $categories = [
+            'intimate' => ['label' => 'Intimate', 'color' => 'black'],
+            'business' => ['label' => 'Business', 'color' => 'black'],
+            'casual'   => ['label' => 'Casual', 'color' => 'black'],
+            'fun'      => ['label' => 'Fun', 'color' => 'black']
+        ];
+        foreach ($categories as $col => $data):
+            $isChecked = !empty($venue[$col]) ? 'checked' : '';
+            $primaryColor = $data['color'];
+            $checkboxId = "cat_$col";
+        ?>
+        <div class="category-container" style="border-color: <?= $primaryColor ?>;">
+            <label for="<?= $checkboxId ?>" class="category-label">
+                <input 
+                    id="<?= $checkboxId ?>"
+                    type="checkbox" 
+                    name="<?= $col ?>" 
+                    value="1" 
+                    <?= $isChecked ?> 
+                    style="accent-color: <?= $primaryColor ?>;"
+                />
+                <span style="color: <?= $primaryColor ?>"><?= htmlspecialchars($data['label']) ?></span>
+            </label>
+            <span class="category-hover-bg" style="background-color: <?= $primaryColor ?>;"></span>
+        </div>
+        <?php endforeach; ?>
+    </div>
+</div>
 
-            <!-- Amenities -->
-            <div class="section bg-white p-6 rounded-2xl shadow-md">
-                <h2 class="text-2xl font-semibold text-[#333333] mb-4">Amenities</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <?php
-                    $amenities = [
-                        'eventPlanner' => 'Event Planner',
-                        'equipRentals' => 'Equipment Rentals',
-                        'decoServices' => 'Decoration Services',
-                        'onsiteStaff' => 'On-site Staff',
-                        'techSupport' => 'Tech Support',
-                        'pwdFriendly' => 'PWD Friendly',
-                        'parking' => 'Parking',
-                        'cateringServices' => 'Catering Services',
-                        'securityStaff' => 'Security Staff',
-                        'wifiAccess' => 'Wi-Fi Access'
-                    ];
-                    foreach ($amenities as $key => $label) {
-                        $checkboxId = "amenity_$key";
-                        $checked = !empty($venue[$key]) ? 'checked' : '';
-                        echo "
-                        <label for='$checkboxId' class='flex items-center space-x-3 text-[#333]'>
-                            <input id='$checkboxId' type='checkbox' name='$key' $checked class='h-5 w-5 text-blue-600 rounded focus:ring-blue-500 border-gray-300'>
-                            <span class='text-sm'>$label</span>
-                        </label>";
-                    }
-                    ?>
-                </div>
-            </div>
-
+           
+<!-- Amenities -->
+<div class="section">
+    <h2>Amenities</h2>
+    <div class="amenities-grid">
+        <?php
+        $amenities = [
+            'eventPlanner' => 'Event Planner',
+            'equipRentals' => 'Equipment Rentals',
+            'decoServices' => 'Decoration Services',
+            'onsiteStaff' => 'On-site Staff',
+            'techSupport' => 'Tech Support',
+            'pwdFriendly' => 'PWD Friendly',
+            'parking' => 'Parking',
+            'cateringServices' => 'Catering Services',
+            'securityStaff' => 'Security Staff',
+            'wifiAccess' => 'Wi-Fi Access'
+        ];
+        foreach ($amenities as $key => $label) {
+            $checkboxId = "amenity_$key";
+            $checked = !empty($venue[$key]) ? 'checked' : '';
+            echo "
+            <label for='$checkboxId' class='amenity-label'>
+                <input id='$checkboxId' type='checkbox' name='$key' $checked>
+                <span>$label</span>
+            </label>";
+        }
+        ?>
+    </div>
+</div>
 
             <!-- Submit Button -->
             <button type="submit" class="form-button">Save Changes</button>

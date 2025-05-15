@@ -176,7 +176,6 @@
 /* Active Button */
 .button.active {
   border-style: solid;
-  border-width: 4px; /* Slightly thicker border to indicate active state */
   border-color: #333; /* Darker border color */
 }
 
@@ -186,53 +185,55 @@
   z-index: 1;
 }
 
-
 /* Category Types */
 .type--A {
-  background-color: #F28B82;
+  background-color: #F28B82; /* Soft Rose */
   color: black;
 }
 
 .type--B {
-  background-color: #7BAAF7;
+  background-color: #7BAAF7; /* Modern Sky Blue */
   color: black;
 }
 
 .type--C {
-  background-color: #FFE066;
+  background-color: #FFE066; /* Pastel Amber */
   color: black;
 }
 
 .type--D {
-  background-color: #90CAF9;
+  background-color: #C7EDC5; /* Tea Green */
   color: black;
 }
 
-
-/* Active Button - Darker Shades */
+/* Active Button - Richer/Darker Shades */
 .button.active.type--A {
-  background-color: #D97A6A; /* Darker shade of #F28B82 */
+  background-color: #c94b4b; /* Deeper red-rose */
+  color: white;
 }
 
 .button.active.type--B {
-  background-color: #5D8DE1; /* Darker shade of #7BAAF7 */
+  background-color: #3b82f6; /* Stronger blue (Tailwind Blue-500) */
+  color: white;
 }
 
 .button.active.type--C {
-  background-color: #D1B24A; /* Darker shade of #FFE066 */
+  background-color: #d4af37; /* Golden yellow tone */
+  color: white;
 }
 
 .button.active.type--D {
-  background-color: #6A9CC4; /* Darker shade of #90CAF9 */
+  background-color: #15803d; /* Deep green (Tailwind Green-700) */
+  color: white;
 }
 
 /*Lisitngs*/
 
-.listings-grid {
+    .listings-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     gap: 24px;
-    max-width: 1200px;
+    max-width: 1600px;
     margin: auto;
     padding: 2rem;
   }
@@ -243,7 +244,7 @@
     justify-content: space-between;
     border: 4px solid black;
     background: linear-gradient(to bottom, white, #f3f4f6, #e5e7eb);
-    padding: 1.5rem;
+    padding: 1rem;
     box-shadow: 8px 8px 0 0 #000;
     transition: transform 0.5s ease, box-shadow 0.5s ease;
   }
@@ -261,22 +262,39 @@
     font-size: 0.75rem;
   }
 
-  .listing-date,
-  .listing-category {
-    border: 2px solid black;
-    padding: 0.25rem 0.75rem;
-    font-weight: bold;
-    color: white;
-    background-color: #ef4444;
-    transition: transform 0.5s ease, background-color 0.5s ease;
-  }
+ /* Base styling for all categories */
+.listing-category {
+  border: 2px solid black;
+  padding: 0.25rem 0.75rem;
+  font-weight: bold;
+  color: white;
+  transition: transform 0.5s ease, background-color 0.5s ease;
+}
 
-  .listing-date:hover,
-  .listing-category:hover {
-    transform: scale(1.1);
-    background-color: #1d4ed8;
-    color: #fde047;
-  }
+/* Intimate: Soft Rose */
+.category-intimate {
+  background-color: #F28B82;
+}
+
+/* Business: Modern Sky Blue */
+.category-business {
+  background-color: #7BAAF7;
+}
+
+
+/* Fun: Pastel Amber */
+.category-fun {
+  background-color: #FFE066;
+  color: #1f2937;
+}
+
+/* Casual: Tea Green */
+.category-casual {
+  background-color: #C7EDC5;
+  color: #1f2937;
+}
+
+
 
   .listing-image {
     width: 100%;
@@ -345,29 +363,100 @@
     color: #6b7280;
   }
 
+/* Floating sticky navbar */
+#navbar {
+  position: sticky;
+  top: 20px;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  pointer-events: none; /* allows shadow and border effects to float above */
+  margin-bottom: 5rem;
+}
+
+.navbar-container {
+  pointer-events: auto; 
+  background-color: #fff;
+  max-width: 1100px;
+  width: 90%;
+  margin: 0 auto;
+  padding: 16px 24px;
+  box-shadow: 10px 10px 0 #000;
+  border: 4px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo */
+.logo img {
+  height: 50px;
+  width: 50px;
+}
+
+/* Navigation links */
+.nav-links {
+  display: flex;
+  gap: 24px;
+  margin-left: auto;
+  list-style: none;
+  padding: 0;
+}
+
+@media (min-width: 768px) {
+  .nav-links {
+    gap: 32px;
+  }
+}
+
+.nav-link {
+  text-decoration: none;
+  font-size: 1.125rem; /* ~18px */
+  font-weight: 500;
+  color: #000;
+  padding: 8px 16px;
+  text-transform: uppercase;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  border: 2px solid transparent; /* reserve space */
+  transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  will-change: transform;
+}
+
+.nav-link:hover {
+  color: #000;
+  background-color: #fff;
+  transform: translateY(-2px);
+  border-color: #000; /* no layout shift */
+  box-shadow: 4px 4px 0 #000;
+}
+
 </style>
   
 </head>
 <body class="bg-white text-gray-900 font-[Nunito, sans-serif]">
 
-<!-- Navbar -->
-<header class="w-full top-0 z-50 bg-white">
-  <nav class="max-w-[1320px] mx-auto flex items-center justify-between py-4 px-4 md:px-8">
+
+<!--Nav bar-->
+<header id="navbar">
+  <nav class="navbar-container">
     
-    <!-- Logo -->
-    <a href="#" class="flex items-center gap-2">
-		<img src="Images/Logo/LogoNav.png" alt="TaraDito Logo" style="height: 30px; width: auto;" />
+    <!-- Logo on the left -->
+    <a href="#" class="logo">
+      <img src="Images/Logo/TaraDito.png" alt="TaraDito Logo" />
     </a>
 
-    <!-- Navigation Links -->
-    <ul class="flex gap-4 md:gap-6 ml-auto items-center">
-      <li><a href="#" class="text-sm font-medium text-gray-700 hover:text-black">Home</a></li>
-      <li><a href="product.php" class="text-sm font-medium text-gray-700 hover:text-black">Venues</a></li>
-      <li><a href="#" class="text-sm font-medium text-gray-700 hover:text-black">Explore</a></li>
-      <li><a href="Dashboard.php" class="text-sm font-medium text-gray-700 hover:text-black">Dashboard</a></li>
+    <!-- Navigation Links on the right -->
+    <ul class="nav-links">
+      <li><a href="index.php" class="nav-link">Home</a></li>
+      <li><a href="product.php" class="nav-link">Venues</a></li>
+      <li><a href="#" class="nav-link">Explore</a></li>
+      <li><a href="Dashboard.php" class="nav-link">Dashboard</a></li>
     </ul>
+
   </nav>
 </header>
+
 
 
 <!-- Search Bar -->
@@ -437,15 +526,16 @@
       <article class="listing-card" onclick="location.href='listing.php?id=<?= $row['venueID'] ?>';" style="cursor: pointer;">
         <!-- Date and Category -->
         <div class="listing-meta">
-          <?php
-            $categories = ['intimate', 'business', 'fun', 'casual'];
-            foreach ($categories as $cat) {
-              if (!empty($row[$cat])) {
-                echo '<span class="listing-category">' . ucfirst($cat) . '</span>';
-              }
+        <?php
+          $categories = ['intimate', 'business', 'fun', 'casual'];
+          foreach ($categories as $cat) {
+            if (!empty($row[$cat])) {
+              echo '<span class="listing-category category-' . $cat . '">' . ucfirst($cat) . '</span>';
             }
-          ?>
-        </div>
+          }
+        ?>
+      </div>
+
 
         <!-- Image -->
         <img class="listing-image" src="<?php echo $row['imgs']; ?>" alt="Venue Image">

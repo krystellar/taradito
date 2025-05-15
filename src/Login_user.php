@@ -365,7 +365,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       By signing in, you agree to our <a href="#">user licence agreement</a>.
     </div>
     <div class="signup">
-      Don't have an account? <a href="Signup.php">Sign Up</a>
+      Don't have an account? <a href="Signup_user.php">Sign Up</a>
     </div>
   </div>
 </section>

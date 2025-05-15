@@ -156,44 +156,51 @@
 
 /* Button Styling */
 .card__button {
-  border: 3px solid #000;
-  background: #000;
-  color: #fff;
-  padding: 12px 24px; /* Consistent padding for buttons */
-  font-size: 18px;
-  font-weight: bold;
-  text-transform: uppercase;
-  cursor: pointer;
-  width: 500px;
-  border-radius: 5px; /* Rounded corners for buttons */
-  transition: all 0.3s ease; /* Smooth transition for hover effect */
-  display: inline-block;
-  text-align: center;
-  margin: 0 auto; /* Center button inside the form */
+    grid-column: span 2;
+    background-color: #00ff88;
+    color: #fff;
+    font-weight: 900;
+    padding: 1rem 2rem;
+    border: 3px solid #000;
+    border-radius: 0;
+    box-shadow: 7px 7px 0 #000;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-transform: uppercase;
 }
 
 /* Button Hover Effect */
 .card__button:hover {
-  background-color: #fff;
-  color: #000;
-  border-color: #000;
-  transform: scale(1.005); /* Slight scale effect for hover */
+    background-color: #ff0000;
+    border-color: #0000;
+    color: #fff;
+    transform: translate(-2px, -2px);
+    box-shadow: 9px 9px 0 #800000;
 }
 
 /* Log Out Button Styling */
 .logout-button {
   background-color: red;
   border-color: red;
-  width: 100%;
   margin: 10px 0; /* Add margin for separation */
+    width: 300px !important; 
 }
 
 /* Edit Button Styling */
 .edit-button {
   background-color: #000;
   border-color: #000;
-  width: 50%;
-  margin: 10px 0; /* Add margin for separation */
+  margin: 10px 0;
+  width: 300px !important; 
+}
+
+
+.edit-button:hover {
+ background-color: #81bde6;
+ box-shadow: 9px 9px 0 #ADD8E6;
 }
 
 /* Save Button Styling */
@@ -315,6 +322,7 @@
 .table-row {
   background-color: #f9fafb;
   transition: background-color 0.3s ease;
+
 }
 
 .table-row:hover {
@@ -370,8 +378,8 @@
   width: 100%;
   padding: 12px;
   margin: 10px 0;
-  border: 2px solid #a0c4ff;
-  border-radius: 8px;
+  border: 3px solid #000;
+  margin-bottom: 2rem; 
 }
 
 
@@ -498,27 +506,149 @@
   margin-top: 5px;
 }
 
+
+/* Floating sticky navbar */
+#navbar {
+  position: sticky;
+  top: 20px;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  pointer-events: none; /* allows shadow and border effects to float above */
+  margin-bottom: 5rem;
+}
+
+.navbar-container {
+  pointer-events: auto; 
+  background-color: #fff;
+  max-width: 1100px;
+  width: 90%;
+  margin: 0 auto;
+  padding: 16px 24px;
+  box-shadow: 10px 10px 0 #000;
+  border: 4px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo */
+.logo img {
+  height: 50px;
+  width: 50px;
+}
+
+/* Navigation links */
+.nav-links {
+  display: flex;
+  gap: 24px;
+  margin-left: auto;
+  list-style: none;
+  padding: 0;
+}
+
+@media (min-width: 768px) {
+  .nav-links {
+    gap: 32px;
+  }
+}
+
+.nav-link {
+  text-decoration: none;
+  font-size: 1.125rem; /* ~18px */
+  font-weight: 500;
+  color: #000;
+  padding: 8px 16px;
+  text-transform: uppercase;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  border: 2px solid transparent; /* reserve space */
+  transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  will-change: transform;
+}
+
+.nav-link:hover {
+  color: #000;
+  background-color: #fff;
+  transform: translateY(-2px);
+  border-color: #000; /* no layout shift */
+  box-shadow: 4px 4px 0 #000;
+}
+
+/* Brutalist Form Styling */
+.brutal-form {
+  background-color: #fff;
+  border: 3px solid black;
+  padding: 20px;
+  font-family: 'Courier New', monospace;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.brutal-form label {
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.brutal-input {
+  padding: 10px;
+  border: 2px solid black;
+  background-color: #f5f5f5;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  outline: none;
+}
+
+.brutal-input:focus {
+  background-color: #e0e0e0;
+  border-color: red;
+}
+
+.brutal-button {
+  background-color: yellow;
+  color: black;
+  font-weight: 900;
+  border: 3px solid black;
+  padding: 12px;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-family: 'Courier New', monospace;
+  transition: background-color 0.2s;
+}
+
+.brutal-button:hover {
+  background-color: black;
+  color: yellow;
+}
+
   </style>
 
   
 </head>
 
 <body class="bg-gray-100 text-gray-900">
-  <!-- Navbar -->
-  <header id="navbar" class="w-full sticky top-0 z-50 transition-colors duration-300 bg-[#dbeafe] shadow-sm" >
-    <nav class="max-w-[1320px] mx-auto flex items-center justify-between py-6 px-4 md:px-12">
-      <!-- Logo on the left, using absolute positioning -->
-      <a href="#" class="flex items-center gap-2 absolute left-10 pl-4">
-        <img src="Images/Logo/LogoNav.png" alt="TaraDito Logo" class="h-[60px] w-auto" /> <!-- Increase logo size if needed -->
-      </a>
-      <ul class="flex gap-6 md:gap-8 flex-grow justify-center">
-        <li><a href="#" class="text-lg font-medium text-gray-800 hover:text-white hover:bg-[#a0c4ff] py-2 px-4 rounded-full transition-all duration-300">Home</a></li>
-        <li><a href="<?= PROJECT_ROOT ?>/src/product.php" class="text-lg font-medium text-gray-800 hover:text-white hover:bg-[#a0c4ff] py-2 px-4 rounded-full transition-all duration-300">Venues</a></li>
-        <li><a href="#" class="text-lg font-medium text-gray-800 hover:text-white hover:bg-[#a0c4ff] py-2 px-4 rounded-full transition-all duration-300">Explore</a></li>
-        <li><a href="<?= PROJECT_ROOT ?>/src/Dashboard.php" class="text-lg font-medium text-gray-800 hover:text-white hover:bg-[#a0c4ff] py-2 px-4 rounded-full transition-all duration-300">Dashboard</a></li>
-      </ul>
-    </nav>
-  </header>
+  <!--Nav bar-->
+<header id="navbar">
+  <nav class="navbar-container">
+    
+    <!-- Logo on the left -->
+    <a href="#" class="logo">
+      <img src="Images/Logo/TaraDito.png" alt="TaraDito Logo" />
+    </a>
+
+    <!-- Navigation Links on the right -->
+    <ul class="nav-links">
+      <li><a href="index.php" class="nav-link">Home</a></li>
+      <li><a href="product.php" class="nav-link">Venues</a></li>
+      <li><a href="#" class="nav-link">Explore</a></li>
+      <li><a href="Dashboard.php" class="nav-link">Dashboard</a></li>
+    </ul>
+
+  </nav>
+</header>
 
   <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
     <h1 class="text-3xl font-bold mb-6">Welcome, <?= htmlspecialchars($user['firstName'] . ' ' . $user['lastName']) ?></h1>
@@ -551,7 +681,7 @@
 </form>
 
 <!-- Edit button using a hidden checkbox -->
-<input type="checkbox" id="edit_toggle" class="hidden" />
+<input type="checkbox" id="edit_toggle" class="hidden"  style="margin-top: 10px;" />
 <label for="edit_toggle" class="card__button edit-button">
   Edit
 </label>
@@ -594,7 +724,7 @@
 <section class="sub-container reservation-history">
   <h2 class="title">Recent Reservations</h2>
   <div class="table-container">
-    <table class="reservation-table">
+    <table class="table">
       <thead>
         <tr>
           <th class="table-header">Venue</th>
@@ -636,30 +766,32 @@
           </tr>
 
           <!-- Hidden update form -->
-           <tr id="form-row-<?= $row['reservationID'] ?>" class="hidden">
-                <td colspan="7" class="px-4 py-4">
-                  <form action="update_reservation.php" method="POST">
-                    <input type="hidden" name="reservationID" value="<?= $row['reservationID'] ?>">
-                    <input type="hidden" name="userID" value="<?= $_SESSION['userID'] ?>">
+<tr id="form-row-<?= $row['reservationID'] ?>" class="hidden brutal-form-row">
+  <td colspan="7">
+    <form action="update_reservation.php" method="POST" class="brutal-form">
+      <input type="hidden" name="reservationID" value="<?= $row['reservationID'] ?>">
+      <input type="hidden" name="userID" value="<?= $_SESSION['userID'] ?>">
 
-                    <label for="startDate">Start Date:</label>
-                    <input name="startDate" type="date" value="<?= $row['startDate'] ?>" required class="border p-2 rounded" placeholder="Start Date">
+      <label for="startDate">Start Date:</label>
+      <input name="startDate" type="date" value="<?= $row['startDate'] ?>" required class="brutal-input">
 
-                    <label for="startTime">Start Time:</label>
-                    <input name="startTime" type="time" value="<?= $row['startTime'] ?>" required class="border p-2 rounded" placeholder="Start Time">
+      <label for="startTime">Start Time:</label>
+      <input name="startTime" type="time" value="<?= $row['startTime'] ?>" required class="brutal-input">
 
-                    <label for="endDate">End Date:</label>
-                    <input name="endDate" type="date" value="<?= $row['endDate'] ?>" required class="border p-2 rounded" placeholder="End Date">
+      <label for="endDate">End Date:</label>
+      <input name="endDate" type="date" value="<?= $row['endDate'] ?>" required class="brutal-input">
 
-                    <label for="endTime">End Time:</label>
-                    <input name="endTime" type="time" value="<?= $row['endTime'] ?>" required class="border p-2 rounded" placeholder="End Time">
+      <label for="endTime">End Time:</label>
+      <input name="endTime" type="time" value="<?= $row['endTime'] ?>" required class="brutal-input">
 
-                    <button id="reserve" type="submit" class="bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded w-full">
-                      Update Reservation
-                    </button>
-                  </form>
-                </td>
-              </tr>
+      <button type="submit" class="brutal-button">
+        Update Reservation
+      </button>
+    </form>
+  </td>
+</tr>
+
+
           <?php endwhile; ?>
         <?php endif; ?>
       </tbody>

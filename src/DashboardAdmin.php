@@ -111,10 +111,102 @@
     <link href="Dashboard.css" rel="stylesheet">
     <style>
      
+/* Floating sticky navbar */
+#navbar {
+  position: sticky;
+  top: 20px;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  pointer-events: none; /* allows shadow and border effects to float above */
+}
+
+.navbar-container {
+  pointer-events: auto; 
+  background-color: #fff;
+  max-width: 1100px;
+  width: 90%;
+  margin: 0 auto;
+  padding: 16px 24px;
+  box-shadow: 10px 10px 0 #000;
+  border: 4px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+/* Logo */
+.logo img {
+  height: 50px;
+  width: 50px;
+}
+
+/* Navigation links */
+.nav-links {
+  display: flex;
+  gap: 24px;
+  margin-left: auto;
+  list-style: none;
+  padding: 0;
+}
+
+@media (min-width: 768px) {
+  .nav-links {
+    gap: 32px;
+  }
+}
+
+.nav-link {
+  text-decoration: none;
+  font-size: 1.125rem; /* ~18px */
+  font-weight: 500;
+  color: #000;
+  padding: 8px 16px;
+  text-transform: uppercase;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  border: 2px solid transparent; /* reserve space */
+  transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  will-change: transform;
+}
+
+.nav-link:hover {
+  color: #000;
+  background-color: #fff;
+  transform: translateY(-2px);
+  border-color: #000; /* no layout shift */
+  box-shadow: 4px 4px 0 #000;
+}
+
+
+
 
 
     </style>
 </head>
+
+<!-- Navbar -->
+<header id="navbar">
+  <nav class="navbar-container">
+    
+    <!-- Logo on the left -->
+    <a href="#" class="logo">
+      <img src="Images/Logo/TaraDito.png" alt="TaraDito Logo" />
+    </a>
+
+    <!-- Navigation Links on the right -->
+    <ul class="nav-links">
+      <li><a href="#" class="nav-link">Home</a></li>
+      <li><a href="product.php" class="nav-link">Venues</a></li>
+      <li><a href="#" class="nav-link">Explore</a></li>
+      <li><a href="#" class="nav-link">Contact</a></li>
+    </ul>
+
+  </nav>
+</header>
+
+
 <body class="custom-bg min-h-screen">
 <div class="max-w-6xl mx-auto p-6">
 
@@ -126,7 +218,6 @@
 
     <div class="profile-header">
         <div class="profile-info">
-            <img src="Images/1.jpg" alt="Profile Avatar" class="profile-avatar">
             <div>
                 <h2 class="manager-name"><?php echo htmlspecialchars($manager['firstName'] . ' ' . $manager['lastName']); ?></h2>
                 <p class="role">Venue Manager</p>

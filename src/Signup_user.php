@@ -241,7 +241,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['signup'])) {
       <div class="success-message text-green-600 text-sm font-medium"><?= htmlspecialchars($success) ?></div>
     <?php endif; ?>
     
-    <form action="Signup.php" method="POST" class="card__form space-y-4">
+    <form action="Signup_user.php" method="POST" class="card__form space-y-4">
       <div class="space-y-2">
         <input required type="text" name="firstName" placeholder="First Name" class="input-field ">
         <input required type="text" name="lastName" placeholder="Last Name" class="input-field ">
@@ -254,7 +254,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['signup'])) {
     </form>
     
     <div class="text-center mt-4">
-      <span class="text-sm text-gray-500">Already have an account? <a href="Login.php" class="text-blue-600">Sign In</a></span>
+      <span class="text-sm text-gray-500">Already have an account? <a href="Login_user.php" class="text-blue-600">Sign In</a></span>
     </div>
   </div>
 
