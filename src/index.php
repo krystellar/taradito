@@ -581,36 +581,146 @@
   gap: 20px; /* optional: space between ghosts */
 }
 
+/* Floating sticky navbar */
+#navbar {
+  position: sticky;
+  top: 20px;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  pointer-events: none; /* allows shadow and border effects to float above */
+}
+
+.navbar-container {
+  pointer-events: auto; 
+  background-color: #fff;
+  max-width: 1100px;
+  width: 90%;
+  margin: 0 auto;
+  padding: 16px 24px;
+  box-shadow: 10px 10px 0 #000;
+  border: 4px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo */
+.logo img {
+  height: 50px;
+  width: 50px;
+}
+
+/* Navigation links */
+.nav-links {
+  display: flex;
+  gap: 24px;
+  margin-left: auto;
+  list-style: none;
+  padding: 0;
+}
+
+@media (min-width: 768px) {
+  .nav-links {
+    gap: 32px;
+  }
+}
+
+.nav-link {
+  text-decoration: none;
+  font-size: 1.125rem; /* ~18px */
+  font-weight: 500;
+  color: #000;
+  padding: 8px 16px;
+  text-transform: uppercase;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  border: 2px solid transparent; /* reserve space */
+  transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  will-change: transform;
+}
+
+.nav-link:hover {
+  color: #000;
+  background-color: #fff;
+  transform: translateY(-2px);
+  border-color: #000; /* no layout shift */
+  box-shadow: 4px 4px 0 #000;
+}
+
+
+
+/*footer*/
+
+.brutalist-footer {
+  background: #fff;
+  color: #000;
+  font-family: 'Courier New', Courier, monospace;
+  border-top: 4px solid #000;
+  padding: 2rem;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.brutalist-footer h2 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 2px solid #000;
+  padding-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.brutalist-footer a {
+  color: #000;
+  text-decoration: underline;
+}
+
+.brutalist-footer a:hover {
+  background: #000;
+  color: #fff;
+  transition: 0.2s ease;
+}
+
+.footer-bottom {
+  text-align: center;
+  font-size: 0.85rem;
+  border-top: 2px solid #000;
+  padding-top: 1rem;
+}
 
   </style>
 
 </head>
 <body>
 <!-- Navbar -->
-<header id="navbar" class="w-full sticky top-0 z-50 transition-colors duration-300">
-  <nav class="max-w-[1320px] mx-auto flex items-center justify-between py-6 px-4 md:px-12">
+<header id="navbar">
+  <nav class="navbar-container">
     
     <!-- Logo on the left -->
-    <a href="#" class="flex items-center gap-2">
-    <img src="Images/Logo/TaraDito.png" alt="TaraDito Logo" style="height: 30px; width: auto;" />
-
-
+    <a href="#" class="logo">
+      <img src="Images/Logo/TaraDito.png" alt="TaraDito Logo" />
     </a>
 
     <!-- Navigation Links on the right -->
-    <ul class="flex gap-6 md:gap-8 ml-auto">
-      <li><a href="#" class="text-lg font-medium text-gray-800 hover:text-white hover:bg-[#a0c4ff] py-2 px-4 rounded-full transition-all duration-300">Home</a></li>
-      <li><a href="product.php" class="text-lg font-medium text-gray-800 hover:text-white hover:bg-[#a0c4ff] py-2 px-4 rounded-full transition-all duration-300">Venues</a></li>
-      <li><a href="#" class="text-lg font-medium text-gray-800 hover:text-white hover:bg-[#a0c4ff] py-2 px-4 rounded-full transition-all duration-300">Explore</a></li>
-      <li><a href="#" class="text-lg font-medium text-gray-800 hover:text-white hover:bg-[#a0c4ff] py-2 px-4 rounded-full transition-all duration-300">Contact</a></li>
+    <ul class="nav-links">
+      <li><a href="#" class="nav-link">Home</a></li>
+      <li><a href="product.php" class="nav-link">Venues</a></li>
+      <li><a href="#" class="nav-link">Explore</a></li>
+      <li><a href="#" class="nav-link">Contact</a></li>
     </ul>
 
   </nav>
 </header>
 
 
+
 <!-- Hero Section -->
-<section class="w-full px-12 bg-blue-50 flex items-center py-50 h-full animated-bg">
+<section class="w-full px-12 bg-white flex items-center py-50 h-full animated-bg">
     <div class="max-w-[1320px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
 
       <!-- Hero Text -->
@@ -809,6 +919,30 @@
     </div>
 </div>
 
+<footer class="brutalist-footer">
+  <div class="footer-grid">
+    <div>
+      <h2>CONTACT</h2>
+      <p>Email: <a href="mailto:hello@example.com">hello@example.com</a></p>
+      <p>Phone: <a href="tel:+1234567890">+1 (234) 567-890</a></p>
+    </div>
+    <div>
+      <h2>ABOUT</h2>
+      <p>We build strange, beautiful things on the web. Brutal and proud.</p>
+    </div>
+    <div>
+      <h2>NAVIGATION</h2>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/work">Work</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    © 2025 YourSiteName. Built with raw HTML and ambition.
+  </div>
+</footer>
 
 
 

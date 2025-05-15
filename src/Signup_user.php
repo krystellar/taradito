@@ -52,15 +52,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['signup'])) {
   }
 
   body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(to right, #F28B82, #7BAAF7, #5CAC64);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-  }
+  margin: 0;                
+  min-height: 100vh;         
+  display: flex;             
+  align-items: center;       
+  justify-content: center;   
+  
+  /* Background image */
+  background-image: url('Images/BG.png');
+  background-size: cover;    
+  background-position: center; 
+  background-repeat: no-repeat; 
+}
 
   .card {
     width: 400px;
@@ -85,6 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['signup'])) {
     display: block;
     position: relative;
     overflow: hidden;
+    align: right;
   }
 
   .card__title::after {
@@ -114,6 +118,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['signup'])) {
     display: flex;
     flex-direction: column;
     gap: 15px;
+    justify-content: center;
   }
 
   .card__form input {
@@ -122,7 +127,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['signup'])) {
     font-size: 16px;
     font-family: inherit;
     transition: transform 0.3s;
-    width: calc(100% - 26px);
+    width: 100%
   }
 
   .card__form input:focus {
@@ -138,7 +143,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['signup'])) {
     color: #fff;
     padding: 10px;
     font-size: 18px;
-    left: 20%;
     font-weight: bold;
     text-transform: uppercase;
     cursor: pointer;
@@ -147,6 +151,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['signup'])) {
     transition: transform 0.3s;
     width: 50PX;
     height: 100%;
+    
   }
 
   .card__button::before {
@@ -220,11 +225,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['signup'])) {
   }
 </style>
 </head>
-<body class="bg-gradient-to-r from-[#F28B82] via-[#7BAAF7] to-[#5CAC64] flex items-center justify-center min-h-screen">
+<body>
+
 
   <div class="card bg-white p-8 rounded-2xl shadow-lg max-w-sm w-full">
     <div class="text-center mb-6">
-      <h2 class="card__title text-3xl font-extrabold text-[#1089D3]">Sign Up</h2>
+      <h2 class="card__title">Sign Up</h2>
     </div>
     
     <?php if (!empty($error)): ?>
@@ -244,7 +250,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['signup'])) {
         <input required type="password" name="confirm_password" placeholder="Confirm Password" class="input-field ">
       </div>
       
-      <input type="submit" name="signup" value="Sign Up" class="card__button">
+      <input type="submit" name="signup" value="Make the Account" class="card__button">
     </form>
     
     <div class="text-center mt-4">
@@ -254,4 +260,3 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['signup'])) {
 
 </body>
 </html>
-

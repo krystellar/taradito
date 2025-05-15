@@ -38,6 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 ?>
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -68,6 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     border: 6px solid #000;
     box-shadow: 12px 12px 0 #000;
     transition: transform 0.3s, box-shadow 0.3s;
+     position: relative;
   }
 
   .card:hover {
@@ -114,6 +116,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     flex-direction: column;
     gap: 15px;
   }
+  
 
   .card__form input {
     padding: 10px;
@@ -137,7 +140,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     color: #fff;
     padding: 10px;
     font-size: 18px;
-    left: 20%;
     font-weight: bold;
     text-transform: uppercase;
     cursor: pointer;
@@ -146,6 +148,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     transition: transform 0.3s;
     width: 50%;
     height: 100%;
+    left: 25%;
   }
 
   .card__button::before {
@@ -217,11 +220,129 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   .glitch {
     animation: glitch 0.3s infinite;
   }
+
+  .word-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.word-background span {
+  position: absolute;
+  white-space: nowrap;  /* Prevents wrapping */
+  color: rgba(80, 80, 80, 0.2); /* A soft but visible gray */
+  font-family: 'Montserrat', Arial, sans-serif; /* Stylish sans-serif font */
+  font-weight: 700; /* Bold for better visibility */
+  text-transform: uppercase; /* CAPSLOCK */
+  letter-spacing: 2px; /* Spacing for elegant caps */
+  z-index: -1; /* Keep it behind main content */
+  pointer-events: none; /* Avoid blocking interactions */
+}
+
+@keyframes floatLeft {
+  0% {
+    transform: translateX(100vw);
+  }
+  100% {
+    transform: translateX(-100vw);
+  }
+}
+
+/* Style for the hero section */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #f1f1f1;
+
+  display: flex;              /* Enables flex layout */
+  justify-content: center;    /* Horizontally center */
+  align-items: center;        /* Vertically center */
+  text-align: center;         /* Optional: center-align text */
+}
+
+
+/* Style for the word-background container */
+.word-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0; /* Place behind other content */
+}
+
+/* Ensure words are not overflowing outside of the container */
+.word-background span {
+  position: absolute;
+  white-space: nowrap;  /* Prevents words from breaking into multiple lines */
+  color: rgba(0, 0, 0, 0.1);  /* Faint color for a background effect */
+  font-family: Arial, sans-serif;
+  z-index: 0; /* Ensure words are behind content */
+}
+
 </style>
 
 </head>
 <body>
+<section class="hero">
+  <div class="word-background">
+<span>Hanap tayo ng magandang spot.</span>
+<span>May alam ka bang maaliwalas na lugar?</span>
+<span>Yung hindi matao sana.</span>
+<span>Basta presentable tingnan.</span>
+<span>Malapit-lapit lang sana.</span>
+<span>Yung relaxing ang ambiance.</span>
+<span>Pwede bang pasilip ng venue?</span>
+<span>May aircon ba?</span>
+<span>Pang-Instagram ba 'yan?</span>
+<span>Yung parang spa ang vibes.</span>
+<span>Hindi crowded, please.</span>
+<span>Kailangan ko ng tahimik na lugar.</span>
+<span>Saan ba maganda ngayon?</span>
+<span>Meron ba sa tabi-tabi lang?</span>
+<span>Gusto ko ng aesthetic.</span>
+<span>Sana may natural lighting.</span>
+<span>Pasok ba sa budget?</span>
+<span>Yung hindi mainit.</span>
+<span>Doon tayo sa cozy.</span>
+<span>Saan malapit dito?</span>
+<span>May parking ba?</span>
+<span>Yung Instagrammable.</span>
+<span>Pwede ba magpa-reserve?</span>
+<span>Open space ba yan?</span>
+<span>Tara, silipin natin.</span>
+<span>Okay ba sa vibe mo?</span>
+<span>Pwede bang maki-check?</span>
+<span>Comfortable ba diyan?</span>
+<span>Yung hindi hassle puntahan.</span>
+<span>Saan ba ang secret spots?</span>
+<span>Gusto ko ng fresh na feel.</span>
+<span>Saan safe at secure?</span>
+<span>Yung pang-pamper talaga.</span>
+<span>May privacy ba?</span>
+<span>Yung pwedeng tumambay.</span>
+<span>May ambience ba?</span>
+<span>Yung parang hidden gem.</span>
+<span>Hindi masyadong public.</span>
+<span>Chill lang sana.</span>
+<span>Saan ang peaceful na lugar?</span>
+<span>Yung pang-soft launch.</span>
+<span>Ayoko ng masikip.</span>
+<span>Mas okay kung minimalist.</span>
+<span>Yung clean look.</span>
+<span>Medyo artsy sana.</span>
+<span>Sana may scent diffuser.</span>
+<span>Basta maaliwalas.</span>
+<span>Dapat presentable sa photos.</span>
 
+</div>
   <div class="card">
     <div class="text-center">
       <h2 class="card__title">Sign In</h2>
@@ -235,7 +356,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       <input required type="email" name="email" id="email" placeholder="E-mail">
       <input required type="password" name="password" id="password" placeholder="Password">
 
-      <button type="submit" class="card__button">Sign In</button>
+      <button type="submit" class="card__button">Log In</button>
     </form>
 
   
@@ -247,7 +368,83 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       Don't have an account? <a href="Signup.php">Sign Up</a>
     </div>
   </div>
+</section>
+
+
+<script>
+  const phrases = document.querySelectorAll('.word-background span');
+  const containerHeight = window.innerHeight;  // Assuming the container is the entire viewport height
+  const containerWidth = window.innerWidth;    // Assuming the container is the entire viewport width
+  const margin = 10; // Space between words (adjust as necessary)
+  let usedPositions = []; // To track used vertical positions
+  let maxAttempts = 50; // Maximum number of attempts to find a valid position for each word
+  let phraseHeights = [];
+
+  // First, let's calculate and store the height of each phrase to avoid recalculating it multiple times
+  phrases.forEach(phrase => {
+    phraseHeights.push(phrase.offsetHeight);
+  });
+
+  // Function to get a random vertical position without overlap
+  function getRandomPosition(phrases, index) {
+    const phraseHeight = phraseHeights[index];
+    let topPosition;
+    let attempts = 0;
+
+    // Try to find a random position that does not overlap with previous words
+    do {
+      topPosition = Math.random() * (containerHeight - phraseHeight - margin); // Random position within container height
+      attempts++;
+      if (attempts > maxAttempts) {
+        // Fallback: spread out the words across the height (avoid just clustering at the bottom)
+        const evenSpacing = Math.floor(index * (containerHeight / phrases.length));
+        topPosition = Math.min(evenSpacing, containerHeight - phraseHeight - margin);
+        break;
+      }
+    } while (usedPositions.some(position => Math.abs(position - topPosition) < phraseHeight + margin));
+
+    // Mark this position as used
+    usedPositions.push(topPosition);
+    return topPosition;
+  }
+
+  // Set properties for each word
+  phrases.forEach((phrase, index) => {
+    // Get a random top position for each word
+    const top = getRandomPosition(phrases, index);
+    
+    // Random delay for animation
+    const delay = Math.random() * 3; // Adjust the range to a more reasonable delay
+
+    // Random duration for the animation (from 20 to 40 seconds)
+    const duration = 20 + Math.random() * 10;
+
+    // Random horizontal position (within container width)
+    const left = Math.random() * (containerWidth - phrase.offsetWidth);
+
+    // Apply styles dynamically
+    phrase.style.position = 'absolute'; 
+    phrase.style.top = `${top}px`;
+    phrase.style.left = `${left}px`;  // Position words horizontally
+    phrase.style.animationDuration = `${duration}s`;
+    phrase.style.animationDelay = `${delay}s`;
+    phrase.style.animationName = 'floatLeft';
+phrase.style.animationTimingFunction = 'linear';
+phrase.style.animationIterationCount = 'infinite';
+
+
+    // Optional: Random font size for each word
+    const randomSize = 12 + Math.random() * 18; // Font size range from 12px to 30px
+    phrase.style.fontSize = `${randomSize}px`;
+
+    // Ensure words do not overflow from the viewport (additional safety check)
+    if (phrase.offsetTop + phrase.offsetHeight > containerHeight) {
+      phrase.style.top = `${containerHeight - phrase.offsetHeight - margin}px`; // Place near the bottom if overflow
+    }
+  });
+</script>
 
 </body>
 
 </html>
+
