@@ -1,6 +1,11 @@
 <?php
     // logging in as manager verification
     session_start();
+    if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'manager') {
+        header("Location: login.php");
+        exit();
+    }
+
     include('db_connection.php');
     define('PROJECT_ROOT', rtrim(dirname($_SERVER['SCRIPT_NAME'], 2), '/')); // for file
     
@@ -200,7 +205,7 @@
       <li><a href="#" class="nav-link">Home</a></li>
       <li><a href="product.php" class="nav-link">Venues</a></li>
       <li><a href="#" class="nav-link">Explore</a></li>
-      <li><a href="#" class="nav-link">Contact</a></li>
+      <li><a href="DashboardAdmin.php" class="nav-link">Dashboard</a></li>
     </ul>
 
   </nav>
@@ -227,6 +232,7 @@
                 class="edit-button">
             <img src="Images/EditIcon.png" alt="Edit" class="edit-icon">
         </button>
+        
     </div>
 
     <!-- Profile Info -->
@@ -248,6 +254,12 @@
             <p class="info-text"><?php echo htmlspecialchars($manager['managerAbout']); ?></p>
         </div>
     </div>
+    <!--log out-->
+    <form action="logout.php" method="POST" style="margin-top: 10px;">
+    <button type="submit" class="card__button logout-button">
+        Log Out
+    </button>
+    </form>
 
     <!-- Edit Form -->
     <form id="edit_form" action="update_manager.php" method="POST" class="edit-form hidden">

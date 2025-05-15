@@ -1,11 +1,53 @@
 <?php
-  session_start();
-  include('db_connection.php');
-  if (!isset($_SESSION['userID'])) {
-      header("Location: Login_user.php");
-      exit;
+  if (session_status() === PHP_SESSION_NONE) {
+      session_start();
   }
+  include('db_connection.php');
+  if (!isset($_SESSION['userID']) && !isset($_SESSION['managerID'])) {
+    header("Location: Login.php");
+    exit;
+}
 
+  define('PROJECT_ROOT', rtrim(dirname($_SERVER['SCRIPT_NAME'], 2), '/'));
+
+  $firstName = '';
+$lastName = '';
+$role = '';
+
+if (isset($_SESSION['userID'])) {
+    //logged in as user
+    $role = 'User';
+    $userID = $_SESSION['userID'];
+    
+    $stmt = $conn->prepare("SELECT firstName, lastName FROM userdata WHERE userID = ?");
+    $stmt->bind_param("i", $userID);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($row = $result->fetch_assoc()) {
+        $firstName = $row['firstName'];
+        $lastName = $row['lastName'];
+    }
+    $stmt->close();
+
+} elseif (isset($_SESSION['managerID'])) {
+    // logged in as manager
+    $role = 'Manager';
+    $managerID = $_SESSION['managerID'];
+    
+    $stmt = $conn->prepare("SELECT firstName, lastName FROM managerdata WHERE managerID = ?");
+    $stmt->bind_param("i", $managerID);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($row = $result->fetch_assoc()) {
+        $firstName = $row['firstName'];
+        $lastName = $row['lastName'];
+    }
+    $stmt->close();
+
+} else {
+    echo "<p>Please log in to see your profile info.</p>";
+    exit;
+}
   // Search feature
   $searchTerm = isset($_GET['query']) ? $conn->real_escape_string($_GET['query']) : '';
   $selectedCategory = isset($_GET['category']) ? (array)$_GET['category'] : [];
@@ -16,9 +58,11 @@
   $sql = "SELECT 
           v.*, 
           p.priceRangeText,
+          a.days,
           AVG(r.rating) AS averageRating
         FROM venueData v
         LEFT JOIN priceRange p ON v.priceRangeID = p.priceRangeID
+        LEFT JOIN availability a ON v.availabilityDays = a.availabilityDays
         LEFT JOIN userRatings r ON v.venueID = r.venueID";
 
   $wheres = [];
@@ -55,6 +99,8 @@
       }
       return '?' . implode('&', $qs);
   }
+
+  
 ?>
 
 <!DOCTYPE html>
@@ -451,13 +497,31 @@
       <li><a href="index.php" class="nav-link">Home</a></li>
       <li><a href="product.php" class="nav-link">Venues</a></li>
       <li><a href="#" class="nav-link">Explore</a></li>
-      <li><a href="Dashboard.php" class="nav-link">Dashboard</a></li>
+      <?php
+          $dashboardLink = PROJECT_ROOT . '/src/Login.php';
+          if (isset($_SESSION['role'])) {
+              if ($_SESSION['role'] === 'manager') {
+                  $dashboardLink = PROJECT_ROOT . '/src/dashboardAdmin.php';
+              } elseif ($_SESSION['role'] === 'user') {
+                  $dashboardLink = PROJECT_ROOT . '/src/dashboard.php';
+              }
+          }
+          ?>
+        <li>
+          <a href="<?= $dashboardLink ?>" class="nav-link">
+            Dashboard
+          </a>
+        </li>
     </ul>
 
   </nav>
 </header>
 
-
+<!-- information abt user -->
+<div class="user-info-container" style="border:1px solid #ccc; padding:10px; max-width:300px; margin:20px auto; text-align:center; font-family: Arial, sans-serif;">
+    <h3>Welcome, <?= htmlspecialchars($firstName . ' ' . $lastName) ?></h3>
+    <p><strong>Role:</strong> <?= htmlspecialchars($role) ?></p>
+</div>
 
 <!-- Search Bar -->
 <div class="input-container">
@@ -546,7 +610,7 @@
               <?= htmlspecialchars($row['venueName']) ?>
           </h3>
           <p class="listing-address"><?= htmlspecialchars($row['cityAddress']) ?></p>
-          <p class="listing-availability"><?= $row['availabilityDays'] ?: "Available Daily" ?></p>
+          <p class="listing-availability"><?= htmlspecialchars($row['days'] ?? "Available Daily") ?></p>
           <p class="listing-price">Price: <?= htmlspecialchars($row['priceRangeText'] ?? 'N/A') ?></p>
         </div>
 

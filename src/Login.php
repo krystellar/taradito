@@ -1,4 +1,4 @@
-<?php
+<?php 
 session_start();
 include('db_connection.php');
 
@@ -15,18 +15,32 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             "SELECT managerID, managerPass FROM managerData WHERE managerEmail = ?",
             [$email]
         );
+        $manager = $stmt->fetch_assoc();
+
+        if ($manager && password_verify($password, $manager['managerPass'])) {
+            $_SESSION['managerID'] = $manager['managerID'];
+            $_SESSION['role'] = 'manager';
+            header("Location: dashboardAdmin.php");
+            exit;
+        }
+        $stmt = $conn->execute_query(
+            "SELECT userID, userPass FROM userdata WHERE userEmail = ?",
+            [$email]
+        );
         $user = $stmt->fetch_assoc();
 
-        if ($user && password_verify($password, $user['managerPass'])) {
-            $_SESSION['managerID'] = $user['managerID'];
-            header("Location: DashboardAdmin.php");
+        if ($user && password_verify($password, $user['userPass'])) {
+            $_SESSION['userID'] = $user['userID'];
+            $_SESSION['role'] = 'user';
+            header("Location: dashboard.php");
             exit;
-        } else {
-            $error = "Invalid email or password.";
         }
+
+        $error = "Invalid email or password.";
     }
 }
 ?>
+
 
 
 <!DOCTYPE html>
@@ -355,7 +369,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       By signing in, you agree to our <a href="#">user licence agreement</a>.
     </div>
     <div class="signup">
-      Don't have an account? <a href="Signup.php">Sign Up</a>
+      Don't have an account? <a href="Signup_user.php">Sign Up as Customer</a>
+      Managing a venue? <a href="Signup.php">Sign Up as Manager</a>
     </div>
   </div>
 </section>

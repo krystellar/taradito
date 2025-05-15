@@ -7,13 +7,23 @@ if (!isset($_SESSION['managerID'])) {
 }
 
 $priceRangeSql = "SELECT * FROM priceRange";
-    $resultPriceRange = $conn->query($priceRangeSql);
+$resultPriceRange = $conn->query($priceRangeSql);
 
-    if ($resultPriceRange->num_rows > 0) {
-        $priceRanges = $resultPriceRange->fetch_all(MYSQLI_ASSOC);
-    } else {
-        $priceRanges = [];
-    }
+if ($resultPriceRange->num_rows > 0) {
+    $priceRanges = $resultPriceRange->fetch_all(MYSQLI_ASSOC);
+} else {
+    $priceRanges = [];
+}
+
+$availabilitySql = "SELECT * FROM availability";
+$resultAvailability = $conn->query($availabilitySql);
+
+if ($resultAvailability->num_rows > 0) {
+    $availabilityDaysOptions = $resultAvailability->fetch_all(MYSQLI_ASSOC);
+} else {
+    $availabilityDaysOptions = [];
+}
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $managerID = $_SESSION['managerID']; 
@@ -21,9 +31,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $barangayAddress = mysqli_real_escape_string($conn, $_POST['barangayAddress']);
     $cityAddress = mysqli_real_escape_string($conn, $_POST['cityAddress']);
     $venueDesc = mysqli_real_escape_string($conn, $_POST['venueDesc']);
+    $availabilityDays = mysqli_real_escape_string($conn, $_POST['availabilityDays']);
+    $amAvail = isset($_POST['amAvail'])  ? 1 : 0;
+    $nnAvail  = isset($_POST['nnAvail'])  ? 1 : 0;
+    $pmAvail = isset($_POST['pmAvail'])    ? 1 : 0;
     $landmarks = mysqli_real_escape_string($conn, $_POST['landmarks']);
     $routes = mysqli_real_escape_string($conn, $_POST['routes']);
     $priceRangeID = mysqli_real_escape_string($conn, $_POST['priceRange']); 
+    $contactEmail = mysqli_real_escape_string($conn, $_POST['contactEmail']);
+    $contactNum = mysqli_real_escape_string($conn, $_POST['contactNum']);
     $intimate  = isset($_POST['intimate'])  ? 1 : 0;
     $business  = isset($_POST['business'])  ? 1 : 0;
     $casual    = isset($_POST['casual'])    ? 1 : 0;
@@ -47,68 +63,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $latitude =  mysqli_real_escape_string($conn, $_POST['latitude']);
     $longitude = mysqli_real_escape_string($conn, $_POST['longitude']);
 
+    $uploadDir = 'uploads/';
+    if (!file_exists($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
+
+    function uploadImage($fieldName, $existingPath) {
+        global $uploadDir;
+        if (isset($_FILES[$fieldName]) && $_FILES[$fieldName]['error'] === UPLOAD_ERR_OK) {
+            $tmpName = $_FILES[$fieldName]['tmp_name'];
+            $fileName = basename($_FILES[$fieldName]['name']);
+            $targetFile = $uploadDir . time() . '_' . $fileName;
+            if (move_uploaded_file($tmpName, $targetFile)) {
+                return $targetFile;
+            }
+        }
+        return $existingPath;
+    }
+
+    // Upload or retain existing images
+    $imgs = uploadImage('img1', '');
+    $img2 = uploadImage('img2', '');
+    $img3 = uploadImage('img3', '');
+
+
     // Insert into venueData table
     $sql = "INSERT INTO venueData (
-            venueName,
-            barangayAddress,
-            cityAddress,
-            venueDesc,
-            landmarks,
-            routes,
-            priceRangeID,
-            intimate,
-            business,
-            casual,
-            fun,
-            eventPlanner,
-            equipRentals,
-            decoServices,
-            onsiteStaff,
-            techSupport,
-            pwdFriendly,
-            parking,
-            cateringServices,
-            securityStaff,
-            wifiAccess,
-            payCash,
-            payElectronic,
-            payBank,
-            imgs,
-            img2,
-            img3,
-            latitude,
-            longitude
-        ) VALUES (
-            '$venueName',
-            '$barangayAddress',
-            '$cityAddress',
-            '$venueDesc',
-            '$landmarks',
-            '$routes',
-            '$priceRangeID',
-            $intimate,
-            $business,
-            $casual,
-            $fun,
-            $eventPlanner,
-            $equipRentals,
-            $decoServices,
-            $onsiteStaff,
-            $techSupport,
-            $pwdFriendly,
-            $parking,
-            $cateringServices,
-            $securityStaff,
-            $wifiAccess,
-            $payCash,
-            $payElectronic,
-            $payBank,
-            '$imgs',
-            '$img2',
-            '$img3',
-            '$latitude',
-            '$longitude'
-        );";
+        venueName, barangayAddress, cityAddress, venueDesc, availabilityDays,
+        amAvail, nnAvail, pmAvail,
+        landmarks, routes, priceRangeID, contactEmail, contactNum,
+        intimate, business, casual, fun,
+        eventPlanner, equipRentals, decoServices, onsiteStaff, techSupport, pwdFriendly, parking,
+        cateringServices, securityStaff, wifiAccess,
+        payCash, payElectronic, payBank,
+        imgs, img2, img3,
+        latitude, longitude
+    ) VALUES (
+        '$venueName', '$barangayAddress', '$cityAddress', '$venueDesc', '$availabilityDays',
+        $amAvail, $nnAvail, $pmAvail,
+        '$landmarks', '$routes', '$priceRangeID', '$contactEmail', '$contactNum',
+        $intimate, $business, $casual, $fun,
+        $eventPlanner, $equipRentals, $decoServices, $onsiteStaff, $techSupport, $pwdFriendly, $parking,
+        $cateringServices, $securityStaff, $wifiAccess,
+        $payCash, $payElectronic, $payBank,
+        '$imgs', '$img2', '$img3',
+        '$latitude', '$longitude'
+    )";
+
 
     if ($conn->query($sql)) {
         $venueID = $conn->insert_id;
@@ -246,6 +247,75 @@ button:active {
     box-shadow: none;
 }
 
+   
+/* Floating sticky navbar */
+#navbar {
+  position: sticky;
+  top: 20px;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  pointer-events: none; /* allows shadow and border effects to float above */
+}
+
+.navbar-container {
+  pointer-events: auto; 
+  background-color: #fff;
+  max-width: 1100px;
+  width: 90%;
+  margin: 0 auto;
+  padding: 16px 24px;
+  box-shadow: 10px 10px 0 #000;
+  border: 4px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo */
+.logo img {
+  height: 50px;
+  width: 50px;
+}
+
+/* Navigation links */
+.nav-links {
+  display: flex;
+  gap: 24px;
+  margin-left: auto;
+  list-style: none;
+  padding: 0;
+}
+
+@media (min-width: 768px) {
+  .nav-links {
+    gap: 32px;
+  }
+}
+
+.nav-link {
+  text-decoration: none;
+  font-size: 1.125rem; /* ~18px */
+  font-weight: 500;
+  color: #000;
+  padding: 8px 16px;
+  text-transform: uppercase;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  border: 2px solid transparent; /* reserve space */
+  transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  will-change: transform;
+}
+
+.nav-link:hover {
+  color: #000;
+  background-color: #fff;
+  transform: translateY(-2px);
+  border-color: #000; /* no layout shift */
+  box-shadow: 4px 4px 0 #000;
+}
+
+
     </style>
 </head>
 <body>
@@ -269,7 +339,7 @@ button:active {
 
     <div class="container">
         <h1>Add New Venue</h1>
-        <form action="venue_add.php" method="POST">
+        <form action="venue_add.php" method="POST"  enctype="multipart/form-data">
             <!-- Venue Info -->
             <label for="venueName">Venue Name:</label>
             <input type="text" name="venueName" id="venueName" required>
@@ -282,6 +352,33 @@ button:active {
 
             <label for="venueDesc">Venue Description:</label>
             <textarea name="venueDesc" id="venueDesc" rows="4"></textarea>
+
+            <label for="availabilityDays">Availability Days:</label>
+            <select name="availabilityDays" id="availabilityDays" required>
+                <option value="">Select Day</option>
+                <?php foreach ($availabilityDaysOptions as $day): ?>
+                    <option value="<?= $day['availabilityDays'] ?>"><?= htmlspecialchars($day['days']) ?></option>
+                <?php endforeach; ?>
+            </select>
+
+            <label>Availability Times:</label><br>
+
+            <input type="checkbox" id="amAvail" name="amAvail" value="1">
+            <label for="amAvail">AM</label><br>
+
+            <input type="checkbox" id="nnAvail" name="nnAvail" value="1">
+            <label for="nnAvail">NN</label><br>
+
+            <input type="checkbox" id="pmAvail" name="pmAvail" value="1">
+            <label for="pmAvail">PM</label><br>
+
+
+
+            <label for="contactEmail">Email:</label>
+            <input type="text" name="contactEmail" id="contactEmail">
+
+            <label for="contactNum">Contact Number:</label>
+            <input type="number" name="contactNum" id="contactNum">
 
             <label for="landmarks">Landmarks:</label>
             <input type="text" name="landmarks" id="landmarks">
@@ -331,16 +428,43 @@ button:active {
                 <label><input type="checkbox" name="payBank"> Bank Transfer</label>
             </div>
 
+            <!--coords-->
+            <h2> Coordinates </h2>
+            <label for="latitude">Latitude:</label>
+            <input type="text" name="latitude" id="latitude">
+
+            <label for="longitude">Longitude:</label>
+            <input type="text" name="longitude" id="longitude">
+
+
+
+
 
             <!-- Image URLs -->
-            <label for="imgs">Main Image URL:</label>
-            <input type="url" name="imgs" id="imgs">
+            <div class="section">
+                <h2 class="text-xl font-semibold text-[#333333]">Images</h2>
+                <!-- Images -->
+                <label>Image 1:</label><br>
+                <?php if (!empty($venue['imgs'])): ?>
+                    <img src="<?= $venue['imgs'] ?>" width="100"><br>
+                <?php endif; ?>
+                <input type="hidden" name="current_img1" value="<?= htmlspecialchars($venue['imgs']) ?>">
+                <input type="file" name="img1"><br>
 
-            <label for="img2">Second Image URL:</label>
-            <input type="url" name="img2" id="img2">
+                <label>Image 2:</label><br>
+                <?php if (!empty($venue['img2'])): ?>
+                    <img src="<?= $venue['img2'] ?>" width="100"><br>
+                <?php endif; ?>
+                <input type="hidden" name="current_img2" value="<?= htmlspecialchars($venue['img2']) ?>">
+                <input type="file" name="img2"><br>
 
-            <label for="img3">Third Image URL:</label>
-            <input type="url" name="img3" id="img3">
+                <label>Image 3:</label><br>
+                <?php if (!empty($venue['img3'])): ?>
+                    <img src="<?= $venue['img3'] ?>" width="100"><br>
+                <?php endif; ?>
+                <input type="hidden" name="current_img3" value="<?= htmlspecialchars($venue['img3']) ?>">
+                <input type="file" name="img3"><br>
+            </div>
 
             <!-- Submit Button -->
             <button type="submit">Add Venue</button>

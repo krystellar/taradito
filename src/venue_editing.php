@@ -7,11 +7,12 @@ if (!isset($_SESSION['managerID'])) {
 }
 
 $venueID = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-$sql = "SELECT v.*,p.priceRangeText,
+$sql = "SELECT v.*,p.priceRangeText, a.days,
       m.firstName AS managerFirstName,
       m.lastName AS managerLastName
     FROM venueData v
     LEFT JOIN priceRange p ON v.priceRangeID = p.priceRangeID
+    LEFT JOIN availability a ON v.availabilityDays = a.availabilityDays
     LEFT JOIN managerVenue mv ON v.venueID = mv.venueID
     LEFT JOIN managerData m ON mv.managerID = m.managerID
     WHERE v.venueID = ?";
@@ -24,6 +25,15 @@ if ($resultPriceRange->num_rows > 0) {
     $priceRanges = $resultPriceRange->fetch_all(MYSQLI_ASSOC);
 } else {
     $priceRanges = [];
+}
+
+$availabilitySql = "SELECT * FROM availability";
+$resultAvailability = $conn->query($availabilitySql);
+
+if ($resultAvailability->num_rows > 0){
+    $availabilityDaysOptions = $resultAvailability->fetch_all(MYSQLI_ASSOC);
+} else {
+    $availabilityDaysOptions = [];
 }
 
 $stmt  = $conn->execute_query($sql, [$venueID]);
@@ -364,6 +374,15 @@ button:active {
                     </div>
 
                     <div>
+                        <label for="contactEmail" class="form-label">Contact Email</label>
+                        <input type="text" name="contactEmail" id="contactEmail" value="<?= htmlspecialchars($venue['contactEmail']) ?>" class="form-input" >
+                    </div>
+                    <div>
+                        <label for="contactNum" class="form-label">Contact Number</label>
+                        <input type="number" name="contactNum" id="ContactNum" value="<?= htmlspecialchars($venue['contactNum']) ?>" class="form-input">
+                    </div>
+
+                    <div>
                         <label for="landmarks" class="form-label">Nearby Landmark</label>
                         <input type="text" name="landmarks" id="landmarks" value="<?= htmlspecialchars($venue['landmarks']) ?>" class="form-input">
                     </div>
@@ -372,6 +391,8 @@ button:active {
                         <label for="routes" class="form-label">Route Description</label>
                         <input type="text" name="routes" id="routes" value="<?= htmlspecialchars($venue['routes']) ?>" class="form-input">
                     </div>
+
+                    
                 </div>
             </div>
 
@@ -382,8 +403,8 @@ button:active {
                 <textarea name="venueDesc" id="venueDesc" rows="4" class="form-textarea"><?= htmlspecialchars($venue['venueDesc']) ?></textarea>
             </div>
 
-            <label for="priceRange">Price Range:</label>
-                <select name="priceRange" id="priceRange" required>
+            <label for="priceRangeID">Price Range:</label>
+                <select name="priceRangeID" id="priceRangeID" required>
                     <option value="">Select Price Range</option>
                     <?php foreach ($priceRanges as $range): ?>
                         <option value="<?= $range['priceRangeID']; ?>"
@@ -393,6 +414,38 @@ button:active {
                     <?php endforeach; ?>
                 </select>
 
+            <label for="availabilityDays">Availability Days:</label>
+            <select name="availabilityDays" id="availabilityDays" required>
+                <option value="">Select Day</option>
+                <?php foreach ($availabilityDaysOptions as $day): ?>
+                    <option value="<?= $day['availabilityDays']; ?>"
+                            <?php if (isset($venue['availabilityDays']) && $venue['availabilityDays'] == $day['availabilityDays']) echo 'selected'; ?>>
+                            <?= $day['days']; ?>
+                        </option>
+                <?php endforeach; ?>
+            </select>
+
+            <div class="section">
+    <h2>Available Times</h2>
+    <div class="availability-grid">
+        <?php
+        $availTimes = [
+            'amAvail' => 'Morning',
+            'nnAvail' => 'Afternoon',
+            'pmAvail' => 'Night'
+        ];
+        foreach ($availTimes as $avail => $time) {
+            $checkboxId = "avail_$avail";  // Unique ID prefix to avoid clashes
+            $checked = !empty($venue[$avail]) ? 'checked' : '';
+            echo "
+            <label for='$checkboxId' class='availability-time'>
+                <input id='$checkboxId' type='checkbox' name='$avail' value='1' $checked>
+                <span>$time</span>
+            </label>";
+        }
+        ?>
+    </div>
+</div>
 
             <!-- Image Upload Section -->
             <div class="section">
@@ -484,6 +537,36 @@ button:active {
         ?>
     </div>
 </div>
+
+<div class="section">
+    <h2>Payment Methods</h2>
+    <div class="payment-grid">
+        <?php
+        $payment = [
+            'payCash' => 'Pay via Cash',
+            'payElectronic' => 'Pay via E-wallets',
+            'payBank' => 'Pay via Bank'
+        ];
+        foreach ($payment as $code => $method) {
+            $checkboxId = "avail_$code";  // Unique ID prefix to avoid clashes
+            $checked = !empty($venue[$code]) ? 'checked' : '';
+            echo "
+            <label for='$checkboxId' class='payment-method'>
+                <input id='$checkboxId' type='checkbox' name='$code' value='1' $checked>
+                <span>$method</span>
+            </label>";
+        }
+        ?>
+    </div>
+</div>
+
+            <!--coords-->
+            <h2> Coordinates </h2>
+            <label for="latitude">Latitude:</label>
+            <input type="text" name="latitude" id="latitude" value="<?= htmlspecialchars($venue['latitude']) ?>" class="form-input" required>
+
+            <label for="longitude">Longitude:</label>
+            <input type="text" name="longitude" id="longitude" value="<?= htmlspecialchars($venue['longitude']) ?>" class="form-input" required>
 
             <!-- Submit Button -->
             <button type="submit" class="form-button">Save Changes</button>

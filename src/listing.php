@@ -1,5 +1,7 @@
 <?php
-  session_start();
+  if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+  }
   include('db_connection.php');
 
   define('PROJECT_ROOT', rtrim(dirname($_SERVER['SCRIPT_NAME'], 2), '/'));
@@ -7,11 +9,18 @@
   $resFlash = $_SESSION['reservation_success'] ?? false;
   unset($_SESSION['reservation_success']);
 
-  if (!isset($_SESSION['userID'])) {
-    header("Location: Login_user.php");
+  if (!isset($_SESSION['userID']) && !isset($_SESSION['managerID'])) {
+    header("Location: Login.php");
     exit;
   }
+
+
+  if (isset($_SESSION['userID'])) {
   $userID = $_SESSION['userID'];
+} else {
+  $userID = null;
+}
+
   
   if (isset($_SESSION['userID']) && isset($_GET['id'])) {
       $venueID = $_GET['id'];
@@ -164,6 +173,73 @@
 .sub-image:hover {
   transform: scale(1.05); /* Zoom effect for impact */
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.8); /* Stronger shadow on hover */
+}
+
+#navbar {
+  position: sticky;
+  top: 20px;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  pointer-events: none; /* allows shadow and border effects to float above */
+  margin-bottom: 5rem;
+}
+
+.navbar-container {
+  pointer-events: auto; 
+  background-color: #fff;
+  max-width: 1100px;
+  width: 90%;
+  margin: 0 auto;
+  padding: 16px 24px;
+  box-shadow: 10px 10px 0 #000;
+  border: 4px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo */
+.logo img {
+  height: 50px;
+  width: 50px;
+}
+
+/* Navigation links */
+.nav-links {
+  display: flex;
+  gap: 24px;
+  margin-left: auto;
+  list-style: none;
+  padding: 0;
+}
+
+@media (min-width: 768px) {
+  .nav-links {
+    gap: 32px;
+  }
+}
+
+.nav-link {
+  text-decoration: none;
+  font-size: 1.125rem; /* ~18px */
+  font-weight: 500;
+  color: #000;
+  padding: 8px 16px;
+  text-transform: uppercase;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  border: 2px solid transparent; /* reserve space */
+  transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  will-change: transform;
+}
+
+.nav-link:hover {
+  color: #000;
+  background-color: #fff;
+  transform: translateY(-2px);
+  border-color: #000; /* no layout shift */
+  box-shadow: 4px 4px 0 #000;
 }
 
 
@@ -682,6 +758,7 @@
 
 
 
+
   </style>
 
   
@@ -693,18 +770,38 @@
 <?php endif; ?>
 
 <!-- Navbar -->
-<header id="navbar" class="w-full sticky top-0 z-50 transition-colors duration-300 bg-[#dbeafe] shadow-sm" >
-    <nav class="max-w-[1320px] mx-auto flex items-center justify-between py-6 px-4 md:px-12">
-      <!-- Logo on the left, using absolute positioning -->
-        <img src="Images/Logo/LogoNav.png" alt="TaraDito Logo" class="flex-start gap-2 absolute left-10 pl-4 h-[60px] w-auto" /> <!-- Increase logo size if needed -->
-      <ul class="flex gap-6 md:gap-8 flex-grow justify-center">
-        <li><a href="#" class="text-lg font-medium text-gray-800 hover:text-white hover:bg-[#a0c4ff] py-2 px-4 rounded-full transition-all duration-300">Home</a></li>
-        <li><a href="<?= PROJECT_ROOT ?>/src/product.php" class="text-lg font-medium text-gray-800 hover:text-white hover:bg-[#a0c4ff] py-2 px-4 rounded-full transition-all duration-300">Venues</a></li>
-        <li><a href="#" class="text-lg font-medium text-gray-800 hover:text-white hover:bg-[#a0c4ff] py-2 px-4 rounded-full transition-all duration-300">Explore</a></li>
-        <li><a href="<?= PROJECT_ROOT ?>/src/Dashboard.php" class="text-lg font-medium text-gray-800 hover:text-white hover:bg-[#a0c4ff] py-2 px-4 rounded-full transition-all duration-300">Dashboard</a></li>
-      </ul>
-    </nav>
-  </header>
+<header id="navbar">
+  <nav class="navbar-container">
+    
+    <!-- Logo on the left -->
+    <a href="#" class="logo">
+      <img src="Images/Logo/TaraDito.png" alt="TaraDito Logo" />
+    </a>
+
+    <!-- Navigation Links on the right -->
+    <ul class="nav-links">
+      <li><a href="index.php" class="nav-link">Home</a></li>
+      <li><a href="product.php" class="nav-link">Venues</a></li>
+      <li><a href="#" class="nav-link">Explore</a></li>
+      <?php
+          $dashboardLink = PROJECT_ROOT . '/src/Login.php';
+          if (isset($_SESSION['role'])) {
+              if ($_SESSION['role'] === 'manager') {
+                  $dashboardLink = PROJECT_ROOT . '/src/dashboardAdmin.php';
+              } elseif ($_SESSION['role'] === 'user') {
+                  $dashboardLink = PROJECT_ROOT . '/src/dashboard.php';
+              }
+          }
+          ?>
+        <li>
+          <a href="<?= $dashboardLink ?>" class="nav-link">
+            Dashboard
+          </a>
+        </li>
+    </ul>
+
+  </nav>
+</header>
 
 <div class="container">
   <h1 id="villa-title" class="title"><?= htmlspecialchars($venue['venueName']) ?></h1>
@@ -727,24 +824,32 @@
 
   <!-- wishlist and like -->
   <div class="button-group">
-    <form method="post" action="like.php">
-      <input type="hidden" name="venueID" value="<?= $venueID ?>">
-      <button type="submit" class="button <?= $liked ? 'liked' : 'like' ?>">
-        <?= $liked 
-  ? '<img src="Images/like.png" alt="Liked" style="width: 1.2rem; height: 1.2rem; display: inline;"> Liked'
-  : '<img src="Images/like.png" alt="Like" style="width: 1.2rem; height: 1.2rem; display: inline;"> ' ?>
-      </button>
-    </form>
+    <?php if (!isset($_SESSION['managerID'])): ?>
+    <!-- Like button -->
+        <form method="post" action="like.php">
+          <input type="hidden" name="venueID" value="<?= $venueID ?>">
+          <button type="submit" class="button <?= $liked ? 'liked' : 'like' ?>">
+            <?= $liked 
+      ? '<img src="Images/like.png" alt="Liked" style="width: 1.2rem; height: 1.2rem; display: inline;"> Liked'
+      : '<img src="Images/like.png" alt="Like" style="width: 1.2rem; height: 1.2rem; display: inline;"> ' ?>
+          </button>
+        </form>
+    <?php endif; ?>
+    
+    <?php if (!isset($_SESSION['managerID'])): ?>
+    <!-- Wishlist button -->
+        <form method="post" action="wishlist.php">
+          <input type="hidden" name="venueID" value="<?= $venueID ?>">
+          <button type="submit" class="button <?= $wishlisted ? 'wishlisted' : 'wishlist' ?>">
+            <?= $wishlisted 
+      ? '<img src="Images\office-push-pin.png" alt="Added" style="width: 1.2rem; height: 1.2rem; display: inline;"> Added' 
+      : '<img src="Images/add.png" alt="Add to Wishlist" style="width: 1.2rem; height: 1.2rem; display: inline;"> Add to Wishlist' ?>
 
-    <form method="post" action="wishlist.php">
-      <input type="hidden" name="venueID" value="<?= $venueID ?>">
-      <button type="submit" class="button <?= $wishlisted ? 'wishlisted' : 'wishlist' ?>">
-        <?= $wishlisted 
-  ? '<img src="Images\office-push-pin.png" alt="Added" style="width: 1.2rem; height: 1.2rem; display: inline;"> Added' 
-  : '<img src="Images/add.png" alt="Add to Wishlist" style="width: 1.2rem; height: 1.2rem; display: inline;"> Add to Wishlist' ?>
+          </button>
+        </form>
+    <?php endif; ?>
 
-      </button>
-    </form>
+  
   </div>
 
   <!-- Villa Description -->
@@ -902,39 +1007,44 @@
 
 <div class="flex">
  <!-- Booking Section -->
-<div class="booking-section w-1-2">
-  <h2 class="booking-title">Reserve your stay</h2>
-  <p class="villa-price" id="villa-price"></p>
+  <?php if (!isset($_SESSION['managerID'])): ?>
+    <!-- Booking form -->
+    <div class="booking-section w-1-2">
+      <h2 class="booking-title">Reserve your stay</h2>
+      <p class="villa-price" id="villa-price"></p>
 
-  <p class="booking-contact"><strong>Contact:</strong> <?= htmlspecialchars($venue['contactNum']) ?></p>
-  <p class="booking-contact"><strong>Email:</strong> <?= htmlspecialchars($venue['contactEmail']) ?></p>
+      <p class="booking-contact"><strong>Contact:</strong> <?= htmlspecialchars($venue['contactNum']) ?></p>
+      <p class="booking-contact"><strong>Email:</strong> <?= htmlspecialchars($venue['contactEmail']) ?></p>
 
-  <div class="payment-methods">
-    <strong>Payment Methods:</strong>
-    <ul>
-      <?php if ($venue['payCash']) echo '<li>Cash</li>'; ?>
-      <?php if ($venue['payElectronic']) echo '<li>Electronic</li>'; ?>
-      <?php if ($venue['payBank']) echo '<li>Bank Transfer</li>'; ?>
-    </ul>
-  </div>
+      <div class="payment-methods">
+        <strong>Payment Methods:</strong>
+        <ul>
+          <?php if ($venue['payCash']) echo '<li>Cash</li>'; ?>
+          <?php if ($venue['payElectronic']) echo '<li>Electronic</li>'; ?>
+          <?php if ($venue['payBank']) echo '<li>Bank Transfer</li>'; ?>
+        </ul>
+      </div>
 
-  <form method="POST" action="reserve_venue.php" class="booking-form">
-    <input type="hidden" name="venueID" value="<?= $venue['venueID'] ?>">
-    <input type="hidden" name="userID" value="<?= $_SESSION['userID'] ?>">
+      <form method="POST" action="reserve_venue.php" class="booking-form">
+        <input type="hidden" name="venueID" value="<?= $venue['venueID'] ?>">
+        <input type="hidden" name="userID" value="<?= $_SESSION['userID'] ?>">
 
-    <input name="startDate" type="date" required placeholder="Start Date">
-    <input name="startTime" type="time" required placeholder="Start Time">
-    <input name="endDate" type="date" required placeholder="End Date">
-    <input name="endTime" type="time" required placeholder="End Time">
+        <input name="startDate" type="date" required placeholder="Start Date">
+        <input name="startTime" type="time" required placeholder="Start Time">
+        <input name="endDate" type="date" required placeholder="End Date">
+        <input name="endTime" type="time" required placeholder="End Time">
 
-    <button type="submit">Reserve</button>
-  </form>
+        <button type="submit">Reserve</button>
+      </form>
 
-  <p class="booking-note">You won't be charged yet</p>
-</div>
+      <p class="booking-note">You won't be charged yet</p>
+    </div>
+    <?php endif; ?>
+
 
 <!-- Add Review Section -->
-<div class="review-section w-1-2">
+ <?php if (!isset($_SESSION['managerID'])): ?>
+    <div class="review-section w-1-2">
   <h2 class="booking-title">Add a Review</h2>
 
   <form method="POST" action="add_review.php" class="styled-review-form">
@@ -948,16 +1058,20 @@
         <label for="star<?= $i ?>" class="star">&#9733;</label>
       <?php endfor; ?>
     </div>
-
-
-
-  <label for="review">Your Review:</label>
+    <label for="review">Your Review:</label>
   <textarea name="review" id="review" rows="4" required placeholder="Write your review..."></textarea>
 
   <button type="submit">Submit Review</button>
 </form>
 
 </div>
+<?php endif; ?>
+
+
+
+
+
+  
 </div>
 
 

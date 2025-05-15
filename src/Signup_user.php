@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['signup'])) {
 
             if ($result) {
                 $success = "User added successfully!";
-                header("Location: Login_user.php");
+                header("Location: Login.php");
                 exit;
             } else {
                 $error = "An error occurred while adding the user.";

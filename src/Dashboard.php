@@ -1,9 +1,14 @@
 <?php
   session_start();
+  if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'user') {
+      header("Location: Login.php");
+      exit();
+  }
+
   include('db_connection.php');
   define('PROJECT_ROOT', rtrim(dirname($_SERVER['SCRIPT_NAME'], 2), '/'));
   if (!isset($_SESSION['userID'])) {
-      header("Location: Login_user.php");
+      header("Location: Login.php");
       exit;
   }
 
@@ -644,7 +649,21 @@
       <li><a href="index.php" class="nav-link">Home</a></li>
       <li><a href="product.php" class="nav-link">Venues</a></li>
       <li><a href="#" class="nav-link">Explore</a></li>
-      <li><a href="Dashboard.php" class="nav-link">Dashboard</a></li>
+      <?php
+          $dashboardLink = PROJECT_ROOT . '/src/Login.php';
+          if (isset($_SESSION['role'])) {
+              if ($_SESSION['role'] === 'manager') {
+                  $dashboardLink = PROJECT_ROOT . '/src/dashboardAdmin.php';
+              } elseif ($_SESSION['role'] === 'user') {
+                  $dashboardLink = PROJECT_ROOT . '/src/dashboard.php';
+              }
+          }
+          ?>
+        <li>
+          <a href="<?= $dashboardLink ?>" class="nav-link">
+            Dashboard
+          </a>
+        </li>
     </ul>
 
   </nav>
@@ -674,7 +693,7 @@
   </div>
 
 <!-- Log Out Form -->
-<form action="logout_user.php" method="POST" style="margin-top: 10px;">
+<form action="logout.php" method="POST" style="margin-top: 10px;">
   <button type="submit" class="card__button logout-button">
     Log Out
   </button>

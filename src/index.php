@@ -731,8 +731,7 @@
         <p class="info-text">
           Whether you're planning a cozy dinner, a professional meetup, a birthday bash, or a cause-driven event—find the perfect venue, fast and hassle-free.
         </p>
-        <a href="login_user.php" class="login-button">Log in as User</a>
-        <a href="login.php" class="login-button">Log in as Admin</a>
+        <a href="login.php" class="login-button">Get Started</a>
 
 
       </div>

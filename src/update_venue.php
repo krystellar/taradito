@@ -1,5 +1,6 @@
 <?php
 include('db_connection.php');
+session_start(); // Ensure session is active to access managerID
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $venueID = (int)$_POST['venueID'];
@@ -9,6 +10,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $landmarks = $_POST['landmarks'] ?? '';
     $routes = $_POST['routes'] ?? '';
     $venueDesc = $_POST['venueDesc'] ?? '';
+    $latitude = mysqli_real_escape_string($conn, $_POST['latitude']);
+    $longitude = mysqli_real_escape_string($conn, $_POST['longitude']);
+    $availabilityDays = (int)($_POST['availabilityDays'] ?? 0);
+    $priceRangeID = (int)($_POST['priceRangeID'] ?? 0);
+    $amAvail = isset($_POST['amAvail']) ? 1 : 0;
+    $nnAvail = isset($_POST['nnAvail']) ? 1 : 0;
+    $pmAvail = isset($_POST['pmAvail']) ? 1 : 0;
+    $contactEmail = mysqli_real_escape_string($conn, $_POST['contactEmail']);
+    $contactNum = mysqli_real_escape_string($conn, $_POST['contactNum']);
 
     // Checkboxes
     $intimate = isset($_POST['intimate']) ? 1 : 0;
@@ -25,6 +35,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $cateringServices = isset($_POST['cateringServices']) ? 1 : 0;
     $securityStaff = isset($_POST['securityStaff']) ? 1 : 0;
     $wifiAccess = isset($_POST['wifiAccess']) ? 1 : 0;
+    $payCash = isset($_POST['payCash']) ? 1 : 0;
+    $payElectronic = isset($_POST['payElectronic']) ? 1 : 0;
+    $payBank = isset($_POST['payBank']) ? 1 : 0;
 
     // Fetch current image paths
     $current = $conn->prepare("SELECT imgs, img2, img3 FROM venueData WHERE venueID = ?");
@@ -52,28 +65,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         return $existingPath;
     }
 
-    // Upload or retain existing images
     $imgs = uploadImage('img1', $existing['imgs']);
     $img2 = uploadImage('img2', $existing['img2']);
     $img3 = uploadImage('img3', $existing['img3']);
 
-    // Update DB
+    // Update venueData
     $stmt = $conn->prepare("
         UPDATE venueData SET
-            venueName=?, barangayAddress=?, cityAddress=?, landmarks=?, routes=?, venueDesc=?,
-            intimate=?, business=?, casual=?, fun=?,
-            eventPlanner=?, equipRentals=?, decoServices=?, onsiteStaff=?, techSupport=?,
-            pwdFriendly=?, parking=?, cateringServices=?, securityStaff=?, wifiAccess=?,
-            imgs=?, img2=?, img3=?
+        venueName=?, barangayAddress=?, cityAddress=?, contactEmail=?, contactNum=?,
+        landmarks=?, routes=?, venueDesc=?, priceRangeID=?, 
+        intimate=?, business=?, casual=?, fun=?,
+        eventPlanner=?, equipRentals=?, decoServices=?, onsiteStaff=?, techSupport=?,
+        pwdFriendly=?, parking=?, cateringServices=?, securityStaff=?, wifiAccess=?,
+        latitude=?, longitude=?, availabilityDays=?, amAvail=?, nnAvail=?, pmAvail=?,
+        paycash=?, payelectronic=?, paybank=?,
+        imgs=?, img2=?, img3=?
         WHERE venueID=?
     ");
 
     $stmt->bind_param(
-        "ssssssiiiiiiiiiiiiissssi",
-        $venueName, $barangayAddress, $cityAddress, $landmarks, $routes, $venueDesc,
+        "ssssssssiiiiiiiiiiiiiiiddiiiiiiisssi",
+        $venueName, $barangayAddress, $cityAddress, $contactEmail, $contactNum,
+        $landmarks, $routes, $venueDesc, $priceRangeID,
         $intimate, $business, $casual, $fun,
         $eventPlanner, $equipRentals, $decoServices, $onsiteStaff, $techSupport,
         $pwdFriendly, $parking, $cateringServices, $securityStaff, $wifiAccess,
+        $latitude, $longitude, $availabilityDays, $amAvail, $nnAvail, $pmAvail,
+        $payCash, $payElectronic, $payBank,
         $imgs, $img2, $img3,
         $venueID
     );
