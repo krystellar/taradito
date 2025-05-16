@@ -308,7 +308,6 @@
 
 .button:hover {
     background-color: #ff0000;
-    border-color: #ff0000;
     color: #fff;
     transform: translate(-2px, -2px);
     box-shadow: 9px 9px 0 #800000;
@@ -392,7 +391,26 @@
 
 .reviews-container {
     margin-right: 1rem; /* Optional: Adds some space between the two containers */
+  max-height: 400px;         /* Adjust height as needed */
+  overflow-y: auto;          /* Scroll for the whole review section */
+  padding-right: 10px;
 }
+
+/* Optional scrollbar styling for better UX */
+.reviews-container::-webkit-scrollbar {
+  width: 8px;
+}
+.reviews-container::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 4px;
+}
+
+/* Remove individual scroll */
+.review-container {
+  max-height: none;
+  overflow: visible;
+}
+
 
 .amenities{
   color: black;
@@ -588,8 +606,6 @@
 
 /*Add a review*/
 
-/* Review Section Specific Styling */
-/* Reuse existing styles */
 .styled-review-form {
     display: flex;
     flex-direction: column;
@@ -892,50 +908,47 @@
         ?>
 
         <div class="" id="review-<?= $review['ratingID'] ?>">
-            <div>
-               <div class="review">
-                <p class="review-name"><?= htmlspecialchars($review['firstName']) ?> <?= htmlspecialchars($review['lastName']) ?></p>
-                <p class="review-date"><?= htmlspecialchars($review['createDate']) ?></p>
-                 <p class="text-yellow-600">
+    <div>
+        <div class="review">
+            <p class="review-name"><?= htmlspecialchars($review['firstName']) ?> <?= htmlspecialchars($review['lastName']) ?></p>
+            <p class="review-date"><?= htmlspecialchars($review['createDate']) ?></p>
+            <p class="text-yellow-600">
                 <?php
-                  $rating = $review['rating'];
-                  $fullStars = floor($rating); // Full stars
-                  $emptyStars = 5 - $fullStars; // Empty stars
+                $rating = max(0, min(5, $review['rating']));
+                $fullStars = floor($rating);
+                $emptyStars = 5 - $fullStars;
 
-                  // Display full stars
-                  for ($i = 0; $i < $fullStars; $i++) {
-                      echo '<img src="Images/star.png" alt="Full Star" class="inline-block ratings" width="20" height="20">';
-                  }
-
-                  // Display empty stars
-                  for ($i = 0; $i < $emptyStars; $i++) {
-                      echo '<img src="Images/empty-star.png" alt="Empty Star" class="inline-block ratings" width="20" height="20">';
-                  }
+                for ($i = 0; $i < $fullStars; $i++) {
+                    echo '<img src="Images/star.png" alt="Full Star" class="inline-block ratings" width="20" height="20">';
+                }
+                for ($i = 0; $i < $emptyStars; $i++) {
+                    echo '<img src="Images/empty-star.png" alt="Empty Star" class="inline-block ratings" width="20" height="20">';
+                }
                 ?>
-              </p>
-                <div class="review-container">
+            </p>
+            <div class="review-container">
                 <p class="review-text"><?= htmlspecialchars($review['review']) ?></p>
-              </div>
-              </div>
-
-              
-
-                <?php if ($isOwner): ?>
-                    <form action="delete_review.php" method="POST" class="inline-block mt-2 mr-2">
-                        <input type="hidden" name="ratingID" value="<?= $review['ratingID'] ?>">
-                        <button type="submit" class="two-button delete">Delete</button>
-                    </form>
-
-                    <form action="" method="POST" class="inline-block mt-2">
-                        <input type="hidden" name="edit_mode" value="1">
-                        <input type="hidden" name="ratingID" value="<?= $review['ratingID'] ?>">
-                        <input type="hidden" name="rating" value="<?= $review['rating'] ?>">
-                        <input type="hidden" name="review" value="<?= htmlspecialchars($review['review'], ENT_QUOTES) ?>">
-                        <button type="submit" class="two-button update" onclick="window.location.href='#updateform';">Update</button>
-                    </form>
-                <?php endif; ?>
             </div>
         </div>
+
+        <!-- Owner buttons -->
+        <?php if ($isOwner): ?>
+            <form action="delete_review.php" method="POST" class="inline-block mt-2 mr-2">
+                <input type="hidden" name="ratingID" value="<?= $review['ratingID'] ?>">
+                <button type="submit" class="two-button delete">Delete</button>
+            </form>
+
+            <form action="" method="POST" class="inline-block mt-2">
+                <input type="hidden" name="edit_mode" value="1">
+                <input type="hidden" name="ratingID" value="<?= $review['ratingID'] ?>">
+                <input type="hidden" name="rating" value="<?= $review['rating'] ?>">
+                <input type="hidden" name="review" value="<?= htmlspecialchars($review['review'], ENT_QUOTES) ?>">
+                <button type="submit" class="two-button update" onclick="window.location.href='#updateform';">Update</button>
+            </form>
+        <?php endif; ?>
+    </div>
+</div>
+
 
 <!-- Update Form -->
 <div id="updateform" class="updateform"></div>
@@ -998,11 +1011,13 @@
 </section>
 
 <!-- MANAGER -->
+ <div class="container">
  <?php if (!empty($venue['firstName']) && !empty($venue['lastName'])): ?>
-  <p class="text-sm">Managed by <strong><?= htmlspecialchars($venue['firstName'] . ' ' . $venue['lastName']) ?></strong></p>
+  <p class="title">Managed by <strong><?= htmlspecialchars($venue['firstName'] . ' ' . $venue['lastName']) ?></strong></p>
   <p class="text-sm"><?= htmlspecialchars($venue['managerEmail']) ?></p>
   <p class="text-sm"><?= htmlspecialchars($venue['managerAbout']) ?></p>
 <?php endif; ?>
+ </div>
 
 
 <div class="flex">
@@ -1053,11 +1068,12 @@
 
 
     <div class="rating-stars">
-      <?php for ($i = 1; $i <= 5; $i++): ?>
-        <input type="radio" id="star<?= $i ?>" name="rating" value="<?= $i ?>" class="star-rating-input">
-        <label for="star<?= $i ?>" class="star">&#9733;</label>
-      <?php endfor; ?>
-    </div>
+  <?php for ($i = 5; $i >= 1; $i--): ?>
+    <input type="radio" id="star<?= $i ?>" name="rating" value="<?= $i ?>" class="star-rating-input">
+    <label for="star<?= $i ?>" class="star">&#9733;</label>
+  <?php endfor; ?>
+</div>
+
     <label for="review">Your Review:</label>
   <textarea name="review" id="review" rows="4" required placeholder="Write your review..."></textarea>
 

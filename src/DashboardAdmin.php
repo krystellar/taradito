@@ -113,7 +113,6 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.0.0/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/tailwindcss@3.0.0/dist/tailwind.min.js"></script>
     <link href="./output.css" rel="stylesheet">
-    <link href="Dashboard.css" rel="stylesheet">
     <style>
      
 /* Floating sticky navbar */
@@ -184,6 +183,435 @@
   box-shadow: 4px 4px 0 #000;
 }
 
+.dashboard {
+    width: 100%;
+    max-width: 1280px;
+    border: 4px solid #000;
+    background-color: #fff;
+    padding: 2rem;
+    box-shadow: 10px 10px 0 #000;
+    font-family: "Arial", sans-serif;
+    margin-bottom: 2rem;
+}
+
+.dashboard-title {
+    font-size: 2rem;
+    font-weight: 900;
+    color: #000;
+    text-transform: uppercase;
+    border-bottom: 2px solid #000;
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #000;
+    padding-bottom: 1rem;
+}
+
+.profile-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.profile-avatar {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 0;
+    border: 3px solid #000;
+    object-fit: cover;
+    background-color: #ddd;
+}
+
+.manager-name {
+    font-size: 1.25rem;
+    font-weight: 900;
+    color: #000;
+}
+
+.role {
+    font-size: 0.875rem;
+    color: #000;
+    font-weight: 600;
+}
+
+.edit-button {
+    display: inline-block;
+    padding: 0.75rem 1.25rem;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    border: 3px solid #000;
+    background-color: #fff;
+    color: #000;
+    position: relative;
+    transition: all 0.2s ease;
+    box-shadow: 5px 5px 0 #000;
+    cursor: pointer;
+}
+
+.edit-icon {
+    width: 2rem;  /* Reduce icon size */
+    height: 2rem; /* Reduce icon size */
+    
+}
+
+.edit-button:hover {
+    background-color: #ff0000;
+    color: #fff;
+    box-shadow: 7px 7px 0 #800000;
+    transform: translate(-2px, -2px);
+}
+
+.profile-info-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .profile-info-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .edit-form {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+}
+
+.info-card {
+    padding: 1.25rem;
+    background-color: #fff;
+    border: 3px solid #000;
+    border-radius: 0;
+    box-shadow: 5px 5px 0 #000;
+}
+
+.info-label {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #000;
+    text-transform: uppercase;
+}
+
+.info-text {
+    margin-top: 0.25rem;
+    color: #000;
+    font-weight: 600;
+}
+
+.full-width {
+    grid-column: span 2;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Brutalist Form Style */
+.form-group {
+    background-color: #fff;
+    padding: 1.5rem;
+    border: 3px solid #000;
+    box-shadow: inset 0 0 0 2px #000;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 0.75rem;
+    color: #000;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+.form-group input,
+.form-group textarea {
+    background-color: #fff;
+    padding: 1rem;
+    border: 2px solid #000;
+    font-size: 1rem;
+    font-family: "Arial", sans-serif;
+    outline: none;
+    transition: box-shadow 0.2s ease;
+    color: #000;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    box-shadow: 0 0 0 3px #000;
+}
+
+/* Save Button */
+.save-button {
+    grid-column: span 2;
+    background-color: #00ff88;
+    color: black;
+    font-weight: 900;
+    padding: 1rem 2rem;
+    border: 3px solid #000;
+    border-radius: 0;
+    box-shadow: 7px 7px 0 #000;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-transform: uppercase;
+}
+
+.save-button:hover {
+    background-color: #00C851;
+    border-color: #00C851;
+    color: #fff;
+    transform: translate(-2px, -2px);
+}
+
+
+/*Venues Managed*/
+/* Venues Managed Section */
+.subsection {
+    border: 4px solid #B4741E;
+    background-color: #FFE066;
+
+}
+
+/* No venues message */
+.no-venues-message {
+    font-size: 1rem;
+    color: #4B5563;
+    font-weight: 600;
+}
+
+/* Venues list container */
+.venues-list {
+    display: grid;
+    gap: 1.5rem;
+}
+
+/* Venue card */
+.venue-card {
+    border: 4px solid black;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    background-color: #FFF6CF;
+    box-shadow: 10px 10px 0 #000;
+}
+
+/* Venue card header */
+.venue-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #000;
+    padding-bottom: 1rem;
+}
+
+/* Venue card info */
+.venue-card-info {
+    margin-right: 1rem;
+}
+
+/* Venue name */
+.venue-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #333333;
+}
+
+/* Venue address */
+.venue-address {
+    font-size: 1rem;
+    color: #4B5563;
+}
+
+/* Venue capacity and price */
+.venue-capacity-price {
+    font-size: 1rem;
+    color: #4B5563;
+}
+
+/* Delete button */
+.delete-button {
+    background-color: #F44336;
+    display: inline-block;
+    padding: 0.75rem 1.25rem;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    border: 3px solid #000;
+    color: #000;
+    position: relative;
+    transition: all 0.2s ease;
+    box-shadow: 5px 5px 0 #000;
+    cursor: pointer;
+}
+
+.delete-button:hover {
+    background-color: #D32F2F;
+    transform: scale(1.05);
+}
+
+/* Venue edit button */
+.venue-edit-button {
+    background-color: #00ff88;
+    display: inline-block;
+    padding: 0.75rem 1.25rem;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    border: 3px solid #000;
+    color: #000;
+    position: relative;
+    transition: all 0.2s ease;
+    box-shadow: 5px 5px 0 #000;
+    cursor: pointer;
+}
+
+.venue-edit-button:hover {
+    background-color: #81bde6;
+    transform: scale(1.05);
+}
+
+/* Add button */
+.add-venue-button {
+    display: inline-block;
+    padding: 0.75rem 1.25rem;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    border: 3px solid #000;
+    background-color: #fff;
+    color: #000;
+    position: relative;
+    transition: all 0.2s ease;
+    box-shadow: 5px 5px 0 #000;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.add-venue-button:hover {
+    background-color: #f1ae5c;
+    transform: scale(1.05);
+}
+
+.button-container {
+    display: flex;
+    align-items: center; /* Vertically align buttons */
+    gap: 10px; /* Small gap between buttons */
+}
+
+/* No reservations message */
+.no-reservations {
+    font-size: 1rem;
+    color: #4B5563;
+    font-weight: 600;
+}
+
+/* Reservation item */
+.reservation-item {
+    border: 4px solid black;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    background-color: #FFF6CF;
+    margin-bottom: 1.5rem;
+    box-shadow: 10px 10px 0 #000;
+    transition: background-color 0.3s ease; /* Smooth transition for color changes */
+}
+
+/* Status-specific colors for reservation items */
+.reservation-item.not-accepted {
+    background-color: #ff9fa6; /* Lighter red background */
+}
+
+.reservation-item.happened-paid {
+    background-color: #a4ff99; /* Lighter green background */
+}
+
+.reservation-item.confirmed-deposited {
+    background-color: #a3c8ff; /* Lighter blue background */
+}
+
+
+/* Reservation status */
+.status {
+    font-weight: bold;
+    color: #4B5563;
+}
+
+/* Actions section */
+.actions {
+    margin-top: 1rem;
+}
+
+/* Buttons */
+.accept-btn,
+.reject-btn,
+.update-btn {
+    display: inline-block;
+    padding: 0.75rem 1.25rem;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    border: 3px solid #000;
+    color: #000;
+    position: relative;
+    transition: all 0.2s ease;
+    box-shadow: 5px 5px 0 #000;
+    cursor: pointer;
+    margin-right: 1rem;
+}
+
+.accept-btn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.accept-btn:hover {
+    background-color: #388E3C;
+}
+
+.reject-btn {
+    background-color: #F44336;
+    color: white;
+}
+
+.reject-btn:hover {
+    background-color: #D32F2F;
+}
+
+.update-btn {
+    background-color: #2394d4;
+    color: white;
+}
+
+.update-btn:hover {
+    background-color: #1766ce;
+}
+
+/* Status select */
+.status-select {
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 2px solid black;
+    background-color: #FFF6CF;
+    margin-right: 1rem;
+}
 
 
 
@@ -204,7 +632,7 @@
     <ul class="nav-links">
       <li><a href="#" class="nav-link">Home</a></li>
       <li><a href="product.php" class="nav-link">Venues</a></li>
-      <li><a href="#" class="nav-link">Explore</a></li>
+      <li><a href="top_venues_chart.php" class="nav-link">Top picks</a></li>
       <li><a href="DashboardAdmin.php" class="nav-link">Dashboard</a></li>
     </ul>
 
@@ -256,7 +684,7 @@
     </div>
     <!--log out-->
     <form action="logout.php" method="POST" style="margin-top: 10px;">
-    <button type="submit" class="card__button logout-button">
+    <button type="submit" class="delete-button">
         Log Out
     </button>
     </form>
@@ -323,9 +751,12 @@
         </div>
     <?php endif; ?>
 </div>
+
 <!-- Reservation Messages Section -->
 <div class="dashboard subsection">
     <h2 class="dashboard-title">Reservations</h2>
+    <a href="download_reservations.php" class="add-venue-button">Download CSV</a>
+
 
     <?php if (empty($reservations)): ?>
         <p class="no-reservations">No reservations yet.</p>

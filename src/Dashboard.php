@@ -216,6 +216,13 @@
   margin: 10px 0; /* Add margin for separation */
 }
 
+.save-button:hover{
+background-color: #00C851;
+border-color: #00C851;
+
+}
+
+
 /* Input Field Styling for Edit Form */
 .input-field {
   padding: 12px;
@@ -582,51 +589,108 @@
 
 /* Brutalist Form Styling */
 .brutal-form {
-  background-color: #fff;
-  border: 3px solid black;
+  width: 1000px;
+  margin: 40px auto;  /* Add this line to center horizontally with some vertical spacing */
   padding: 20px;
+  background: #fff;
+  border: 4px solid #000;
+  box-shadow: 8px 8px 0 #000;
   font-family: 'Courier New', monospace;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
+
 .brutal-form label {
-  font-weight: bold;
+  font-weight: 700;
   text-transform: uppercase;
-  font-size: 14px;
-  margin-bottom: 4px;
+  font-size: 15px;
+  margin-bottom: 6px;
+  color: #000;
 }
 
 .brutal-input {
-  padding: 10px;
-  border: 2px solid black;
-  background-color: #f5f5f5;
+  padding: 12px;
+  border: 3px solid #000;
+  background-color: #f9f9f9;
   font-family: 'Courier New', monospace;
-  font-size: 14px;
+  font-size: 15px;
+  transition: transform 0.3s, background-color 0.3s, color 0.3s;
   outline: none;
 }
 
 .brutal-input:focus {
-  background-color: #e0e0e0;
-  border-color: red;
+  transform: scale(1.05);
+  background-color: #000;
+  color: #fff;
+  border-color: #5ad641; /* bright approval green */
 }
 
 .brutal-button {
-  background-color: yellow;
-  color: black;
-  font-weight: 900;
-  border: 3px solid black;
+  border: 3px solid #000;
+  background: #000;
+  color: #fff;
   padding: 12px;
-  cursor: pointer;
+  font-size: 17px;
+  font-weight: 800;
+  font-family: Arial, Helvetica, sans-serif;
   text-transform: uppercase;
-  font-family: 'Courier New', monospace;
-  transition: background-color 0.2s;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s;
+  width: 50%;
+  align-self: center;
 }
 
-.brutal-button:hover {
-  background-color: black;
-  color: yellow;
+
+.brutal-button::before {
+  content: "Sure?";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 105%;
+  background-color: #5ad641;
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(100%);
+  transition: transform 0.3s;
+}
+
+.brutal-button:hover::before {
+  transform: translateY(0);
+}
+
+.brutal-button:active {
+  transform: scale(0.95);
+}
+
+
+.add-venue-button {
+    display: inline-block;
+    padding: 0.75rem 1.25rem;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    border: 3px solid #000;
+    background-color: #fff;
+    color: #000;
+    position: relative;
+    transition: all 0.2s ease;
+    box-shadow: 5px 5px 0 #000;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.add-venue-button:hover {
+    background-color: #f1ae5c;
+    transform: scale(1.05);
 }
 
   </style>
@@ -648,7 +712,7 @@
     <ul class="nav-links">
       <li><a href="index.php" class="nav-link">Home</a></li>
       <li><a href="product.php" class="nav-link">Venues</a></li>
-      <li><a href="#" class="nav-link">Explore</a></li>
+      <li><a href="top_venues_chart.php" class="nav-link">Top picks</a></li>
       <?php
           $dashboardLink = PROJECT_ROOT . '/src/Login.php';
           if (isset($_SESSION['role'])) {
@@ -670,10 +734,8 @@
 </header>
 
   <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-    <h1 class="text-3xl font-bold mb-6">Welcome, <?= htmlspecialchars($user['firstName'] . ' ' . $user['lastName']) ?></h1>
-
     <section class="card mb-10">
-  <h2 class="card__title">Your Information</h2>
+  <h2 class="card__title">Welcome, <?= htmlspecialchars($user['firstName'] . ' ' . $user['lastName']) ?></h2>
 
   <div class="card__content">
     <div class="grid sm:grid-cols-2 gap-4 text-sm">
@@ -742,6 +804,8 @@
 <!-- Reservation History -->
 <section class="sub-container reservation-history">
   <h2 class="title">Recent Reservations</h2>
+  <a href="download_reservations.php" class="add-venue-button">Download Reservations (CSV)</a>
+
   <div class="table-container">
     <table class="table">
       <thead>
@@ -835,7 +899,7 @@
       <tbody class="liked-table-body">
         <?php if ($likedVenues->num_rows === 0): ?>
           <tr>
-            <td colspan="4" class="liked-no-venues">No liked venues found.</td>
+            <td colspan="4" class="no-content">No liked venues found.</td>
           </tr>
         <?php else: ?>
           <?php while ($row = $likedVenues->fetch_assoc()): ?>

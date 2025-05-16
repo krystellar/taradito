@@ -49,38 +49,40 @@ if (isset($_SESSION['userID'])) {
     exit;
 }
   // Search feature
-  $searchTerm = isset($_GET['query']) ? $conn->real_escape_string($_GET['query']) : '';
-  $selectedCategory = isset($_GET['category']) ? (array)$_GET['category'] : [];
-  $validCategory = ['intimate','business','fun','casual'];
-  // Filter feature 
-  $cats = array_values(array_intersect($validCategory, $selectedCategory));
+ $searchTerm = isset($_GET['query']) ? $conn->real_escape_string($_GET['query']) : '';
+$selectedCategory = isset($_GET['category']) ? (array)$_GET['category'] : [];
+$validCategory = ['intimate','business','fun','casual'];
+$cats = array_values(array_intersect($validCategory, $selectedCategory));
 
-  $sql = "SELECT 
-          v.*, 
-          p.priceRangeText,
-          a.days,
-          AVG(r.rating) AS averageRating
-        FROM venueData v
-        LEFT JOIN priceRange p ON v.priceRangeID = p.priceRangeID
-        LEFT JOIN availability a ON v.availabilityDays = a.availabilityDays
-        LEFT JOIN userRatings r ON v.venueID = r.venueID";
+$sql = "SELECT 
+        v.*, 
+        p.priceRangeText,
+        a.days,
+        AVG(r.rating) AS averageRating
+      FROM venueData v
+      LEFT JOIN priceRange p ON v.priceRangeID = p.priceRangeID
+      LEFT JOIN availability a ON v.availabilityDays = a.availabilityDays
+      LEFT JOIN userRatings r ON v.venueID = r.venueID";
 
-  $wheres = [];
-  if ($searchTerm !== '') {
-      $wheres[] = "v.venueName LIKE '%" . $conn->real_escape_string($searchTerm) . "%'";
-  }
-  if (count($cats) > 0) {
-      foreach ($cats as $c) {
-          $wheres[] = "v.$c = 1";
-      }
-  }
-  if (count($wheres) > 0) {
-      $sql .= ' WHERE ' . implode(' AND ', $wheres);
-  }
+$wheres = [];
+if ($searchTerm !== '') {
+    $searchTermEscaped = $conn->real_escape_string($searchTerm);
+    $wheres[] = "(v.venueName LIKE '%$searchTermEscaped%' OR v.barangayAddress LIKE '%$searchTermEscaped%' OR v.cityAddress LIKE '%$searchTermEscaped%')";
+}
 
-  $sql .= ' GROUP BY v.venueID ORDER BY v.venueID ASC';
+if (count($cats) > 0) {
+    foreach ($cats as $c) {
+        $wheres[] = "v.$c = 1";
+    }
+}
 
-  $result = $conn->query($sql);
+if (count($wheres) > 0) {
+    $sql .= ' WHERE ' . implode(' AND ', $wheres);
+}
+
+$sql .= ' GROUP BY v.venueID ORDER BY v.venueID ASC';
+
+$result = $conn->query($sql);
 
   // For toggling category links
   function toggleCatLink(string $category): string {
@@ -115,62 +117,6 @@ if (isset($_SESSION['userID'])) {
 
 	<script defer src="second.js"></script>
   <style>
-    /* Search Bar Container */
-/* From Uiverse.io by boryanakrasteva - Inspired Search Bar Style */
-.input-container {
-  width: 1000px;
-  position: relative;
-  margin: 20px auto;
-  margin-bottom: 2rem;
-}
-
-.input-container form {
-  position: relative;
-}
-
-.input {
-  width: 100%;
-  height: 40px;
-  padding: 10px 40px 10px 10px; /* space for the icon on the right */
-  border: 2.5px solid black;
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  transition: 0.2s linear;
-}
-
-.input:focus {
-  outline: none;
-  border: 0.5px solid black;
-  box-shadow: -5px -5px 0px black;
-}
-
-.search-btn {
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  position: absolute;
-  right: 10px;
-  top: calc(50% + 5px);
-  transform: translateY(calc(-50% - 5px));
-}
-
-.icon {
-  width: 18px;
-  height: 18px;
-  transition: transform 0.2s ease;
-}
-
-
-@keyframes anim {
-  0%, 100% {
-    transform: translateY(calc(-50% - 5px)) scale(1);
-  }
-  50% {
-    transform: translateY(calc(-50% - 5px)) scale(1.1);
-  }
-}
 
 
 /*Category links*/
@@ -182,7 +128,7 @@ if (isset($_SESSION['userID'])) {
   padding-bottom: 0;
   border: none;
   box-shadow: none;
-  align-content: center;
+  align-content: ;
 }
 
 .category-container {
@@ -416,28 +362,71 @@ if (isset($_SESSION['userID'])) {
   z-index: 50;
   display: flex;
   justify-content: center;
-  pointer-events: none; /* allows shadow and border effects to float above */
+  pointer-events: none;
   margin-bottom: 5rem;
+  isolation: isolate; /* keeps pseudo-element contained */
 }
+
+#navbar::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  right: -20px;
+  bottom: -1px;
+  z-index: -1;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.15); /* softer glow */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+
 
 .navbar-container {
   pointer-events: auto; 
   background-color: #fff;
-  max-width: 1100px;
-  width: 90%;
+  max-width: 1400px;
+  width: 100%;
   margin: 0 auto;
   padding: 16px 24px;
   box-shadow: 10px 10px 0 #000;
   border: 4px solid #000;
-  display: flex;
+  display: column;
   align-items: center;
   justify-content: space-between;
+  
+}
+
+.user-info-container {
+  pointer-events: auto; 
+  background-color: #fff;
+  max-width: 300px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 16px 24px;
+  box-shadow: 10px 10px 0 #000;
+  border: 4px solid #000;
+  display: column;
+  align-items: center;
+  justify-content: space-between;
+    
+  }
+
+.nav-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 1.5rem;
 }
 
 /* Logo */
 .logo img {
   height: 50px;
-  width: 50px;
+  width: 80px;
 }
 
 /* Navigation links */
@@ -477,26 +466,103 @@ if (isset($_SESSION['userID'])) {
   box-shadow: 4px 4px 0 #000;
 }
 
+
+  
+  .user-info-container h3 {
+      margin-bottom: 10px;
+      font-size: 20px;
+  }
+        
+  .user-info-container p {
+      font-size: 16px;
+  }
+
+   /* Search Bar Container */
+/* From Uiverse.io by boryanakrasteva - Inspired Search Bar Style */
+.input-container {
+  width: 1000px;
+  position: relative;
+  margin: 20px auto;
+  margin-bottom: 2rem;
+}
+
+.input-container form {
+  position: relative;
+  left: 16%;
+}
+
+.input {
+  width: 100%;
+  height: 40px;
+  padding: 10px 40px 10px 10px; 
+  border: 2.5px solid black;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: 0.2s linear;
+  font-weight: 600;
+}
+
+.input:focus {
+  outline: none;
+  border: 0.5px solid black;
+  box-shadow: -5px -5px 0px black;
+}
+
+.clear-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  position: absolute;
+  right: 10px;
+  top: calc(50% + 5px);
+  transform: translateY(calc(-50% - 5px));
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.2s ease;
+}
+
+
+@keyframes anim {
+  0%, 100% {
+    transform: translateY(calc(-50% - 5px)) scale(1);
+  }
+  50% {
+    transform: translateY(calc(-50% - 5px)) scale(1.1);
+  }
+}
+
 </style>
   
 </head>
 <body class="bg-white text-gray-900 font-[Nunito, sans-serif]">
 
 
+
 <!--Nav bar-->
 <header id="navbar">
-  <nav class="navbar-container">
-    
-    <!-- Logo on the left -->
-    <a href="#" class="logo">
+
+    <!-- information abt user -->
+<div class="user-info-container">
+  <a href="#" class="logo">
       <img src="Images/Logo/TaraDito.png" alt="TaraDito Logo" />
     </a>
+    <h3><?= htmlspecialchars($firstName . ' ' . $lastName) ?></h3>
+    <p><strong>Role:</strong> <?= htmlspecialchars($role) ?></p>
+</div>
 
+
+  <nav class="navbar-container">
+     <div class="nav-main">
     <!-- Navigation Links on the right -->
     <ul class="nav-links">
       <li><a href="index.php" class="nav-link">Home</a></li>
       <li><a href="product.php" class="nav-link">Venues</a></li>
-      <li><a href="#" class="nav-link">Explore</a></li>
+      <li><a href="top_venues_chart.php" class="nav-link">Top picks</a></li>
       <?php
           $dashboardLink = PROJECT_ROOT . '/src/Login.php';
           if (isset($_SESSION['role'])) {
@@ -513,17 +579,9 @@ if (isset($_SESSION['userID'])) {
           </a>
         </li>
     </ul>
+        </div>
 
-  </nav>
-</header>
-
-<!-- information abt user -->
-<div class="user-info-container" style="border:1px solid #ccc; padding:10px; max-width:300px; margin:20px auto; text-align:center; font-family: Arial, sans-serif;">
-    <h3>Welcome, <?= htmlspecialchars($firstName . ' ' . $lastName) ?></h3>
-    <p><strong>Role:</strong> <?= htmlspecialchars($role) ?></p>
-</div>
-
-<!-- Search Bar -->
+   <!-- Search Bar -->
 <div class="input-container">
   <form method="GET" action="">
     <input 
@@ -534,12 +592,23 @@ if (isset($_SESSION['userID'])) {
       class="input" 
       required
     >
-    <button type="submit" class="search-btn">
-      <img src="Images/location.png" alt="Search" class="icon" />
-    </button>
-  </form>
-</div>
+<button 
+  type="button" 
+  class="clear-btn" 
+  aria-label="Clear search" 
+  onclick="window.location.href = window.location.pathname;"
+  title="Clear search"
+>
+  <img src="Images/close.png" alt="Clear Search" class="icon" />
+</button>
 
+
+  </form>
+
+  
+</div>
+</header>
+  </nav>
 
 
 <!-- Category Navigation -->

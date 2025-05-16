@@ -41,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         INSERT INTO userreserved (userID, venueID, statusID, startDate, startTime, endDate, endTime)
         VALUES (?, ?, ?, ?, ?, ?, ?)
     ");
-    $stmt->bind_param("iisssss", $userID, $venueID, $statusID, $startDate, $startTime, $endDate, $endTime);
+    $stmt->bind_param("iiissss", $userID, $venueID, $statusID, $startDate, $startTime, $endDate, $endTime);
 
     if ($stmt->execute()) {
         $_SESSION['reservation_success'] = true;
