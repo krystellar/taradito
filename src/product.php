@@ -11,8 +11,8 @@
   define('PROJECT_ROOT', rtrim(dirname($_SERVER['SCRIPT_NAME'], 2), '/'));
 
   $firstName = '';
-$lastName = '';
-$role = '';
+  $lastName = '';
+  $role = '';
 
 if (isset($_SESSION['userID'])) {
     //logged in as user
@@ -55,14 +55,21 @@ $validCategory = ['intimate','business','fun','casual'];
 $cats = array_values(array_intersect($validCategory, $selectedCategory));
 
 $sql = "SELECT 
-        v.*, 
-        p.priceRangeText,
-        a.days,
-        AVG(r.rating) AS averageRating
-      FROM venueData v
-      LEFT JOIN priceRange p ON v.priceRangeID = p.priceRangeID
-      LEFT JOIN availability a ON v.availabilityDays = a.availabilityDays
-      LEFT JOIN userRatings r ON v.venueID = r.venueID";
+          v.*, 
+          p.priceRangeText,
+          a.days,
+          AVG(r.rating) AS averageRating
+        FROM venueData v
+        LEFT JOIN priceRange p ON v.priceRangeID = p.priceRangeID
+        LEFT JOIN availability a ON v.availabilityDays = a.availabilityDays
+        LEFT JOIN userRatings r ON v.venueID = r.venueID";
+
+$currentSort = $_GET['sort'] ?? '';
+
+if ($currentSort === 'likes') {
+    $sql .= " LEFT JOIN userLiked l ON v.venueID = l.venueID";
+}
+
 
 $wheres = [];
 if ($searchTerm !== '') {
@@ -80,28 +87,55 @@ if (count($wheres) > 0) {
     $sql .= ' WHERE ' . implode(' AND ', $wheres);
 }
 
-$sql .= ' GROUP BY v.venueID ORDER BY v.venueID ASC';
+$sql .= ' GROUP BY v.venueID ';
+if ($currentSort === 'rating') {
+    $sql .= ' ORDER BY COALESCE(AVG(r.rating), 0) DESC, v.venueID ASC';
+} elseif ($currentSort === 'likes') {
+    $sql .= ' ORDER BY COALESCE(COUNT(l.userID), 0) DESC, v.venueID ASC';
+}
+
 
 $result = $conn->query($sql);
-
-  // For toggling category links
+  // for categories
   function toggleCatLink(string $category): string {
-      $qs = [];
-      if (!empty($_GET['query'])) {
-          $qs[] = 'query=' . urlencode($_GET['query']);
-      }
-      $cur = isset($_GET['category']) ? (array)$_GET['category'] : [];
-      if (in_array($category, $cur, true)) {
-          $new = array_diff($cur, [$category]);
-      } else {
-          $new = array_merge($cur, [$category]);
-      }
-      foreach ($new as $c) {
-          $qs[] = 'category[]=' . urlencode($c);
-      }
-      return '?' . implode('&', $qs);
-  }
+    $qs = [];
+    if (!empty($_GET['query'])) {
+        $qs[] = 'query=' . urlencode($_GET['query']);
+    }
+    if (!empty($_GET['sort'])) {
+        $qs[] = 'sort=' . urlencode($_GET['sort']);
+    }
+    $cur = isset($_GET['category']) ? (array)$_GET['category'] : [];
+    if (in_array($category, $cur, true)) {
+        $new = array_diff($cur, [$category]);
+    } else {
+        $new = array_merge($cur, [$category]);
+    }
 
+    foreach ($new as $c) {
+        $qs[] = 'category[]=' . urlencode($c);
+    }
+
+    return '?' . implode('&', $qs);
+  }
+  // for sortings
+  function toggleSortLink(string $sortType): string {
+    $qs = [];
+    if (!empty($_GET['query'])) {
+        $qs[] = 'query=' . urlencode($_GET['query']);
+    }
+    if (!empty($_GET['category'])) {
+        foreach ((array)$_GET['category'] as $c) {
+            $qs[] = 'category[]=' . urlencode($c);
+        }
+    }
+    $currentSort = $_GET['sort'] ?? '';
+    if ($currentSort !== $sortType) {
+        $qs[] = 'sort=' . urlencode($sortType);
+    }
+
+    return '?' . implode('&', $qs);
+  }
   
 ?>
 
@@ -218,6 +252,45 @@ $result = $conn->query($sql);
   background-color: #15803d; /* Deep green (Tailwind Green-700) */
   color: white;
 }
+
+.sort-buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.sort-btn {
+  display: inline-block;
+  text-decoration: none;
+  background: #d1d5db;
+  font-family: inherit;
+  padding: 0.6em 1.3em;
+  font-weight: 900;
+  font-size: 18px;
+  border: 3px solid black;
+  border-radius: 0.4em;
+  box-shadow: 4px 4px 0 0 black;
+  cursor: pointer;
+  color: #1f2937;
+  text-transform: uppercase;
+  position: relative;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.sort-btn:hover {
+  transform: translateY(-4px);
+  box-shadow: 6px 6px 0 0 black;
+  background-color: #9ca3af;
+  color: white;
+}
+
+.sort-btn.active {
+  background-color: #4b5563;
+  color: white;
+  border-color: #222;
+  box-shadow: 6px 6px 0 0 #111;
+}
+
 
 /*Lisitngs*/
 
@@ -633,7 +706,17 @@ $result = $conn->query($sql);
         <div class="button__drow2"></div>
       </a>
     <?php endforeach; ?>
+    <div class="sort-buttons">
+    <a href="<?= toggleSortLink('rating') ?>" class="sort-btn <?= ($_GET['sort'] ?? '') === 'rating' ? 'active' : '' ?>">
+      Sort by Rating
+    </a>
+    <a href="<?= toggleSortLink('likes') ?>" class="sort-btn <?= ($_GET['sort'] ?? '') === 'likes' ? 'active' : '' ?>">
+      Sort by Likes
+    </a>
   </div>
+  </div>
+  
+
 
     <script>
     // Select all buttons with the class 'button'

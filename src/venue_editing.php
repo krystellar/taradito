@@ -375,11 +375,11 @@ button:active {
 
                     <div>
                         <label for="contactEmail" class="form-label">Contact Email</label>
-                        <input type="text" name="contactEmail" id="contactEmail" value="<?= htmlspecialchars($venue['contactEmail']) ?>" class="form-input" >
+                        <input type="email" name="contactEmail" id="contactEmail" value="<?= htmlspecialchars($venue['contactEmail']) ?>" class="form-input" >
                     </div>
                     <div>
                         <label for="contactNum" class="form-label">Contact Number</label>
-                        <input type="number" name="contactNum" id="ContactNum" value="<?= htmlspecialchars($venue['contactNum']) ?>" class="form-input">
+                        <input type="number" name="contactNum" id="contactNum" value="<?= htmlspecialchars($venue['contactNum']) ?>" class="form-input">
                     </div>
 
                     <div>

@@ -1,8 +1,8 @@
 <?php
 include('db_connection.php');
 
-$email = 'johndoe@gmail.com';
-$plainPassword = 'user123';
+$email = 'admin15@gmail.com';
+$plainPassword = 'admin123';
 
 $hashedPassword = password_hash($plainPassword, PASSWORD_BCRYPT);
 

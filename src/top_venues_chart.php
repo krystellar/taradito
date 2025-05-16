@@ -1,16 +1,12 @@
 <?php
-  session_start();
-  $baseURL = '/taradito'; // Change this if your project folder is different
+session_start();
+  include('db_connection.php');
+  if (!isset($_SESSION['userID']) && !isset($_SESSION['managerID'])) {
+    header("Location: Login.php");
+    exit;
+}
 
-  $dashboardLink = "$baseURL/src/Login.php";
-
-  if (isset($_SESSION['role'])) {
-      if ($_SESSION['role'] === 'manager') {
-          $dashboardLink = "$baseURL/src/dashboardAdmin.php";
-      } elseif ($_SESSION['role'] === 'user') {
-          $dashboardLink = "$baseURL/src/dashboard.php";
-      }
-  }
+  define('PROJECT_ROOT', rtrim(dirname($_SERVER['SCRIPT_NAME'], 2), '/'));
 ?>
 
 <!DOCTYPE html>
@@ -204,12 +200,12 @@
     <li><a href="product.php" class="nav-link">Venues</a></li>
     <li><a href="top_venues_chart.php" class="nav-link">Top picks</a></li>
     <?php
-        $dashboardLink = '/src/Login.php'; // relative to web root
+        $dashboardLink = PROJECT_ROOT . '/src/Login.php'; // relative to web root
         if (isset($_SESSION['role'])) {
             if ($_SESSION['role'] === 'manager') {
-                $dashboardLink = '/src/dashboardAdmin.php';
+                $dashboardLink = PROJECT_ROOT . '/src/dashboardAdmin.php';
             } elseif ($_SESSION['role'] === 'user') {
-                $dashboardLink = '/src/dashboard.php';
+                $dashboardLink = PROJECT_ROOT . '/src/dashboard.php';
             }
         }
     ?>

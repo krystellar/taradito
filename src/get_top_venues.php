@@ -1,14 +1,5 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "taradito";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
+include('db_connection.php');
 // Query to get top 5 venues with the most reservations
 $query = "
     SELECT 

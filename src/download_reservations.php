@@ -1,22 +1,14 @@
 <?php
 session_start();
-
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "taradito";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+include('db_connection.php');
+  if (!isset($_SESSION['userID']) && !isset($_SESSION['managerID'])) {
+    header("Location: Login.php");
+    exit;
 }
+
 
 $managerID = $_SESSION['managerID'] ?? null;
 $userID = $_SESSION['userID'] ?? null;
-
-if (!$managerID && !$userID) {
-    die("Unauthorized: No user or manager logged in.");
-}
 
 $selectClause = "SELECT 
     u.firstName, u.lastName,
