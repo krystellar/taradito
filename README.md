@@ -1,8 +1,10 @@
-[x] csv files
-[] front end
-  - html
-[] back-end
-  - php
-  - mysql
+cmsc 126 - taradito: venue finder
+Mangaron, Michael
+Perez, Krystel
 
-model-view-controller
+Functions of the program:
+- crud for venue
+- crud for user accounts
+- crud for manager accounts
+- crud for reservations
+- crud for reviews
