@@ -24,6 +24,30 @@ if ($resultAvailability->num_rows > 0) {
     $availabilityDaysOptions = [];
 }
 
+    $targetDir = "uploads/";
+    if (!is_dir($targetDir)) {
+        mkdir($targetDir, 0755, true); // create directory if it doesn't exist
+    }
+
+    // Function to handle single image upload
+    function uploadImage($fileInputName, $targetDir) {
+        if (isset($_FILES[$fileInputName]) && $_FILES[$fileInputName]['error'] === UPLOAD_ERR_OK) {
+            $fileTmpPath = $_FILES[$fileInputName]['tmp_name'];
+            $fileName = basename($_FILES[$fileInputName]['name']);
+            $fileName = uniqid() . "_" . $fileName;
+            $filePath = $targetDir . $fileName;
+            $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            $fileType = mime_content_type($fileTmpPath);
+
+            if (in_array($fileType, $allowedTypes)) {
+                if (move_uploaded_file($fileTmpPath, $filePath)) {
+                    return $filePath;
+                }
+            }
+        }
+        return null;
+    }
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $managerID = $_SESSION['managerID']; 
@@ -58,35 +82,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $payCash = isset($_POST['payCash']) ? 1 : 0;
     $payElectronic = isset($_POST['payElectronic']) ? 1 : 0;
     $payBank = isset($_POST['payBank']) ? 1 : 0;
-    $imgs = mysqli_real_escape_string($conn, $_POST['imgs']);
-    $img2 = mysqli_real_escape_string($conn, $_POST['img2']);
-    $img3 = mysqli_real_escape_string($conn, $_POST['img3']);
+
     $latitude =  mysqli_real_escape_string($conn, $_POST['latitude']);
     $longitude = mysqli_real_escape_string($conn, $_POST['longitude']);
 
-    $uploadDir = 'uploads/';
-    if (!file_exists($uploadDir)) {
-        mkdir($uploadDir, 0777, true);
-    }
-
-    function uploadImage($fieldName, $existingPath) {
-        global $uploadDir;
-        if (isset($_FILES[$fieldName]) && $_FILES[$fieldName]['error'] === UPLOAD_ERR_OK) {
-            $tmpName = $_FILES[$fieldName]['tmp_name'];
-            $fileName = basename($_FILES[$fieldName]['name']);
-            $targetFile = $uploadDir . time() . '_' . $fileName;
-            if (move_uploaded_file($tmpName, $targetFile)) {
-                return $targetFile;
-            }
-        }
-        return $existingPath;
-    }
-
-    // Upload or retain existing images
-    $imgs = uploadImage('img1', '');
-    $img2 = uploadImage('img2', '');
-    $img3 = uploadImage('img3', '');
-
+    $imgs = uploadImage('imgs', $targetDir);
+    $img2 = uploadImage('img2', $targetDir);
+    $img3 = uploadImage('img3', $targetDir);
 
     // Insert into venueData table
     $sql = "INSERT INTO venueData (
@@ -101,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         latitude, longitude
     ) VALUES (
         '$venueName', '$barangayAddress', '$cityAddress', '$venueDesc', '$availabilityDays',
-        $amAvail, $nnAvail, $pmAvail, $publicTranspo,
+        $amAvail, $nnAvail, $pmAvail, '$publicTranspo',
         '$landmarks', '$routes', '$priceRangeID', '$contactEmail', '$contactNum',
         $intimate, $business, $casual, $fun,
         $eventPlanner, $equipRentals, $decoServices, $onsiteStaff, $techSupport, $pwdFriendly, $parking,
@@ -110,7 +112,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         '$imgs', '$img2', '$img3',
         '$latitude', '$longitude'
     )";
-
 
     if ($conn->query($sql)) {
         $venueID = $conn->insert_id;
@@ -382,7 +383,7 @@ button:active {
             <input type="number" name="contactNum" id="contactNum">
 
             <label for="publicTranspo">Public Transportation:</label>
-            <input type="publicTranspo" name="landmarks" id="publicTranspo">
+            <input type="text" name="publicTranspo" id="publicTranspo">
 
             <label for="landmarks">Landmarks:</label>
             <input type="text" name="landmarks" id="landmarks">
@@ -446,28 +447,16 @@ button:active {
 
             <!-- Image URLs -->
             <div class="section">
-                <h2 class="text-xl font-semibold text-[#333333]">Images</h2>
-                <!-- Images -->
-                <label>Image 1:</label><br>
-                <?php if (!empty($venue['imgs'])): ?>
-                    <img src="<?= $venue['imgs'] ?>" width="100"><br>
-                <?php endif; ?>
-                <input type="hidden" name="current_img1" value="<?= htmlspecialchars($venue['imgs']) ?>">
-                <input type="file" name="img1"><br>
+                <h2 class="text-xl font-semibold">Images</h2>
 
-                <label>Image 2:</label><br>
-                <?php if (!empty($venue['img2'])): ?>
-                    <img src="<?= $venue['img2'] ?>" width="100"><br>
-                <?php endif; ?>
-                <input type="hidden" name="current_img2" value="<?= htmlspecialchars($venue['img2']) ?>">
-                <input type="file" name="img2"><br>
+                <label for="imgs">Image 1:</label>
+                <input type="file" name="imgs" id="imgs" accept="image/*" required>
 
-                <label>Image 3:</label><br>
-                <?php if (!empty($venue['img3'])): ?>
-                    <img src="<?= $venue['img3'] ?>" width="100"><br>
-                <?php endif; ?>
-                <input type="hidden" name="current_img3" value="<?= htmlspecialchars($venue['img3']) ?>">
-                <input type="file" name="img3"><br>
+                <label for="img2">Image 2:</label>
+                <input type="file" name="img2" id="img2" accept="image/*">
+
+                <label for="img3">Image 3:</label>
+                <input type="file" name="img3" id="img3" accept="image/*">
             </div>
 
             <!-- Submit Button -->
