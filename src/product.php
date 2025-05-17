@@ -92,6 +92,10 @@ if ($currentSort === 'rating') {
     $sql .= ' ORDER BY COALESCE(AVG(r.rating), 0) DESC, v.venueID ASC';
 } elseif ($currentSort === 'likes') {
     $sql .= ' ORDER BY COALESCE(COUNT(l.userID), 0) DESC, v.venueID ASC';
+} elseif ($currentSort === 'priceAsc'){
+    $sql .= ' ORDER BY v.priceRangeID ASC, v.venueID ASC';
+} elseif ($currentSort === 'priceDesc'){
+    $sql .= ' ORDER BY v.priceRangeID DESC, v.venueID ASC';
 }
 
 
@@ -650,7 +654,6 @@ $result = $conn->query($sql);
      <div class="nav-main">
     <!-- Navigation Links on the right -->
     <ul class="nav-links">
-      <li><a href="index.php" class="nav-link">Home</a></li>
       <li><a href="product.php" class="nav-link">Venues</a></li>
       <li><a href="top_venues_chart.php" class="nav-link">Top picks</a></li>
       <?php
@@ -725,10 +728,18 @@ $result = $conn->query($sql);
     <?php endforeach; ?>
     <div class="sort-buttons">
     <a href="<?= toggleSortLink('rating') ?>" class="sort-btn <?= ($_GET['sort'] ?? '') === 'rating' ? 'active' : '' ?>">
-      Sort by Rating
+      by Rating
     </a>
     <a href="<?= toggleSortLink('likes') ?>" class="sort-btn <?= ($_GET['sort'] ?? '') === 'likes' ? 'active' : '' ?>">
-      Sort by Likes
+      by Likes
+    </a>
+      </div>
+      <div class="sort-buttons">
+    <a href="<?= toggleSortLink('priceAsc') ?>" class="sort-btn <?= ($_GET['sort'] ?? '') === 'priceAsc' ? 'active' : '' ?>">
+      (>)
+    </a>
+    <a href="<?= toggleSortLink('priceDesc') ?>" class="sort-btn <?= ($_GET['sort'] ?? '') === 'priceDesc' ? 'active' : '' ?>">
+      (<)
     </a>
   </div>
   </div>

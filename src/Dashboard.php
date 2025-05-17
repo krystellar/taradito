@@ -86,6 +86,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>User Dashboard</title>
   <link href="output.css" rel="stylesheet" />
+<!-- Favicon -->
+ <link rel="icon" href="Images/Logo/TaraDito.ico" type="image/x-icon">
 
   <style>
 /* General Card Styling */
@@ -727,7 +729,6 @@ border-color: #00C851;
 
     <!-- Navigation Links on the right -->
     <ul class="nav-links">
-      <li><a href="index.php" class="nav-link">Home</a></li>
       <li><a href="product.php" class="nav-link">Venues</a></li>
       <li><a href="top_venues_chart.php" class="nav-link">Top picks</a></li>
       <?php

@@ -213,7 +213,6 @@ session_start();
 
     <!-- Navigation Links on the right -->
     <ul class="nav-links">
-    <li><a href="index.php" class="nav-link">Home</a></li>
     <li><a href="product.php" class="nav-link">Venues</a></li>
     <li><a href="top_venues_chart.php" class="nav-link">Top picks</a></li>
     <?php

@@ -4,6 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="./output.css" rel="stylesheet">
+  <!-- Title -->
+  <title>TaraDito</title>
+
+<!-- Favicon -->
+ <link rel="icon" href="Images/Logo/TaraDito.ico" type="image/x-icon">
+
+
+
 	<script defer src="second.js"></script>
 	<style>
     /* Card Styles */
@@ -581,15 +589,121 @@
   gap: 20px; /* optional: space between ghosts */
 }
 
+
+/*footer*/
+
+.brutalist-footer {
+  background: #fff;
+  color: #000;
+  font-family: 'Courier New', Courier, monospace;
+  border-top: 4px solid #000;
+  padding: 2rem;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.brutalist-footer h2 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 2px solid #000;
+  padding-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.brutalist-footer a {
+  color: #000;
+  text-decoration: underline;
+}
+
+.brutalist-footer a:hover {
+  background: #000;
+  color: #fff;
+  transition: 0.2s ease;
+}
+
+.footer-bottom {
+  text-align: center;
+  font-size: 0.85rem;
+  border-top: 2px solid #000;
+  padding-top: 1rem;
+}
+
+.content {
+  opacity: 0;
+  animation: floatUp 1s ease forwards;
+
+}
+
+/* Float up keyframes */
+@keyframes floatUp {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background-image: url('./Images/hero.png');
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4); /* Optional dark overlay */
+}
+
+.hero-logo-container {
+  position: relative;
+  z-index: 10;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-logo {
+  width: 40rem; /* same as w-48 */
+  height: auto;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+}
+
+
 /* Floating sticky navbar */
 #navbar {
   position: sticky;
-  top: 20px;
-  z-index: 50;
+  top: 0;
+  z-index: 100; /* Above overlay and hero content */
   display: flex;
   justify-content: center;
-  pointer-events: none; /* allows shadow and border effects to float above */
+  pointer-events: none;
+  padding-top: 1rem;
 }
+
+.fixed-navbar {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  pointer-events: auto;
+}
+
+
 
 .navbar-container {
   pointer-events: auto; 
@@ -650,87 +764,44 @@
 
 
 
-/*footer*/
-
-.brutalist-footer {
-  background: #fff;
-  color: #000;
-  font-family: 'Courier New', Courier, monospace;
-  border-top: 4px solid #000;
-  padding: 2rem;
-}
-
-.footer-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 2rem;
-  margin-bottom: 1.5rem;
-}
-
-.brutalist-footer h2 {
-  font-size: 1rem;
-  margin-bottom: 0.5rem;
-  border-bottom: 2px solid #000;
-  padding-bottom: 4px;
-  text-transform: uppercase;
-}
-
-.brutalist-footer a {
-  color: #000;
-  text-decoration: underline;
-}
-
-.brutalist-footer a:hover {
-  background: #000;
-  color: #fff;
-  transition: 0.2s ease;
-}
-
-.footer-bottom {
-  text-align: center;
-  font-size: 0.85rem;
-  border-top: 2px solid #000;
-  padding-top: 1rem;
-}
-
-.content {
-  opacity: 0;
-  animation: floatUp 1s ease forwards;
-}
-
-/* Float up keyframes */
-@keyframes floatUp {
-  0% {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
   </style>
 
 </head>
 <body class="content" >
-<!-- Navbar -->
-<header id="navbar">
-  <nav class="navbar-container">
-    
-    <!-- Logo on the left -->
-    <a href="#" class="logo">
-      <img src="Images/Logo/TaraDito.png" alt="TaraDito Logo" />
-    </a>
 
-    <!-- Navigation Links on the right -->
-    <ul class="nav-links">
-      <li><a href="#" class="nav-link">Home</a></li>
-      <li><a href="product.php" class="nav-link">Venues</a></li>
-    </ul>
+<section class="hero-section" id="hero">
+  <header id="navbar" class="navbar">
+    <nav class="navbar-container">
+      <a href="#" class="logo">
+        <img src="Images/Logo/TaraDito.png" alt="TaraDito Logo" />
+      </a>
+      <ul class="nav-links">
+        <li><a href="#" class="nav-link">Home</a></li>
+        <li><a href="product.php" class="nav-link">Venues</a></li>
+      </ul>
+    </nav>
+  </header>
 
-  </nav>
-</header>
+  <div class="hero-overlay"></div>
+  <div class="hero-logo-container">
+    <img src="Images/Logo/TaraDito.png" alt="Our Logo" class="hero-logo">
+  </div>
+</section>
+
+<script>
+  window.addEventListener('scroll', function () {
+    const navbar = document.getElementById('navbar');
+    const scrollY = window.scrollY;
+
+    if (scrollY > 100) {
+      navbar.classList.add('fixed-navbar');
+    } else {
+      navbar.classList.remove('fixed-navbar');
+    }
+  });
+</script>
+
+
 
 
 

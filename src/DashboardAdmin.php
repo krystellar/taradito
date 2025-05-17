@@ -166,6 +166,9 @@ if (!$result2) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manager Dashboard</title>
+    <!-- Favicon -->
+ <link rel="icon" href="Images/Logo/TaraDito.ico" type="image/x-icon">
+
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.0.0/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/tailwindcss@3.0.0/dist/tailwind.min.js"></script>
     <link href="./output.css" rel="stylesheet">
@@ -711,7 +714,6 @@ if (!$result2) {
 
     <!-- Navigation Links on the right -->
     <ul class="nav-links">
-      <li><a href="index.php" class="nav-link">Home</a></li>
       <li><a href="product.php" class="nav-link">Venues</a></li>
       <li><a href="top_venues_chart.php" class="nav-link">Top picks</a></li>
       <li><a href="DashboardAdmin.php" class="nav-link">Dashboard</a></li>
