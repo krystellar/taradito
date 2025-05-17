@@ -35,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $amAvail = isset($_POST['amAvail'])  ? 1 : 0;
     $nnAvail  = isset($_POST['nnAvail'])  ? 1 : 0;
     $pmAvail = isset($_POST['pmAvail'])    ? 1 : 0;
+    $publicTranspo = mysqli_real_escape_string($conn, $_POST['publicTranspo']);
     $landmarks = mysqli_real_escape_string($conn, $_POST['landmarks']);
     $routes = mysqli_real_escape_string($conn, $_POST['routes']);
     $priceRangeID = mysqli_real_escape_string($conn, $_POST['priceRange']); 
@@ -90,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Insert into venueData table
     $sql = "INSERT INTO venueData (
         venueName, barangayAddress, cityAddress, venueDesc, availabilityDays,
-        amAvail, nnAvail, pmAvail,
+        amAvail, nnAvail, pmAvail, publicTranspo,
         landmarks, routes, priceRangeID, contactEmail, contactNum,
         intimate, business, casual, fun,
         eventPlanner, equipRentals, decoServices, onsiteStaff, techSupport, pwdFriendly, parking,
@@ -100,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         latitude, longitude
     ) VALUES (
         '$venueName', '$barangayAddress', '$cityAddress', '$venueDesc', '$availabilityDays',
-        $amAvail, $nnAvail, $pmAvail,
+        $amAvail, $nnAvail, $pmAvail, $publicTranspo,
         '$landmarks', '$routes', '$priceRangeID', '$contactEmail', '$contactNum',
         $intimate, $business, $casual, $fun,
         $eventPlanner, $equipRentals, $decoServices, $onsiteStaff, $techSupport, $pwdFriendly, $parking,
@@ -379,6 +380,9 @@ button:active {
 
             <label for="contactNum">Contact Number:</label>
             <input type="number" name="contactNum" id="contactNum">
+
+            <label for="publicTranspo">Public Transportation:</label>
+            <input type="publicTranspo" name="landmarks" id="publicTranspo">
 
             <label for="landmarks">Landmarks:</label>
             <input type="text" name="landmarks" id="landmarks">

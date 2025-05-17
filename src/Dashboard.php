@@ -693,12 +693,29 @@ border-color: #00C851;
     transform: scale(1.05);
 }
 
+.content {
+  opacity: 0;
+  animation: floatUp 1s ease forwards;
+}
+
+/* Float up keyframes */
+@keyframes floatUp {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
   </style>
 
   
 </head>
 
-<body class="bg-gray-100 text-gray-900">
+<body class="bg-gray-100 text-gray-900 content">
   <!--Nav bar-->
 <header id="navbar">
   <nav class="navbar-container">

@@ -772,6 +772,22 @@
   word-wrap: break-word; /* Prevents cutting off */
 }
 
+.content {
+  opacity: 0;
+  animation: floatUp 1s ease forwards;
+}
+
+/* Float up keyframes */
+@keyframes floatUp {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 
 
@@ -779,7 +795,7 @@
 
   
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-50 content">
 
 <?php if ($resFlash): ?>
   <script>alert("✅ Reservation successful! Track your reservation on the user dashboard. ");</script>
@@ -798,7 +814,7 @@
     <ul class="nav-links">
       <li><a href="index.php" class="nav-link">Home</a></li>
       <li><a href="product.php" class="nav-link">Venues</a></li>
-      <li><a href="#" class="nav-link">Explore</a></li>
+      <li><a href="top_venues_chart.php" class="nav-link">Top picks</a></li>
       <?php
           $dashboardLink = PROJECT_ROOT . '/src/Login.php';
           if (isset($_SESSION['role'])) {

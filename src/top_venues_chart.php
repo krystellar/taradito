@@ -120,8 +120,8 @@ session_start();
   display: flex;
   justify-content: center;
   pointer-events: none; /* allows shadow and border effects to float above */
-  margin-bottom: 5rem;
-   max-width: 1280px;
+  margin-bottom: 2rem;
+  max-width: 1280px;
   width: 100%;
 }
 
@@ -182,9 +182,26 @@ session_start();
   box-shadow: 4px 4px 0 #000;
 }
 
+.content {
+  opacity: 0;
+  animation: floatUp 1s ease forwards;
+}
+
+/* Float up keyframes */
+@keyframes floatUp {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
   </style>
 </head>
-<body>
+<body class="content">
 
 <header id="navbar">
   <nav class="navbar-container">

@@ -693,10 +693,27 @@
   padding-top: 1rem;
 }
 
+.content {
+  opacity: 0;
+  animation: floatUp 1s ease forwards;
+}
+
+/* Float up keyframes */
+@keyframes floatUp {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
   </style>
 
 </head>
-<body>
+<body class="content" >
 <!-- Navbar -->
 <header id="navbar">
   <nav class="navbar-container">
@@ -916,30 +933,25 @@
     </div>
 </div>
 
+
+
 <footer class="brutalist-footer">
   <div class="footer-grid">
     <div>
       <h2>CONTACT</h2>
-      <p>Email: <a href="mailto:hello@example.com">hello@example.com</a></p>
-      <p>Phone: <a href="tel:+1234567890">+1 (234) 567-890</a></p>
+      <p>Email: <a href="mailto:support@taradito.com">support@taradito.com</a></p>
+      <p>Phone: <a href="tel:+639171234567">+63 917 123 4567</a></p>
     </div>
     <div>
       <h2>ABOUT</h2>
-      <p>We build strange, beautiful things on the web. Brutal and proud.</p>
-    </div>
-    <div>
-      <h2>NAVIGATION</h2>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/work">Work</a></li>
-        <li><a href="/contact">Contact</a></li>
-      </ul>
+      <p>Taradito helps venue managers track reservations, views, and likes to grow their business with clear analytics.</p>
     </div>
   </div>
   <div class="footer-bottom">
-    © 2025 YourSiteName. Built with raw HTML and ambition.
+    © 2025 Taradito. Built with passion and data insights.
   </div>
 </footer>
+
 
 
 

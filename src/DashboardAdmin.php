@@ -1,107 +1,163 @@
 <?php
-    // logging in as manager verification
-    session_start();
-    if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'manager') {
-        header("Location: login.php");
-        exit();
+// logging in as manager verification
+session_start();
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'manager') {
+    header("Location: login.php");
+    exit();
+}
+
+include('db_connection.php');
+define('PROJECT_ROOT', rtrim(dirname($_SERVER['SCRIPT_NAME'], 2), '/')); // for file
+
+if (!isset($_SESSION['managerID'])) {
+    header("Location: Login.php");
+    exit;
+}
+
+$managerID = $_SESSION['managerID'];
+
+// Manager profile query
+$stmt = $conn->prepare("SELECT firstName, lastName, managerEmail, managerAbout FROM managerData WHERE managerID = ?");
+$stmt->bind_param("i", $managerID);  // "i" for integer
+$stmt->execute();
+$manager = $stmt->get_result()->fetch_assoc();
+
+if (!$manager) {
+    echo "Manager profile not found!";
+    exit;
+}
+
+// Fetch venues under the manager
+$sql = "SELECT v.venueID, v.venueName, v.barangayAddress, v.cityAddress, v.maxCapacity, v.priceRangeID, pr.priceRangeText
+        FROM venueData v
+        JOIN managervenue mv ON v.venueID = mv.venueID
+        JOIN priceRange pr ON v.priceRangeID = pr.priceRangeID
+        WHERE mv.managerID = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $managerID);
+$stmt->execute();
+
+if ($stmt->errno) {
+    error_log("Error executing venue query: (" . $stmt->errno . ") " . $stmt->error);
+    echo "<p class='text-red-600'>Database error fetching venues.</p>";
+}
+
+$result = $stmt->get_result();
+if (!$result) {
+    error_log("Error getting venue result: " . $conn->error);
+    echo "<p class='text-red-600'>Error retrieving venue data.</p>";
+}
+
+$venues = $result->fetch_all(MYSQLI_ASSOC);
+$stmt->close();
+
+// Fetch reservations for the manager's venues
+$sql = "SELECT ur.reservationID, ur.reservationDate, rs.statusText,
+            u.firstName, u.lastName, v.venueName
+        FROM userReserved ur
+        JOIN reservationStatus rs ON ur.statusID = rs.statusID
+        JOIN userData u ON ur.userID = u.userID
+        JOIN venueData v ON ur.venueID = v.venueID
+        JOIN managerVenue mv ON v.venueID = mv.venueID
+        WHERE mv.managerID = ?
+        ORDER BY ur.reservationDate DESC";
+
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $managerID);
+$stmt->execute();
+$reservations = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+// Fetch available reservation statuses
+$statusStmt = $conn->prepare("SELECT statusID, statusText FROM reservationStatus WHERE statusID >= 2 AND statusID <= 6");
+$statusStmt->execute();
+$statuses = $statusStmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+// Handle POST requests for reservation updates
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['accept_reservation'])) {
+        $reservationID = $_POST['reservationID'];
+        $stmt = $conn->prepare("UPDATE userReserved SET statusID = 3 WHERE reservationID = ?");
+        $stmt->bind_param("i", $reservationID);
+        $stmt->execute();
     }
 
-    include('db_connection.php');
-    define('PROJECT_ROOT', rtrim(dirname($_SERVER['SCRIPT_NAME'], 2), '/')); // for file
-    
-    if (!isset($_SESSION['managerID'])) {
-        header("Location: Login.php");
-        exit;
+    if (isset($_POST['reject_reservation'])) {
+        $reservationID = $_POST['reservationID'];
+        $stmt = $conn->prepare("UPDATE userReserved SET statusID = 2 WHERE reservationID = ?");
+        $stmt->bind_param("i", $reservationID);
+        $stmt->execute();
     }
 
-    $managerID = $_SESSION['managerID'];
-    
-    // Manager profile query
-    $stmt = $conn->prepare("SELECT firstName, lastName, managerEmail, managerAbout FROM managerData WHERE managerID = ?");
-    $stmt->bind_param("i", $managerID);  // "i" for integer
-    $stmt->execute();
-    $manager = $stmt->get_result()->fetch_assoc();
-
-    if (!$manager) {
-        echo "Manager profile not found!";
-        exit;
+    if (isset($_POST['update_status'])) {
+        $reservationID = $_POST['reservationID'];
+        $newStatusID = $_POST['new_status'];
+        $stmt = $conn->prepare("UPDATE userReserved SET statusID = ? WHERE reservationID = ?");
+        $stmt->bind_param("ii", $newStatusID, $reservationID);
+        $stmt->execute();
     }
 
-    // Fetch venues under the manager
-    $sql = "SELECT v.venueID, v.venueName, v.barangayAddress, v.cityAddress, v.maxCapacity, v.priceRangeID, pr.priceRangeText
-            FROM venueData v
-            JOIN managervenue mv ON v.venueID = mv.venueID
-            JOIN priceRange pr ON v.priceRangeID = pr.priceRangeID
-            WHERE mv.managerID = ?";
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit;
+}
 
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $managerID);
-    $stmt->execute();
+// ==== Your new analytics queries here ====
 
-    if ($stmt->errno) {
-        error_log("Error executing venue query: (" . $stmt->errno . ") " . $stmt->error);
-        echo "<p class='text-red-600'>Database error fetching venues.</p>"; // Display a user-friendly error
+// 1. Monthly Reservations per Venue (FILTERED BY MANAGER)
+$sql1 = "
+    SELECT v.venueName, DATE_FORMAT(ur.reservationDate, '%Y-%m') AS month, COUNT(*) AS totalReservations
+    FROM userReserved ur
+    JOIN venueData v ON ur.venueID = v.venueID
+    JOIN managerVenue mv ON v.venueID = mv.venueID
+    WHERE mv.managerID = ?
+    GROUP BY month, v.venueID
+    ORDER BY month DESC
+";
+$stmt1 = $conn->prepare($sql1);
+$stmt1->bind_param("i", $managerID);
+$stmt1->execute();
+$result1 = $stmt1->get_result();
+
+if (!$result1) {
+    error_log("Error fetching monthly reservations: " . $conn->error);
+    $monthlyReservations = [];
+} else {
+    $result1 = $result1->fetch_all(MYSQLI_ASSOC);
+    $monthlyReservations = [];
+    foreach ($result1 as $row) {
+        $monthlyReservations[$row['month']][] = [
+            'venueName' => $row['venueName'],
+            'totalReservations' => $row['totalReservations']
+        ];
     }
+}
 
-    $result = $stmt->get_result();
-    if (!$result) {
-        error_log("Error getting venue result: " . $conn->error);
-        echo "<p class='text-red-600'>Error retrieving venue data.</p>";
-    }
+// 2. Venue Views and Likes (FILTERED BY MANAGER)
+$sql2 = "
+SELECT 
+    v.venueName,
+    COALESCE(COUNT(DISTINCT uh.historyID), 0) AS totalViews,
+    COALESCE(COUNT(DISTINCT ul.userID), 0) AS totalLikes
+FROM venueData v
+JOIN managerVenue mv ON v.venueID = mv.venueID
+LEFT JOIN userhistory uh ON v.venueID = uh.venueID
+LEFT JOIN userliked ul ON v.venueID = ul.venueID
+WHERE mv.managerID = ?
+GROUP BY v.venueID
+";
+$stmt2 = $conn->prepare($sql2);
+$stmt2->bind_param("i", $managerID);
+$stmt2->execute();
+$result2 = $stmt2->get_result();
 
-    $venues = $result->fetch_all(MYSQLI_ASSOC);
-    $stmt->close();
+if (!$result2) {
+    error_log("Error fetching views and likes: " . $conn->error);
+    $viewsAndLikes = [];
+} else {
+    $viewsAndLikes = $result2->fetch_all(MYSQLI_ASSOC);
+}
 
-    // Fetch reservations for the manager's venues
-    $sql = "SELECT ur.reservationID, ur.reservationDate, rs.statusText,
-                u.firstName, u.lastName, v.venueName
-            FROM userReserved ur
-            JOIN reservationStatus rs ON ur.statusID = rs.statusID
-            JOIN userData u ON ur.userID = u.userID
-            JOIN venueData v ON ur.venueID = v.venueID
-            JOIN managerVenue mv ON v.venueID = mv.venueID
-            WHERE mv.managerID = ?
-            ORDER BY ur.reservationDate DESC";
-    
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $managerID);  // "i" for integer
-    $stmt->execute();
-    $reservations = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+// Now you can proceed with your HTML output and use $monthlyReservations and $viewsAndLikes data
 
-    // Fetch available reservation statuses
-    $statusStmt = $conn->prepare("SELECT statusID, statusText FROM reservationStatus WHERE statusID >= 2 AND statusID <= 6");
-    $statusStmt->execute();
-    $statuses = $statusStmt->get_result()->fetch_all(MYSQLI_ASSOC);
-
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        // Handle accepting a reservation
-        if (isset($_POST['accept_reservation'])) {
-            $reservationID = $_POST['reservationID'];
-            $stmt = $conn->prepare("UPDATE userReserved SET statusID = 3 WHERE reservationID = ?");
-            $stmt->bind_param("i", $reservationID);  // "i" for integer
-            $stmt->execute();
-        }
-
-        // Handle rejecting a reservation
-        if (isset($_POST['reject_reservation'])) {
-            $reservationID = $_POST['reservationID'];
-            $stmt = $conn->prepare("UPDATE userReserved SET statusID = 2 WHERE reservationID = ?");
-            $stmt->bind_param("i", $reservationID);  // "i" for integer
-            $stmt->execute();
-        }
-
-        // Handle updating reservation status
-        if (isset($_POST['update_status'])) {
-            $reservationID = $_POST['reservationID'];
-            $newStatusID = $_POST['new_status'];
-            $stmt = $conn->prepare("UPDATE userReserved SET statusID = ? WHERE reservationID = ?");
-            $stmt->bind_param("ii", $newStatusID, $reservationID);  // "ii" for two integers
-            $stmt->execute();
-        }
-
-        header("Location: " . $_SERVER['PHP_SELF']);
-        exit;
-    }
 ?>
 
 <!DOCTYPE html>
@@ -202,6 +258,15 @@
     border-bottom: 2px solid #000;
     padding-bottom: 1rem;
     margin-bottom: 1.5rem;
+}
+
+.dashboard-subtitle{
+     font-size: 20px;
+    font-weight: 900;
+    color: #000;
+    text-transform: uppercase;
+    border-bottom: 1px solid #000;
+    margin-bottom: 0.5rem;
 }
 
 .profile-header {
@@ -613,12 +678,28 @@
     margin-right: 1rem;
 }
 
+.content {
+  opacity: 0;
+  animation: floatUp 1s ease forwards;
+}
 
+/* Float up keyframes */
+@keyframes floatUp {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 
     </style>
 </head>
 
+<body class="custom-bg min-h-screen content">
 <!-- Navbar -->
 <header id="navbar">
   <nav class="navbar-container">
@@ -630,7 +711,7 @@
 
     <!-- Navigation Links on the right -->
     <ul class="nav-links">
-      <li><a href="#" class="nav-link">Home</a></li>
+      <li><a href="index.php" class="nav-link">Home</a></li>
       <li><a href="product.php" class="nav-link">Venues</a></li>
       <li><a href="top_venues_chart.php" class="nav-link">Top picks</a></li>
       <li><a href="DashboardAdmin.php" class="nav-link">Dashboard</a></li>
@@ -640,7 +721,7 @@
 </header>
 
 
-<body class="custom-bg min-h-screen">
+
 <div class="max-w-6xl mx-auto p-6">
 
 
@@ -802,6 +883,48 @@
                         </form>
                     <?php endif; ?>
                 </div>
+            </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</div>
+
+<!-- Analytics Section -->
+<div class="dashboard subsection">
+    <h2 class="dashboard-title">Venue Analytics</h2>
+    <a href="download_analytics.php" class="add-venue-button">Download CSV</a>
+
+    <!-- Monthly Reservations per Venue -->
+    <h3 class="dashboard-subtitle">Monthly Reservations per Your Venues</h3>
+    <?php if (empty($monthlyReservations)): ?>
+        <p class="no-reservations">No monthly reservation data available.</p>
+    <?php else: ?>
+        <?php foreach ($monthlyReservations as $month => $venues): ?>
+            <div class="reservation-item confirmed-deposited">
+                <span><strong><?php echo htmlspecialchars($month); ?></strong></span>
+                <ul>
+                    <?php foreach ($venues as $venue): ?>
+                        <li>
+                            <?php echo htmlspecialchars($venue['venueName']); ?> –
+                            <span class="status"><?php echo $venue['totalReservations']; ?> reservations</span>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
+
+    <!-- Views and Likes per Venue -->
+    <h3 class="dashboard-subtitle">Venue Views and Likes</h3>
+    <?php if (empty($viewsAndLikes)): ?>
+        <p class="no-reservations">No view/like data available.</p>
+    <?php else: ?>
+        <?php foreach ($viewsAndLikes as $item): ?>
+            <div class="reservation-item not-accepted">
+                <span>
+                    <strong><?php echo htmlspecialchars($item['venueName']); ?></strong> –
+                    Views: <span class="status"><?php echo $item['totalViews']; ?></span>,
+                    Likes: <span class="status"><?php echo $item['totalLikes']; ?></span>
+                </span>
             </div>
         <?php endforeach; ?>
     <?php endif; ?>
