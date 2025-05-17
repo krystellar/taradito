@@ -16,10 +16,12 @@
   $userQuery = $conn->execute_query("SELECT firstName, lastName, userEmail, joinDate FROM userData WHERE userID = ?", [$userID]);
   $user = $userQuery->fetch_assoc();
 
-  $resQuery = $conn->execute_query(" SELECT 
+ $resQuery = $conn->execute_query(" SELECT 
       ur.*,
       vd.venueName,
       vd.cityAddress,
+      vd.contactNum,
+      vd.contactEmail,
       ur.startDate,
       ur.endDate,
       DATEDIFF(ur.endDate, ur.startDate) AS nights,
@@ -30,7 +32,9 @@
     JOIN venuedata vd ON ur.venueID = vd.venueID
     JOIN priceRange pr ON vd.priceRangeID = pr.priceRangeID
     WHERE ur.userID = ?
-    ORDER BY ur.reservationDate DESC", [$userID]);
+    ORDER BY ur.reservationDate DESC
+", [$userID]);
+
 
   // updated or deleted
   if (isset($_SESSION['reservation_success'])) {
@@ -830,6 +834,8 @@ border-color: #00C851;
         <tr>
           <th class="table-header">Venue</th>
           <th class="table-header">Location</th>
+          <th class="table-header">Contact Number</th>
+          <th class="table-header">Contact Email</th>
           <th class="table-header">Date</th>
           <th class="table-header">Duration</th>
           <th class="table-header">Price Range</th>
@@ -848,6 +854,8 @@ border-color: #00C851;
           <tr id="reservation-<?= $row['reservationID'] ?>" class="table-row">
             <td class="table-cell"><?= htmlspecialchars($row['venueName']) ?></td>
             <td class="table-cell"><?= htmlspecialchars($row['cityAddress']) ?></td>
+            <td class="table-cell"><?= !empty($row['contactNum']) ? htmlspecialchars($row['contactNum']) : '-' ?></td>
+            <td class="table-cell"><?= !empty($row['contactEmail']) ? htmlspecialchars($row['contactEmail']) : '-' ?></td>
             <td class="table-cell"><?= date("M j", strtotime($row['startDate'])) ?> – <?= date("F j", strtotime($row['endDate'])) ?></td>
             <td class="table-cell"><?= $row['nights'] ?> night<?= $row['nights'] > 1 ? 's' : '' ?></td>
             <td class="table-cell"><?= htmlspecialchars($row['priceRangeText']) ?></td>

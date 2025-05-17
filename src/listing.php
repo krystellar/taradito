@@ -850,6 +850,8 @@
     <?= htmlspecialchars($venue['barangayAddress']) . ', ' . htmlspecialchars($venue['cityAddress']) ?>
   </p>
   <p id="villa-specs" class="text-sm">Capacity: <?= htmlspecialchars($venue['maxCapacity']) ?> guests</p>
+  <p id="villa-specs" class="text-sm"> <?= !empty($venue['contactNum']) ? htmlspecialchars($venue['contactNum']) : '' ?></p>
+  <p id="villa-specs" class="text-sm"> <?= htmlspecialchars($venue['contactEmail']) ?></p>
   <p id="villa-rating" class="text-yellow">⭐ <?= number_format($average_rating ?? 0, 2) ?></p>
   <p id="villa-price" class="text-xl"><?= htmlspecialchars($venue['priceRangeText']) ?></p>
 
@@ -975,10 +977,10 @@
 
         <label class="form-label">Update Rating:</label>
         <div class="rating-stars">
-            <?php for ($i = 1; $i <= 5; $i++): ?>
-                <input type="radio" id="star<?= $i ?>" name="rating" value="<?= $i ?>" class="star-rating-input">
-                <label for="star<?= $i ?>" class="star">&#9733;</label>
-            <?php endfor; ?>
+              <?php for ($i = 5; $i >= 1; $i--): ?>
+            <input type="radio" id="star<?= $i ?>" name="rating" value="<?= $i ?>" class="star-rating-input">
+            <label for="star<?= $i ?>" class="star">&#9733;</label>
+          <?php endfor; ?>
         </div>
 
         <label for="update-review" class="form-label">Update Review:</label>

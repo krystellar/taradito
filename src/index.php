@@ -308,19 +308,62 @@
   }
 }
 
-#top0,
-#top1,
-#top2,
-#top3,
-#top4,
-#st0,
-#st1,
-#st2,
-#st3,
-#st4,
-#st5 {
+.ghost-red #top0,
+.ghost-red #top1,
+.ghost-red #top2,
+.ghost-red #top3,
+.ghost-red #top4,
+.ghost-red #st0,
+.ghost-red #st1,
+.ghost-red #st2,
+.ghost-red #st3,
+.ghost-red #st4,
+.ghost-red #st5 {
   background-color: red;
 }
+
+.ghost-blue #top0,
+.ghost-blue #top1,
+.ghost-blue #top2,
+.ghost-blue #top3,
+.ghost-blue #top4,
+.ghost-blue #st0,
+.ghost-blue #st1,
+.ghost-blue #st2,
+.ghost-blue #st3,
+.ghost-blue #st4,
+.ghost-blue #st5 {
+  background-color: blue;
+}
+
+.ghost-yellow #top0,
+.ghost-yellow #top1,
+.ghost-yellow #top2,
+.ghost-yellow #top3,
+.ghost-yellow #top4,
+.ghost-yellow #st0,
+.ghost-yellow #st1,
+.ghost-yellow #st2,
+.ghost-yellow #st3,
+.ghost-yellow #st4,
+.ghost-yellow #st5 {
+  background-color: yellow;
+}
+
+.ghost-green #top0,
+.ghost-green #top1,
+.ghost-green #top2,
+.ghost-green #top3,
+.ghost-green #top4,
+.ghost-green #st0,
+.ghost-green #st1,
+.ghost-green #st2,
+.ghost-green #st3,
+.ghost-green #st4,
+.ghost-green #st5 {
+  background-color: green;
+}
+
 
 #top0 {
   grid-area: top0;
@@ -446,25 +489,32 @@
   animation: flicker0 infinite 0.5s;
 }
 
+.flicker0 {
+  animation: flicker0 infinite 0.5s;
+  color: currentColor;
+}
+
+.flicker1 {
+  animation: flicker1 infinite 0.5s;
+  color: currentColor;
+}
+
+
 @keyframes flicker0 {
-  0%,
-  49% {
-    background-color: red;
+  0%, 49% {
+    background-color: currentColor;
   }
-  50%,
-  100% {
+  50%, 100% {
     background-color: transparent;
   }
 }
 
 @keyframes flicker1 {
-  0%,
-  49% {
+  0%, 49% {
     background-color: transparent;
   }
-  50%,
-  100% {
-    background-color: red;
+  50%, 100% {
+    background-color: currentColor;
   }
 }
 
@@ -527,7 +577,7 @@
 #pupil {
   width: 20px;
   height: 20px;
-  background-color: blue;
+  background-color: black;
   position: absolute;
   top: 50px;
   left: 10px;
@@ -538,7 +588,7 @@
 #pupil1 {
   width: 20px;
   height: 20px;
-  background-color: blue;
+  background-color: black;
   position: absolute;
   top: 50px;
   right: 50px;
@@ -823,7 +873,8 @@
       </div>
 
 <div class="ghost-container">
-     <div id="ghost">
+    <div id="ghost">
+    <div class="ghost-red">
   <div id="red">
     <div id="pupil"></div>
     <div id="pupil1"></div>
@@ -861,9 +912,12 @@
   </div>
   <div id="shadow"></div>
 </div>
+</div>
 
 
-     <div id="ghost">
+     <div class="ghost-container">
+    <div id="ghost">
+    <div class="ghost-blue">
   <div id="red">
     <div id="pupil"></div>
     <div id="pupil1"></div>
@@ -901,10 +955,11 @@
   </div>
   <div id="shadow"></div>
 </div>
+</div>
 
-
-
-     <div id="ghost">
+<div class="ghost-container">
+    <div id="ghost">
+    <div class="ghost-yellow">
   <div id="red">
     <div id="pupil"></div>
     <div id="pupil1"></div>
@@ -941,6 +996,49 @@
     <div id="an18"></div>
   </div>
   <div id="shadow"></div>
+</div>
+</div>
+
+<div class="ghost-container">
+    <div id="ghost">
+    <div class="ghost-green">
+  <div id="red">
+    <div id="pupil"></div>
+    <div id="pupil1"></div>
+    <div id="eye"></div>
+    <div id="eye1"></div>
+    <div id="top0"></div>
+    <div id="top1"></div>
+    <div id="top2"></div>
+    <div id="top3"></div>
+    <div id="top4"></div>
+    <div id="st0"></div>
+    <div id="st1"></div>
+    <div id="st2"></div>
+    <div id="st3"></div>
+    <div id="st4"></div>
+    <div id="st5"></div>
+    <div id="an1"></div>
+    <div id="an2"></div>
+    <div id="an3"></div>
+    <div id="an4"></div>
+    <div id="an5"></div>
+    <div id="an6"></div>
+    <div id="an7"></div>
+    <div id="an8"></div>
+    <div id="an9"></div>
+    <div id="an10"></div>
+    <div id="an11"></div>
+    <div id="an12"></div>
+    <div id="an13"></div>
+    <div id="an14"></div>
+    <div id="an15"></div>
+    <div id="an16"></div>
+    <div id="an17"></div>
+    <div id="an18"></div>
+  </div>
+  <div id="shadow"></div>
+</div>
 </div>
 
  </div>

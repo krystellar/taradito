@@ -9,13 +9,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $startTime = $_POST['startTime'];
     $endDate = $_POST['endDate'];
     $endTime = $_POST['endTime'];
+    $redirectURL = "dashboard.php";
 
     if (strtotime($endDate) < strtotime($startDate)) {
-        die("End date cannot be earlier than the start date.");
+        echo "<script>
+            alert('End time cannot be earlier than the start day.');
+            window.location.href = '$redirectURL';
+        </script>";
+        exit;
     }
 
     if ($startDate === $endDate && strtotime($endTime) < strtotime($startTime)) {
-        die("End time cannot be earlier than the start time on the same day.");
+        echo "<script>
+            alert('End time cannot be earlier than the start time on the same day.');
+            window.location.href = '$redirectURL';
+        </script>";
+        exit;
     }
 
     $stmt = $conn->prepare("UPDATE userreserved SET startDate = ?, startTime = ?, endDate = ?, endTime = ? WHERE reservationID = ? AND userID = ?");

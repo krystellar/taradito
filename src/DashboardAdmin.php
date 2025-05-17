@@ -454,6 +454,20 @@ if (!$result2) {
 
 }
 
+.reservation-section{
+    max-height: none;
+    overflow: visible;
+}
+
+/* Optional scrollbar styling for better UX */
+.reservation-section::-webkit-scrollbar {
+  width: 8px;
+}
+.reservation-section::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 4px;
+}
+
 /* No venues message */
 .no-venues-message {
     font-size: 1rem;
@@ -797,7 +811,7 @@ if (!$result2) {
 
 
   <!-- Venues Managed Section -->
-<div class="dashboard subsection">
+<div class="dashboard subsection resrvation-section">
     <h2 class="dashboard-title">Venues Managed</h2>
 
     <!-- Add button -->

@@ -55,21 +55,29 @@ $validCategory = ['intimate','business','fun','casual'];
 $cats = array_values(array_intersect($validCategory, $selectedCategory));
 
 $sql = "SELECT 
-          v.*, 
-          p.priceRangeText,
-          a.days,
-          AVG(r.rating) AS averageRating
-        FROM venueData v
-        LEFT JOIN priceRange p ON v.priceRangeID = p.priceRangeID
-        LEFT JOIN availability a ON v.availabilityDays = a.availabilityDays
-        LEFT JOIN userRatings r ON v.venueID = r.venueID";
+  v.*, 
+  p.priceRangeText,
+  a.days,
+  COALESCE(r.averageRating, 0) AS averageRating,
+  COALESCE(ul.totalLikes, 0) AS totalLikes
+FROM venuedata v
+LEFT JOIN priceRange p ON v.priceRangeID = p.priceRangeID
+LEFT JOIN availability a ON v.availabilityDays = a.availabilityDays
+
+LEFT JOIN (
+  SELECT venueID, AVG(rating) AS averageRating
+  FROM userRatings
+  GROUP BY venueID
+) r ON v.venueID = r.venueID
+
+LEFT JOIN (
+  SELECT venueID, COUNT(*) AS totalLikes
+  FROM userliked
+  GROUP BY venueID
+) ul ON v.venueID = ul.venueID";
+
 
 $currentSort = $_GET['sort'] ?? '';
-
-if ($currentSort === 'likes') {
-    $sql .= " LEFT JOIN userLiked l ON v.venueID = l.venueID";
-}
-
 
 $wheres = [];
 if ($searchTerm !== '') {
@@ -89,13 +97,15 @@ if (count($wheres) > 0) {
 
 $sql .= ' GROUP BY v.venueID ';
 if ($currentSort === 'rating') {
-    $sql .= ' ORDER BY COALESCE(AVG(r.rating), 0) DESC, v.venueID ASC';
+    $sql .= ' ORDER BY averageRating DESC, v.venueName ASC';
 } elseif ($currentSort === 'likes') {
-    $sql .= ' ORDER BY COALESCE(COUNT(l.userID), 0) DESC, v.venueID ASC';
+    $sql .= ' ORDER BY ul.totalLikes DESC, v.venueName ASC';
 } elseif ($currentSort === 'priceAsc'){
-    $sql .= ' ORDER BY v.priceRangeID ASC, v.venueID ASC';
+    $sql .= ' ORDER BY v.priceRangeID ASC, v.venueName ASC';
 } elseif ($currentSort === 'priceDesc'){
-    $sql .= ' ORDER BY v.priceRangeID DESC, v.venueID ASC';
+    $sql .= ' ORDER BY v.priceRangeID DESC, v.venueName ASC';
+} else {
+    $sql .= ' ORDER BY v.venueName ASC';
 }
 
 
@@ -733,13 +743,11 @@ $result = $conn->query($sql);
     <a href="<?= toggleSortLink('likes') ?>" class="sort-btn <?= ($_GET['sort'] ?? '') === 'likes' ? 'active' : '' ?>">
       by Likes
     </a>
-      </div>
-      <div class="sort-buttons">
     <a href="<?= toggleSortLink('priceAsc') ?>" class="sort-btn <?= ($_GET['sort'] ?? '') === 'priceAsc' ? 'active' : '' ?>">
-      (>)
+      ₱ ↑
     </a>
     <a href="<?= toggleSortLink('priceDesc') ?>" class="sort-btn <?= ($_GET['sort'] ?? '') === 'priceDesc' ? 'active' : '' ?>">
-      (<)
+      ₱ ↓
     </a>
   </div>
   </div>
@@ -798,6 +806,9 @@ $result = $conn->query($sql);
         <div class="listing-footer">
           <p class="listing-rating">
             ⭐ <?= $row['averageRating'] !== null ? number_format($row['averageRating'], 2) : 'No Ratings' ?>
+          </p>
+          <p class="listing-rating">
+            ❤️ <?= $row['totalLikes'] !== null ? number_format($row['totalLikes']) : 'No Likes' ?>
           </p>
         </div>
       </article>
