@@ -556,9 +556,6 @@ if ($result && $result->num_rows > 0) {
                         </p>
                     </div>
                     <div class="button-container">
-                        <a href="<?= PROJECT_ROOT ?>/src/venue_editing.php?id=<?php echo $venue['venueID']; ?>" class="venue-edit-button">
-                            Edit
-                        </a>
                         <form action="venue_delete.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this venue?');">
                             <input type="hidden" name="venueID" value="<?= $venue['venueID']; ?>">
                             <button type="submit" class="delete-button">Delete</button>
