@@ -5,8 +5,9 @@ $query = "
     SELECT 
         v.venueName,
         COUNT(ur.reservationID) AS totalReservations
-    FROM venuedata v
-    JOIN userreserved ur ON v.venueID = ur.venueID
+    FROM userreserved ur
+    JOIN venueFacilities vf ON ur.facilityID = vf.facilityID
+    JOIN venuedata v ON vf.venueID = v.venueID
     GROUP BY v.venueID
     ORDER BY totalReservations DESC
     LIMIT 5

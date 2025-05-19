@@ -15,6 +15,16 @@ if ($resultPriceRange->num_rows > 0) {
     $priceRanges = [];
 }
 
+$facilitySql = "SELECT * FROM facility";
+$resultFacility = $conn->query($facilitySql);
+
+if ($resultFacility->num_rows > 0) {
+    $facilityOptions = $resultFacility->fetch_all(MYSQLI_ASSOC);
+} else {
+    $facilityOptions = [];
+}
+
+
 $availabilitySql = "SELECT * FROM availability";
 $resultAvailability = $conn->query($availabilitySql);
 
@@ -91,8 +101,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $img3 = uploadImage('img3', $targetDir);
 
     // Insert into venueData table
-    $sql = "INSERT INTO venueData (
-        venueName, barangayAddress, cityAddress, venueDesc, availabilityDays,
+    $sql = "INSERT INTO venuerequests (
+        managerID, venueName, barangayAddress, cityAddress, venueDesc, availabilityDays,
         amAvail, nnAvail, pmAvail, publicTranspo,
         landmarks, routes, priceRangeID, contactEmail, contactNum,
         intimate, business, casual, fun,
@@ -100,9 +110,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         cateringServices, securityStaff, wifiAccess,
         payCash, payElectronic, payBank,
         imgs, img2, img3,
-        latitude, longitude
+        latitude, longitude,
+        status
     ) VALUES (
-        '$venueName', '$barangayAddress', '$cityAddress', '$venueDesc', '$availabilityDays',
+        $managerID, '$venueName', '$barangayAddress', '$cityAddress', '$venueDesc', '$availabilityDays',
         $amAvail, $nnAvail, $pmAvail, '$publicTranspo',
         '$landmarks', '$routes', '$priceRangeID', '$contactEmail', '$contactNum',
         $intimate, $business, $casual, $fun,
@@ -110,16 +121,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $cateringServices, $securityStaff, $wifiAccess,
         $payCash, $payElectronic, $payBank,
         '$imgs', '$img2', '$img3',
-        '$latitude', '$longitude'
+        '$latitude', '$longitude',
+        'pending'
     )";
 
-    if ($conn->query($sql)) {
-        $venueID = $conn->insert_id;
 
-        // Insert into managerVenue table to link manager and venue
-        $managerVenueSql = "INSERT INTO managerVenue (managerID, venueID) VALUES ($managerID, $venueID)";
+    if ($conn->query($sql)) { 
+        $requestID = $conn->insert_id;
+        $managerRequestSql = "INSERT INTO managervenuerequests (requestID, managerID) VALUES ($requestID, $managerID)";
         
-        if ($conn->query($managerVenueSql)) {
+        if ($conn->query($managerRequestSql)) {
+            
+            if (isset($_POST['facilityType'], $_POST['maxCapacity'], $_POST['price'])) {
+                $facilityTypes = $_POST['facilityType'];
+                $maxCapacities = $_POST['maxCapacity'];
+                $facilityPrices = $_POST['price'];
+
+                for ($i = 0; $i < count($facilityTypes); $i++) {
+                    $facilityType = intval($facilityTypes[$i]);
+                    $maxCap = intval($maxCapacities[$i]);
+                    $fprice = floatval($facilityPrices[$i]);
+
+                    // Insert into venueFacilities (auto-increment ID, so no need to include)
+                    $insertFacilitySql = "INSERT INTO requestfacilities (requestID, facilityType, maxCapacity, price) VALUES (
+                        $requestID,
+                        $facilityType,
+                        $maxCap,
+                        $fprice
+                    )";
+
+                    $conn->query($insertFacilitySql);
+        
+                }
+            }
+
             echo "<p class='text-green-600 text-center mt-4'>Venue added successfully and linked to manager.</p>";
             header("Location: DashboardAdmin.php");
             exit;
@@ -129,7 +164,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         echo "<p class='text-red-600 text-center mt-4'>Error adding venue: " . $conn->error . "</p>";
     }
-
     $conn->close();
 }
 ?>
@@ -374,8 +408,6 @@ button:active {
             <input type="checkbox" id="pmAvail" name="pmAvail" value="1">
             <label for="pmAvail">PM</label><br>
 
-
-
             <label for="contactEmail">Email:</label>
             <input type="text" name="contactEmail" id="contactEmail">
 
@@ -390,16 +422,6 @@ button:active {
 
             <label for="routes">Routes:</label>
             <input type="text" name="routes" id="routes">
-
-            <label for="priceRange" class="form-label">Price Range:</label>
-            <select name="priceRange" id="priceRange" class="form-select" required>
-                <option value="">Select Price Range</option>
-                <?php foreach ($priceRanges as $range): ?>
-                    <option value="<?= $range['priceRangeID']; ?>">
-                        <?= $range['priceRangeText']; ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
 
             <!-- Categories (Checkboxes) -->
             <div class="checkbox-group">
@@ -440,11 +462,6 @@ button:active {
 
             <label for="longitude">Longitude:</label>
             <input type="text" name="longitude" id="longitude">
-
-
-
-
-
             <!-- Image URLs -->
             <div class="section">
                 <h2 class="text-xl font-semibold">Images</h2>
@@ -458,13 +475,53 @@ button:active {
                 <label for="img3">Image 3:</label>
                 <input type="file" name="img3" id="img3" accept="image/*">
             </div>
+            <div class="facilityRepeater container" >
+                <h2>Add Facilities:</h2>
+                <button type="button" onclick="addFacility()">Add Another Facility</button>
+                <div class="facility-group checkbox-group">
+                    
+                    <label for="facilityType">Facility Type:</label>
+                    <select name="facilityType[]" required>
+                    <option value="">Select Facility Type</option>
+                    <?php foreach ($facilityOptions as $facility): ?>
+                        <option value="<?= $facility['facilityType']; ?>"><?= htmlspecialchars($facility['facilityName']); ?></option>
+                    <?php endforeach; ?>
+                    </select>
 
+                    <label for="maxCapacity">Max Capacity:</label>
+                    <input type="number" name="maxCapacity[]" min="0" required>
+
+                    <label for="price">Price:</label>
+                    <input type="number" name="price[]" min="0" step="0.01" required>
+                    <button type="button" class="removeFacility">Remove</button>
+                </div>
+            </div>
+            <label for="priceRange" class="form-label">Price Range:</label>
+            <select name="priceRange" id="priceRange" class="form-select" required>
+                <option value="">Select Price Range</option>
+                <?php foreach ($priceRanges as $range): ?>
+                    <option value="<?= $range['priceRangeID']; ?>">
+                        <?= $range['priceRangeText']; ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
             <!-- Submit Button -->
             <button type="submit">Add Venue</button>
         </form>
     </div>
+    
 </body>
 </html>
+
+<template id="facilityOptionsTemplate">
+  <option value="">Select Facility Type</option>
+  <?php foreach ($facilityOptions as $facility): ?>
+    <option value="<?= $facility['facilityType']; ?>">
+      <?= htmlspecialchars($facility['facilityName']); ?>
+    </option>
+  <?php endforeach; ?>
+</template>
+
 
 <script>
 document.querySelector("form").addEventListener("submit", function (e) {
@@ -474,5 +531,40 @@ document.querySelector("form").addEventListener("submit", function (e) {
         e.preventDefault();
         alert("Please select at least one category: Intimate, Casual, Fun, or Business.");
     }
+})
+function addFacility() {
+  const container = document.querySelector('.facilityRepeater');
+  const templateOptions = document.getElementById('facilityOptionsTemplate').innerHTML;
+
+  const newGroup = document.createElement('div');
+  newGroup.className = 'facility-group';
+
+  newGroup.innerHTML = `
+    <label for="facilityType">Facility Type:</label>
+    <select name="facilityType[]" required>${templateOptions}</select>
+
+    <label for="maxCapacity">Max Capacity:</label>
+    <input type="number" name="maxCapacity[]" min="0" required>
+
+    <label for="price">Price:</label>
+    <input type="number" name="price[]" min="0" step="0.01" required>
+
+    <button type="button" class="removeFacility">Remove</button>
+    <hr>
+  `;
+
+  container.appendChild(newGroup);
+
+  newGroup.querySelector('.removeFacility').addEventListener('click', () => {
+    container.removeChild(newGroup);
+  });
+}
+
+
+document.querySelectorAll('.removeFacility').forEach(btn => {
+  btn.addEventListener('click', function () {
+    this.closest('.facility-group').remove();
+  });
 });
+
 </script>

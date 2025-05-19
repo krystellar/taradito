@@ -16,24 +16,29 @@
   $userQuery = $conn->execute_query("SELECT firstName, lastName, userEmail, joinDate FROM userData WHERE userID = ?", [$userID]);
   $user = $userQuery->fetch_assoc();
 
- $resQuery = $conn->execute_query(" SELECT 
+ $resQuery = $conn->execute_query("
+    SELECT 
       ur.*,
       vd.venueName,
       vd.cityAddress,
       vd.contactNum,
       vd.contactEmail,
-      ur.startDate,
-      ur.endDate,
-      DATEDIFF(ur.endDate, ur.startDate) AS nights,
+      vf.maxCapacity,
+      vf.price,
+      ft.facilityName,
+      DATEDIFF(ur.endDate, ur.startDate) AS days,
       pr.priceRangeText,
       rs.statusText
     FROM userreserved ur
     JOIN reservationStatus rs ON ur.statusID = rs.statusID
-    JOIN venuedata vd ON ur.venueID = vd.venueID
+    JOIN venuefacilities vf ON ur.facilityID = vf.facilityID
+    JOIN facility ft ON vf.facilityType = ft.facilityType
+    JOIN venuedata vd ON vf.venueID = vd.venueID
     JOIN priceRange pr ON vd.priceRangeID = pr.priceRangeID
     WHERE ur.userID = ?
     ORDER BY ur.reservationDate DESC
-", [$userID]);
+  ", [$userID]);
+
 
 
   // updated or deleted
@@ -857,8 +862,10 @@ border-color: #00C851;
             <td class="table-cell"><?= !empty($row['contactNum']) ? htmlspecialchars($row['contactNum']) : '-' ?></td>
             <td class="table-cell"><?= !empty($row['contactEmail']) ? htmlspecialchars($row['contactEmail']) : '-' ?></td>
             <td class="table-cell"><?= date("M j", strtotime($row['startDate'])) ?> – <?= date("F j", strtotime($row['endDate'])) ?></td>
-            <td class="table-cell"><?= $row['nights'] ?> night<?= $row['nights'] > 1 ? 's' : '' ?></td>
-            <td class="table-cell"><?= htmlspecialchars($row['priceRangeText']) ?></td>
+            <td class="table-cell">
+                <?= ($row['days'] + 1) ?> day<?= ($row['days'] + 1) > 1 ? 's' : '' ?>
+            </td>
+            <td class="table-cell"><?= htmlspecialchars($row['price']) ?></td>
             <td class="table-cell status <?= $row['statusText'] ?>">
               <?= htmlspecialchars($row['statusText']) ?>
             </td>

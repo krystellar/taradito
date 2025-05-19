@@ -1,7 +1,5 @@
 <?php
-  if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-  }
+  session_start();
   include('db_connection.php');
 
   define('PROJECT_ROOT', rtrim(dirname($_SERVER['SCRIPT_NAME'], 2), '/'));
@@ -10,17 +8,16 @@
   unset($_SESSION['reservation_success']);
 
   if (!isset($_SESSION['userID']) && !isset($_SESSION['managerID'])) {
-    header("Location: Login.php");
-    exit;
+    $_SESSION['is_guest'] = true;
+  } else {
+    $_SESSION['is_guest'] = false;
   }
-
 
   if (isset($_SESSION['userID'])) {
   $userID = $_SESSION['userID'];
-} else {
-  $userID = null;
-}
-
+  } else {
+    $userID = null;
+  }
   
   if (isset($_SESSION['userID']) && isset($_GET['id'])) {
       $venueID = $_GET['id'];
@@ -41,10 +38,17 @@
                   WHERE r.venueID = ?
                   ORDER BY r.createDate DESC";
 
+  $sql_facilities = "SELECT f.*, vf.*
+                   FROM venuefacilities vf
+                   INNER JOIN facility f ON vf.facilityType = f.facilityType
+                   WHERE vf.venueID = ?";
+
   $sql_avg_rating = "SELECT AVG(rating) AS avg_rating FROM userratings WHERE venueID = ?";
   $result_avg_rating = $conn->execute_query($sql_avg_rating, [$venueID]);
   $average_rating = $result_avg_rating->fetch_assoc()['avg_rating'];
   $average_rating = round($average_rating, 2);
+  $result_facilities = $conn->execute_query($sql_facilities, [$venueID]);
+  $facilities = $result_facilities->fetch_all(MYSQLI_ASSOC);
 
   // Fetch flash messages
   $successMessage = '';
@@ -312,6 +316,24 @@
     transform: translate(-2px, -2px);
     box-shadow: 9px 9px 0 #800000;
 }
+
+.reserve-button {
+      background-color: black;
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .reserve-button:hover {
+      background-color: #4b5563; /* similar to Tailwind's gray-700 */
+    }
+
+    .reserve-button:active {
+      background-color: #1f2937; /* darker for clicked effect */
+    }
 
   .update{
     background-color: gold;
@@ -809,26 +831,31 @@
     <a href="#" class="logo">
       <img src="Images/Logo/TaraDito.png" alt="TaraDito Logo" />
     </a>
-
     <!-- Navigation Links on the right -->
     <ul class="nav-links">
       <li><a href="product.php" class="nav-link">Venues</a></li>
       <li><a href="top_venues_chart.php" class="nav-link">Top picks</a></li>
       <?php
-          $dashboardLink = PROJECT_ROOT . '/src/Login.php';
-          if (isset($_SESSION['role'])) {
-              if ($_SESSION['role'] === 'manager') {
-                  $dashboardLink = PROJECT_ROOT . '/src/dashboardAdmin.php';
-              } elseif ($_SESSION['role'] === 'user') {
-                  $dashboardLink = PROJECT_ROOT . '/src/dashboard.php';
-              }
-          }
-          ?>
-        <li>
-          <a href="<?= $dashboardLink ?>" class="nav-link">
-            Dashboard
-          </a>
-        </li>
+        $dashboardLink = PROJECT_ROOT . '/src/index.php';
+        $dashboardText = 'Home';
+        if (isset($_SESSION['role'])) {
+            if ($_SESSION['role'] === 'manager') {
+                $dashboardLink = PROJECT_ROOT . '/src/dashboardAdmin.php';
+                $dashboardText = 'Dashboard';
+            } elseif ($_SESSION['role'] === 'user') {
+                $dashboardLink = PROJECT_ROOT . '/src/dashboard.php';
+                $dashboardText = 'Dashboard';
+            } elseif ($_SESSION['role'] === 'admin') {
+                $dashboardLink = PROJECT_ROOT . '/src/superAdmin.php';
+                $dashboardText = 'Dashboard';
+            }
+        }
+      ?>
+      <li>
+        <a href="<?= $dashboardLink ?>" class="nav-link">
+          <?= $dashboardText ?>
+        </a>
+      </li>
     </ul>
 
   </nav>
@@ -849,15 +876,14 @@
   <p id="villa-location" class="text-gray text-lg">
     <?= htmlspecialchars($venue['barangayAddress']) . ', ' . htmlspecialchars($venue['cityAddress']) ?>
   </p>
-  <p id="villa-specs" class="text-sm">Capacity: <?= htmlspecialchars($venue['maxCapacity']) ?> guests</p>
-  <p id="villa-specs" class="text-sm"> <?= !empty($venue['contactNum']) ? htmlspecialchars($venue['contactNum']) : '' ?></p>
-  <p id="villa-specs" class="text-sm"> <?= htmlspecialchars($venue['contactEmail']) ?></p>
   <p id="villa-rating" class="text-yellow">⭐ <?= number_format($average_rating ?? 0, 2) ?></p>
-  <p id="villa-price" class="text-xl"><?= htmlspecialchars($venue['priceRangeText']) ?></p>
 
   <!-- wishlist and like -->
   <div class="button-group">
-    <?php if (!isset($_SESSION['managerID'])): ?>
+    <?php if (!isset($_SESSION['userID']) && !isset($_SESSION['userID']) && !isset($_SESSION['adminID'])): ?>
+      <button onclick="window.location.href='Login.php'" class="reserve-button text-sm font-bold uppercase">Sign up to reserve</button>
+    <?php endif; ?>
+    <?php if (isset($_SESSION['userID'])): ?>
     <!-- Like button -->
         <form method="post" action="like.php">
           <input type="hidden" name="venueID" value="<?= $venueID ?>">
@@ -869,7 +895,7 @@
         </form>
     <?php endif; ?>
     
-    <?php if (!isset($_SESSION['managerID'])): ?>
+    <?php if (isset($_SESSION['userID'])): ?>
     <!-- Wishlist button -->
         <form method="post" action="wishlist.php">
           <input type="hidden" name="venueID" value="<?= $venueID ?>">
@@ -891,6 +917,22 @@
       <?= htmlspecialchars($venue['venueDesc']) ?>
     </p>
 </div>
+
+<?php if (!empty($facilities)): ?>
+  <div class="container">
+    <div class="title">Facilities Offered</div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <?php foreach ($facilities as $facility): ?>
+        <div class="border-4 border-black p-4 shadow-lg">
+          <h3 class="text-lg font-bold uppercase mb-2"><?= htmlspecialchars($facility['facilityName']) ?></h3>
+          <p class="text-sm mb-1"><strong>Max Capacity:</strong> <?= htmlspecialchars($facility['maxCapacity']) ?></p>
+          <p class="text-sm text-green-600"><strong>Price:</strong> ₱<?= number_format($facility['price'], 2) ?></p>
+        </div>
+      <?php endforeach; ?>
+    </div>
+  </div>
+<?php endif; ?>
+
 
 
  <div class="flex">
@@ -1039,10 +1081,10 @@
 
 <div class="flex">
  <!-- Booking Section -->
-  <?php if (!isset($_SESSION['managerID'])): ?>
+  <?php if (isset($_SESSION['userID'])): ?>
     <!-- Booking form -->
     <div class="booking-section w-1-2">
-      <h2 class="booking-title">Reserve your stay</h2>
+      <h2 class="booking-title">Reserve your event now!</h2>
       <p class="villa-price" id="villa-price"></p>
 
       <p class="booking-contact"><strong>Contact:</strong> <?= htmlspecialchars($venue['contactNum']) ?></p>
@@ -1057,17 +1099,36 @@
         </ul>
       </div>
 
-      <form method="POST" action="reserve_venue.php" class="booking-form">
-        <input type="hidden" name="venueID" value="<?= $venue['venueID'] ?>">
-        <input type="hidden" name="userID" value="<?= $_SESSION['userID'] ?>">
+      <?php if (!empty($facilities)): ?>
+      <form method="POST" action="reserve_venue.php" class="space-y-4 border-t-4 border-black pt-4 mt-4">
+        <input type="hidden" name="userID" value="<?= htmlspecialchars($_SESSION['userID'] ?? '') ?>">
 
-        <input name="startDate" type="date" required placeholder="Start Date">
-        <input name="startTime" type="time" required placeholder="Start Time">
-        <input name="endDate" type="date" required placeholder="End Date">
-        <input name="endTime" type="time" required placeholder="End Time">
+        <div>
+          <label for="facilityID" class="font-bold">Select Facility</label>
+          <select name="facilityID" id="facilityID" required class="w-full border-2 border-black p-2">
+            <option value="">Choose a facility</option>
+            <?php foreach ($facilities as $facility): ?>
+              <option value="<?= htmlspecialchars($facility['facilityID']) ?>">
+                <?= htmlspecialchars($facility['facilityName']) ?>
+              </option>
+            <?php endforeach; ?>
+          </select>
+        </div>
 
-        <button type="submit">Reserve</button>
+        <div>
+          <label for="startDate" class="font-bold">Start Date and Time</label>
+          <input type="datetime-local" name="startDate" required class="w-full border-2 border-black p-2">
+        </div>
+
+        <div>
+          <label for="endDate" class="font-bold">End Date and Time</label>
+          <input type="datetime-local" name="endDate" required class="w-full border-2 border-black p-2">
+        </div>
+
+        <button type="submit" class="bg-black text-white px-4 py-2">Reserve</button>
       </form>
+    <?php endif; ?>
+
 
       <p class="booking-note">You won't be charged yet</p>
     </div>
@@ -1075,7 +1136,7 @@
 
 
 <!-- Add Review Section -->
- <?php if (!isset($_SESSION['managerID'])): ?>
+ <?php if (isset($_SESSION['userID'])): ?>
     <div class="review-section w-1-2">
   <h2 class="booking-title">Add a Review</h2>
 

@@ -36,16 +36,40 @@ if ($resultAvailability->num_rows > 0){
     $availabilityDaysOptions = [];
 }
 
-$stmt  = $conn->execute_query($sql, [$venueID]);
-$venue  = $stmt->fetch_assoc();
-$conn->close();
+// for facilities
+$venueFacilitySql = "SELECT vf.*, f.facilityName 
+                     FROM venuefacilities vf 
+                     JOIN facility f ON vf.facilityType = f.facilityType 
+                     WHERE vf.venueID = ?";
+$stmt = $conn->prepare($venueFacilitySql);
+$stmt->bind_param("i", $venueID);
+$stmt->execute();
+$venueFacilityResult = $stmt->get_result();
+
+$venueFacilities = [];
+while ($row = $venueFacilityResult->fetch_assoc()) {
+    $venueFacilities[] = $row;
+}
+
+$facilityOptions = [];
+$facilityOptionSql = "SELECT * FROM facility";
+$facilityOptionResult = $conn->query($facilityOptionSql);
+
+if ($facilityOptionResult && $facilityOptionResult->num_rows > 0) {
+    $facilityOptions = $facilityOptionResult->fetch_all(MYSQLI_ASSOC);
+}
+
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $venueID);
+$stmt->execute();
+$venue = $stmt->get_result()->fetch_assoc();
 
 if (!$venue) {
     echo "<p class='text-center text-red-600 mt-10'>Venue not found.</p>";
     exit;
 }
 
-
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -352,227 +376,319 @@ button:active {
     <div class="card">
         <h1 class="card-header">Edit Venue: <?= htmlspecialchars($venue['venueName']) ?></h1>
 
-        <form action="update_venue.php" method="POST" enctype="multipart/form-data">
+        <!-- venue details -->
+        <form method="post" enctype="multipart/form-data" action="update_venue.php">
+            <input type="hidden" name="action" value="update_venue" />
             <input type="hidden" name="venueID" value="<?= htmlspecialchars($venue['venueID']) ?>">
-
             <!-- Venue Info -->
             <div class="section">
                 <div class="grid-container">
-                    <div>
-                        <label for="venueName" class="form-label">Venue Name</label>
-                        <input type="text" name="venueName" id="venueName" value="<?= htmlspecialchars($venue['venueName']) ?>" class="form-input" required>
-                    </div>
+                                <div>
+                                    <label for="venueName" class="form-label">Venue Name</label>
+                                    <input type="text" name="venueName" id="venueName" value="<?= htmlspecialchars($venue['venueName']) ?>" class="form-input" required>
+                                </div>
 
-                    <div>
-                        <label for="barangayAddress" class="form-label">Barangay Address</label>
-                        <input type="text" name="barangayAddress" id="barangayAddress" value="<?= htmlspecialchars($venue['barangayAddress']) ?>" class="form-input" required>
-                    </div>
+                                <div>
+                                    <label for="barangayAddress" class="form-label">Barangay Address</label>
+                                    <input type="text" name="barangayAddress" id="barangayAddress" value="<?= htmlspecialchars($venue['barangayAddress']) ?>" class="form-input" required>
+                                </div>
 
-                    <div>
-                        <label for="cityAddress" class="form-label">City Address</label>
-                        <input type="text" name="cityAddress" id="cityAddress" value="<?= htmlspecialchars($venue['cityAddress']) ?>" class="form-input" required>
-                    </div>
+                                <div>
+                                    <label for="cityAddress" class="form-label">City Address</label>
+                                    <input type="text" name="cityAddress" id="cityAddress" value="<?= htmlspecialchars($venue['cityAddress']) ?>" class="form-input" required>
+                                </div>
 
-                    <div>
-                        <label for="contactEmail" class="form-label">Contact Email</label>
-                        <input type="email" name="contactEmail" id="contactEmail" value="<?= htmlspecialchars($venue['contactEmail']) ?>" class="form-input" >
-                    </div>
-                    <div>
-                        <label for="contactNum" class="form-label">Contact Number</label>
-                        <input type="number" name="contactNum" id="contactNum" value="<?= htmlspecialchars($venue['contactNum']) ?>" class="form-input">
-                    </div>
+                                <div>
+                                    <label for="contactEmail" class="form-label">Contact Email</label>
+                                    <input type="email" name="contactEmail" id="contactEmail" value="<?= htmlspecialchars($venue['contactEmail']) ?>" class="form-input" >
+                                </div>
+                                <div>
+                                    <label for="contactNum" class="form-label">Contact Number</label>
+                                    <input type="number" name="contactNum" id="contactNum" value="<?= htmlspecialchars($venue['contactNum']) ?>" class="form-input">
+                                </div>
 
-                    <div>
-                        <label for="landmarks" class="form-label">Nearby Landmark</label>
-                        <input type="text" name="landmarks" id="landmarks" value="<?= htmlspecialchars($venue['landmarks']) ?>" class="form-input">
-                    </div>
+                                <div>
+                                    <label for="landmarks" class="form-label">Nearby Landmark</label>
+                                    <input type="text" name="landmarks" id="landmarks" value="<?= htmlspecialchars($venue['landmarks']) ?>" class="form-input">
+                                </div>
 
-                    <div>
-                        <label for="routes" class="form-label">Route Description</label>
-                        <input type="text" name="routes" id="routes" value="<?= htmlspecialchars($venue['routes']) ?>" class="form-input">
-                    </div>
+                                <div>
+                                    <label for="routes" class="form-label">Route Description</label>
+                                    <input type="text" name="routes" id="routes" value="<?= htmlspecialchars($venue['routes']) ?>" class="form-input">
+                                </div>
 
-                    
+                                
+                            </div>
+                        </div>
+
+
+                        <!-- Venue Description -->
+                        <div class="section">
+                            <label for="venueDesc" class="form-label">Venue Description</label>
+                            <textarea name="venueDesc" id="venueDesc" rows="4" class="form-textarea"><?= htmlspecialchars($venue['venueDesc']) ?></textarea>
+                        </div>
+
+                        <label for="priceRangeID">Price Range:</label>
+                            <select name="priceRangeID" id="priceRangeID" required>
+                                <option value="">Select Price Range</option>
+                                <?php foreach ($priceRanges as $range): ?>
+                                    <option value="<?= $range['priceRangeID']; ?>"
+                                        <?php if (isset($venue['priceRangeID']) && $venue['priceRangeID'] == $range['priceRangeID']) echo 'selected'; ?>>
+                                        <?= $range['priceRangeText']; ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+
+                        <label for="availabilityDays">Availability Days:</label>
+                        <select name="availabilityDays" id="availabilityDays" required>
+                            <option value="">Select Day</option>
+                            <?php foreach ($availabilityDaysOptions as $day): ?>
+                                <option value="<?= $day['availabilityDays']; ?>"
+                                        <?php if (isset($venue['availabilityDays']) && $venue['availabilityDays'] == $day['availabilityDays']) echo 'selected'; ?>>
+                                        <?= $day['days']; ?>
+                                    </option>
+                            <?php endforeach; ?>
+                        </select>
+
+                        <div class="section">
+                <h2>Available Times</h2>
+                <div class="availability-grid">
+                    <?php
+                    $availTimes = [
+                        'amAvail' => 'Morning',
+                        'nnAvail' => 'Afternoon',
+                        'pmAvail' => 'Night'
+                    ];
+                    foreach ($availTimes as $avail => $time) {
+                        $checkboxId = "avail_$avail";  // Unique ID prefix to avoid clashes
+                        $checked = !empty($venue[$avail]) ? 'checked' : '';
+                        echo "
+                        <label for='$checkboxId' class='availability-time'>
+                            <input id='$checkboxId' type='checkbox' name='$avail' value='1' $checked>
+                            <span>$time</span>
+                        </label>";
+                    }
+                    ?>
                 </div>
             </div>
 
+                        <!-- Image Upload Section -->
+                        <div class="section">
+                            <h2 class="text-xl font-semibold text-[#333333]">Images</h2>
+                            <!-- Images -->
+                            <label>Image 1:</label><br>
+                            <?php if (!empty($venue['imgs'])): ?>
+                                <img src="<?= $venue['imgs'] ?>" width="100"><br>
+                            <?php endif; ?>
+                            <input type="file" name="img1"><br>
 
-            <!-- Venue Description -->
+                            <label>Image 2:</label><br>
+                            <?php if (!empty($venue['img2'])): ?>
+                                <img src="<?= $venue['img2'] ?>" width="100"><br>
+                            <?php endif; ?>
+                            <input type="file" name="img2"><br>
+
+                            <label>Image 3:</label><br>
+                            <?php if (!empty($venue['img3'])): ?>
+                                <img src="<?= $venue['img3'] ?>" width="100"><br>
+                            <?php endif; ?>
+                            <input type="file" name="img3"><br>
+                        </div>    
+            <!-- Category -->
             <div class="section">
-                <label for="venueDesc" class="form-label">Venue Description</label>
-                <textarea name="venueDesc" id="venueDesc" rows="4" class="form-textarea"><?= htmlspecialchars($venue['venueDesc']) ?></textarea>
-            </div>
-
-            <label for="priceRangeID">Price Range:</label>
-                <select name="priceRangeID" id="priceRangeID" required>
-                    <option value="">Select Price Range</option>
-                    <?php foreach ($priceRanges as $range): ?>
-                        <option value="<?= $range['priceRangeID']; ?>"
-                            <?php if (isset($venue['priceRangeID']) && $venue['priceRangeID'] == $range['priceRangeID']) echo 'selected'; ?>>
-                            <?= $range['priceRangeText']; ?>
-                        </option>
+                <h2>Category</h2>
+                <div class="category-grid">
+                    <?php 
+                    $categories = [
+                        'intimate' => ['label' => 'Intimate', 'color' => 'black'],
+                        'business' => ['label' => 'Business', 'color' => 'black'],
+                        'casual'   => ['label' => 'Casual', 'color' => 'black'],
+                        'fun'      => ['label' => 'Fun', 'color' => 'black']
+                    ];
+                    foreach ($categories as $col => $data):
+                        $isChecked = !empty($venue[$col]) ? 'checked' : '';
+                        $primaryColor = $data['color'];
+                        $checkboxId = "cat_$col";
+                    ?>
+                    <div class="category-container" style="border-color: <?= $primaryColor ?>;">
+                        <label for="<?= $checkboxId ?>" class="category-label">
+                            <input 
+                                id="<?= $checkboxId ?>"
+                                type="checkbox" 
+                                name="<?= $col ?>" 
+                                value="1" 
+                                <?= $isChecked ?> 
+                                style="accent-color: <?= $primaryColor ?>;"
+                            />
+                            <span style="color: <?= $primaryColor ?>"><?= htmlspecialchars($data['label']) ?></span>
+                        </label>
+                        <span class="category-hover-bg" style="background-color: <?= $primaryColor ?>;"></span>
+                    </div>
                     <?php endforeach; ?>
-                </select>
-
-            <label for="availabilityDays">Availability Days:</label>
-            <select name="availabilityDays" id="availabilityDays" required>
-                <option value="">Select Day</option>
-                <?php foreach ($availabilityDaysOptions as $day): ?>
-                    <option value="<?= $day['availabilityDays']; ?>"
-                            <?php if (isset($venue['availabilityDays']) && $venue['availabilityDays'] == $day['availabilityDays']) echo 'selected'; ?>>
-                            <?= $day['days']; ?>
-                        </option>
-                <?php endforeach; ?>
-            </select>
-
-            <div class="section">
-    <h2>Available Times</h2>
-    <div class="availability-grid">
-        <?php
-        $availTimes = [
-            'amAvail' => 'Morning',
-            'nnAvail' => 'Afternoon',
-            'pmAvail' => 'Night'
-        ];
-        foreach ($availTimes as $avail => $time) {
-            $checkboxId = "avail_$avail";  // Unique ID prefix to avoid clashes
-            $checked = !empty($venue[$avail]) ? 'checked' : '';
-            echo "
-            <label for='$checkboxId' class='availability-time'>
-                <input id='$checkboxId' type='checkbox' name='$avail' value='1' $checked>
-                <span>$time</span>
-            </label>";
-        }
-        ?>
-    </div>
-</div>
-
-            <!-- Image Upload Section -->
-            <div class="section">
-                <h2 class="text-xl font-semibold text-[#333333]">Images</h2>
-                <!-- Images -->
-                <label>Image 1:</label><br>
-                <?php if (!empty($venue['imgs'])): ?>
-                    <img src="<?= $venue['imgs'] ?>" width="100"><br>
-                <?php endif; ?>
-                <input type="file" name="img1"><br>
-
-                <label>Image 2:</label><br>
-                <?php if (!empty($venue['img2'])): ?>
-                    <img src="<?= $venue['img2'] ?>" width="100"><br>
-                <?php endif; ?>
-                <input type="file" name="img2"><br>
-
-                <label>Image 3:</label><br>
-                <?php if (!empty($venue['img3'])): ?>
-                    <img src="<?= $venue['img3'] ?>" width="100"><br>
-                <?php endif; ?>
-                <input type="file" name="img3"><br>
+                </div>
             </div>
 
+                    
+            <!-- Amenities -->
+            <div class="section">
+                <h2>Amenities</h2>
+                <div class="amenities-grid">
+                    <?php
+                    $amenities = [
+                        'eventPlanner' => 'Event Planner',
+                        'equipRentals' => 'Equipment Rentals',
+                        'decoServices' => 'Decoration Services',
+                        'onsiteStaff' => 'On-site Staff',
+                        'techSupport' => 'Tech Support',
+                        'pwdFriendly' => 'PWD Friendly',
+                        'parking' => 'Parking',
+                        'cateringServices' => 'Catering Services',
+                        'securityStaff' => 'Security Staff',
+                        'wifiAccess' => 'Wi-Fi Access'
+                    ];
+                    foreach ($amenities as $key => $label) {
+                        $checkboxId = "amenity_$key";
+                        $checked = !empty($venue[$key]) ? 'checked' : '';
+                        echo "
+                        <label for='$checkboxId' class='amenity-label'>
+                            <input id='$checkboxId' type='checkbox' name='$key' $checked>
+                            <span>$label</span>
+                        </label>";
+                    }
+                    ?>
+                </div>
+            </div>
 
-            
-           
-<!-- Category -->
-<div class="section">
-    <h2>Category</h2>
-    <div class="category-grid">
-        <?php 
-        $categories = [
-            'intimate' => ['label' => 'Intimate', 'color' => 'black'],
-            'business' => ['label' => 'Business', 'color' => 'black'],
-            'casual'   => ['label' => 'Casual', 'color' => 'black'],
-            'fun'      => ['label' => 'Fun', 'color' => 'black']
-        ];
-        foreach ($categories as $col => $data):
-            $isChecked = !empty($venue[$col]) ? 'checked' : '';
-            $primaryColor = $data['color'];
-            $checkboxId = "cat_$col";
-        ?>
-        <div class="category-container" style="border-color: <?= $primaryColor ?>;">
-            <label for="<?= $checkboxId ?>" class="category-label">
-                <input 
-                    id="<?= $checkboxId ?>"
-                    type="checkbox" 
-                    name="<?= $col ?>" 
-                    value="1" 
-                    <?= $isChecked ?> 
-                    style="accent-color: <?= $primaryColor ?>;"
-                />
-                <span style="color: <?= $primaryColor ?>"><?= htmlspecialchars($data['label']) ?></span>
-            </label>
-            <span class="category-hover-bg" style="background-color: <?= $primaryColor ?>;"></span>
-        </div>
-        <?php endforeach; ?>
-    </div>
-</div>
+            <div class="section">
+                <h2>Payment Methods</h2>
+                <div class="payment-grid">
+                    <?php
+                    $payment = [
+                        'payCash' => 'Pay via Cash',
+                        'payElectronic' => 'Pay via E-wallets',
+                        'payBank' => 'Pay via Bank'
+                    ];
+                    foreach ($payment as $code => $method) {
+                        $checkboxId = "avail_$code"; 
+                        $checked = !empty($venue[$code]) ? 'checked' : '';
+                        echo "
+                        <label for='$checkboxId' class='payment-method'>
+                            <input id='$checkboxId' type='checkbox' name='$code' value='1' $checked>
+                            <span>$method</span>
+                        </label>";
+                    }
+                    ?>
+                </div>
+            </div>
 
-           
-<!-- Amenities -->
-<div class="section">
-    <h2>Amenities</h2>
-    <div class="amenities-grid">
-        <?php
-        $amenities = [
-            'eventPlanner' => 'Event Planner',
-            'equipRentals' => 'Equipment Rentals',
-            'decoServices' => 'Decoration Services',
-            'onsiteStaff' => 'On-site Staff',
-            'techSupport' => 'Tech Support',
-            'pwdFriendly' => 'PWD Friendly',
-            'parking' => 'Parking',
-            'cateringServices' => 'Catering Services',
-            'securityStaff' => 'Security Staff',
-            'wifiAccess' => 'Wi-Fi Access'
-        ];
-        foreach ($amenities as $key => $label) {
-            $checkboxId = "amenity_$key";
-            $checked = !empty($venue[$key]) ? 'checked' : '';
-            echo "
-            <label for='$checkboxId' class='amenity-label'>
-                <input id='$checkboxId' type='checkbox' name='$key' $checked>
-                <span>$label</span>
-            </label>";
-        }
-        ?>
-    </div>
-</div>
+                        <!--coords-->
+                        <h2> Coordinates </h2>
+                        <label for="latitude">Latitude:</label>
+                        <input type="text" name="latitude" id="latitude" value="<?= htmlspecialchars($venue['latitude']) ?>" class="form-input" required>
 
-<div class="section">
-    <h2>Payment Methods</h2>
-    <div class="payment-grid">
-        <?php
-        $payment = [
-            'payCash' => 'Pay via Cash',
-            'payElectronic' => 'Pay via E-wallets',
-            'payBank' => 'Pay via Bank'
-        ];
-        foreach ($payment as $code => $method) {
-            $checkboxId = "avail_$code";  // Unique ID prefix to avoid clashes
-            $checked = !empty($venue[$code]) ? 'checked' : '';
-            echo "
-            <label for='$checkboxId' class='payment-method'>
-                <input id='$checkboxId' type='checkbox' name='$code' value='1' $checked>
-                <span>$method</span>
-            </label>";
-        }
-        ?>
-    </div>
-</div>
-
-            <!--coords-->
-            <h2> Coordinates </h2>
-            <label for="latitude">Latitude:</label>
-            <input type="text" name="latitude" id="latitude" value="<?= htmlspecialchars($venue['latitude']) ?>" class="form-input" required>
-
-            <label for="longitude">Longitude:</label>
-            <input type="text" name="longitude" id="longitude" value="<?= htmlspecialchars($venue['longitude']) ?>" class="form-input" required>
-
-            <!-- Submit Button -->
-            <button type="submit" class="form-button">Save Changes</button>
+                        <label for="longitude">Longitude:</label>
+                        <input type="text" name="longitude" id="longitude" value="<?= htmlspecialchars($venue['longitude']) ?>" class="form-input" required>
+            <button type="submit">Update Venue</button>
         </form>
-    </div>
-</div>
 
+        <!-- venue facilities -->
+        <form method="post" action="update_venue.php">
+            <input type="hidden" name="action" value="add_facility" />
+            <div class="container">
+            <input type="hidden" name="venueID" value="<?= htmlspecialchars($venue['venueID']) ?>">
+            <label>Facilities</label>
+                <div id="facility-container">
+                    <!--existing -->
+                    <?php foreach ($venueFacilities as $facility): ?>
+                        <div class="facility-item mb-3 border p-3 rounded position-relative">
+                            <input type="hidden" name="facilityID[]" value="<?= $facility['facilityID'] ?>">
+                            <div><strong><?= htmlspecialchars($facility['facilityName']) ?></strong></div>
+
+                            <label>Max Capacity:</label>
+                            <input type="number" name="maxCapacity[]" value="<?= htmlspecialchars($facility['maxCapacity']) ?>" min="0" required>
+
+                            <label>Price:</label>
+                            <input type="number" name="price[]" step="0.01" value="<?= htmlspecialchars($facility['price']) ?>" min="0" required>
+
+                            <!-- delete form as you already have -->
+                            <button type="button" class="btn btn-danger btn-sm mt-2"
+                                onclick="deleteFacility(<?= $facility['facilityID'] ?>, <?= $venueID ?>)">
+                                Delete Facility
+                            </button>
+
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+
+                <!-- new facilities -->
+                <div id="new-facility-container"></div>
+
+                    <button type="button" class="btn btn-secondary mt-3" onclick="addFacility()">+ Add New Facility</button>
+                </div>
+                
+                <button type="submit" class="form-button">Save Changes</button>
+                </div>
+                </form>
+            </div>     
 </body>
 </html>
+
+<template id="facilityOptionsTemplate">
+  <option value="">Select Facility Type</option>
+  <?php foreach ($facilityOptions as $facility): ?>
+    <option value="<?= $facility['facilityType']; ?>">
+      <?= htmlspecialchars($facility['facilityName']); ?>
+    </option>
+  <?php endforeach; ?>
+</template>
+
+
+<script>
+function addFacility() {
+    const container = document.getElementById('new-facility-container');
+
+    const div = document.createElement('div');
+    div.className = 'facility-item mb-3 border p-3 rounded position-relative';
+
+    // Get the facility options from the template
+    const options = document.getElementById('facilityOptionsTemplate').innerHTML;
+
+    div.innerHTML = `
+        <label for="newFacilityType">Facility Type:</label>
+        <select name="newFacilityType[]" required>${options}</select>
+
+        <label for="newMaxCapacity[]">Max Capacity:</label>
+        <input type="number" name="newMaxCapacity[]" min="0" required>
+
+        <label for="newPrice[]">Price:</label>
+        <input type="number" name="newPrice[]" step="0.01" min="0" required>
+
+        <button type="button" class="btn btn-danger btn-sm mt-2" onclick="this.parentElement.remove()">Delete</button>
+    `;
+
+    container.appendChild(div);
+}
+
+function deleteFacility(facilityID, venueID) {
+    if (confirm("Delete this facility from the venue?")) {
+        const form = document.createElement('form');
+        form.method = 'post';
+        form.action = 'delete_facility.php';
+
+        const fidInput = document.createElement('input');
+        fidInput.type = 'hidden';
+        fidInput.name = 'facilityID';
+        fidInput.value = facilityID;
+        form.appendChild(fidInput);
+
+        const vidInput = document.createElement('input');
+        vidInput.type = 'hidden';
+        vidInput.name = 'venueID';
+        vidInput.value = venueID;
+        form.appendChild(vidInput);
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+</script>

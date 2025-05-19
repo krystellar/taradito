@@ -11,6 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (empty($email) || empty($password)) {
         $error = "Please fill in both fields.";
     } else {
+        // Check Manager login
         $stmt = $conn->execute_query(
             "SELECT managerID, managerPass FROM managerData WHERE managerEmail = ?",
             [$email]
@@ -23,6 +24,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             header("Location: dashboardAdmin.php");
             exit;
         }
+
+        // Check SuperAdmin login
+        $stmt = $conn->execute_query(
+            "SELECT adminID, adminPass FROM admindata WHERE adminEmail = ?",
+            [$email]
+        );
+        $superadmin = $stmt->fetch_assoc();
+
+        if ($superadmin && password_verify($password, $superadmin['adminPass'])) {
+            $_SESSION['adminID'] = $superadmin['adminID'];
+            $_SESSION['role'] = 'admin';
+            $_SESSION['admin'] = true;
+            header("Location: SuperAdmin.php");
+            exit;
+        }
+
+        // Check User login
         $stmt = $conn->execute_query(
             "SELECT userID, userPass FROM userdata WHERE userEmail = ?",
             [$email]

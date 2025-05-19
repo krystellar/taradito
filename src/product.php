@@ -1,18 +1,15 @@
 <?php
-  if (session_status() === PHP_SESSION_NONE) {
-      session_start();
-  }
+  session_start();
   include('db_connection.php');
-  if (!isset($_SESSION['userID']) && !isset($_SESSION['managerID'])) {
-    header("Location: Login.php");
-    exit;
-}
+  if (!isset($_SESSION['userID']) && !isset($_SESSION['managerID'])&& !isset($_SESSION['adminID'])) {
+    $_SESSION['is_guest'] = true;
+  }
 
   define('PROJECT_ROOT', rtrim(dirname($_SERVER['SCRIPT_NAME'], 2), '/'));
 
-  $firstName = '';
+  $firstName = 'Guest';
   $lastName = '';
-  $role = '';
+  $role = 'Guest';
 
 if (isset($_SESSION['userID'])) {
     //logged in as user
@@ -44,9 +41,11 @@ if (isset($_SESSION['userID'])) {
     }
     $stmt->close();
 
-} else {
-    echo "<p>Please log in to see your profile info.</p>";
-    exit;
+}
+elseif (isset($_SESSION['adminID'])) {
+    $role = 'Super Admin';
+    $firstName = 'Super';
+    $lastName = 'Admin';
 }
   // Search feature
  $searchTerm = isset($_GET['query']) ? $conn->real_escape_string($_GET['query']) : '';
@@ -667,22 +666,28 @@ $result = $conn->query($sql);
       <li><a href="product.php" class="nav-link">Venues</a></li>
       <li><a href="top_venues_chart.php" class="nav-link">Top picks</a></li>
       <?php
-          $dashboardLink = PROJECT_ROOT . '/src/Login.php';
-          if (isset($_SESSION['role'])) {
-              if ($_SESSION['role'] === 'manager') {
-                  $dashboardLink = PROJECT_ROOT . '/src/dashboardAdmin.php';
-              } elseif ($_SESSION['role'] === 'user') {
-                  $dashboardLink = PROJECT_ROOT . '/src/dashboard.php';
-              }
-          }
-          ?>
-        <li>
-          <a href="<?= $dashboardLink ?>" class="nav-link">
-            Dashboard
-          </a>
-        </li>
+        $dashboardLink = PROJECT_ROOT . '/src/index.php';
+        $dashboardText = 'Home';
+        if (isset($_SESSION['role'])) {
+            if ($_SESSION['role'] === 'manager') {
+                $dashboardLink = PROJECT_ROOT . '/src/dashboardAdmin.php';
+                $dashboardText = 'Dashboard';
+            } elseif ($_SESSION['role'] === 'user') {
+                $dashboardLink = PROJECT_ROOT . '/src/dashboard.php';
+                $dashboardText = 'Dashboard';
+            } elseif ($_SESSION['role'] === 'admin') {
+                $dashboardLink = PROJECT_ROOT . '/src/superAdmin.php';
+                $dashboardText = 'Dashboard';
+            }
+        }
+      ?>
+      <li>
+        <a href="<?= $dashboardLink ?>" class="nav-link">
+          <?= $dashboardText ?>
+        </a>
+      </li>
     </ul>
-        </div>
+  </div>
 
    <!-- Search Bar -->
 <div class="input-container">

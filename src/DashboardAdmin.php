@@ -28,7 +28,7 @@ if (!$manager) {
 }
 
 // Fetch venues under the manager
-$sql = "SELECT v.venueID, v.venueName, v.barangayAddress, v.cityAddress, v.maxCapacity, v.priceRangeID, pr.priceRangeText
+$sql = "SELECT v.venueID, v.venueName, v.barangayAddress, v.cityAddress, v.priceRangeID, pr.priceRangeText
         FROM venueData v
         JOIN managervenue mv ON v.venueID = mv.venueID
         JOIN priceRange pr ON v.priceRangeID = pr.priceRangeID
@@ -53,14 +53,18 @@ $stmt->close();
 
 // Fetch reservations for the manager's venues
 $sql = "SELECT ur.reservationID, ur.reservationDate, rs.statusText,
-            u.firstName, u.lastName, v.venueName
+               u.firstName, u.lastName,
+               v.venueName, f.facilityName, f.facilityType, vf.price
         FROM userReserved ur
         JOIN reservationStatus rs ON ur.statusID = rs.statusID
         JOIN userData u ON ur.userID = u.userID
-        JOIN venueData v ON ur.venueID = v.venueID
+        JOIN venueFacilities vf ON ur.facilityID = vf.facilityID
+        JOIN facility f ON vf.facilityType = f.facilityType
+        JOIN venueData v ON vf.venueID = v.venueID
         JOIN managerVenue mv ON v.venueID = mv.venueID
         WHERE mv.managerID = ?
         ORDER BY ur.reservationDate DESC";
+
 
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $managerID);
@@ -99,19 +103,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: " . $_SERVER['PHP_SELF']);
     exit;
 }
-
-// ==== Your new analytics queries here ====
-
-// 1. Monthly Reservations per Venue (FILTERED BY MANAGER)
+// Monthly Reservations per Venue (FILTERED BY MANAGER)
 $sql1 = "
     SELECT v.venueName, DATE_FORMAT(ur.reservationDate, '%Y-%m') AS month, COUNT(*) AS totalReservations
     FROM userReserved ur
-    JOIN venueData v ON ur.venueID = v.venueID
+    JOIN venueFacilities vf ON ur.facilityID = vf.facilityID
+    JOIN venueData v ON vf.venueID = v.venueID
     JOIN managerVenue mv ON v.venueID = mv.venueID
     WHERE mv.managerID = ?
     GROUP BY month, v.venueID
     ORDER BY month DESC
 ";
+
 $stmt1 = $conn->prepare($sql1);
 $stmt1->bind_param("i", $managerID);
 $stmt1->execute();
@@ -829,7 +832,6 @@ if (!$result2) {
                         <div class="venue-card-info">
                             <h3 class="venue-name"><?php echo htmlspecialchars($venue['venueName']); ?></h3>
                             <p class="venue-address"><?php echo htmlspecialchars($venue['barangayAddress']); ?>, <?php echo htmlspecialchars($venue['cityAddress']); ?></p>
-                            <p class="venue-capacity-price">Capacity: <?php echo htmlspecialchars($venue['maxCapacity']); ?> | Price: <?php echo htmlspecialchars($venue['priceRangeText']); ?></p>
                         </div>
                        <div class="button-container">
                         <a href="<?= PROJECT_ROOT ?>/src/venue_editing.php?id=<?php echo $venue['venueID']; ?>" class="venue-edit-button">
