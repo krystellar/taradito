@@ -880,7 +880,7 @@
 
   <!-- wishlist and like -->
   <div class="button-group">
-    <?php if (!isset($_SESSION['userID']) && !isset($_SESSION['userID']) && !isset($_SESSION['adminID'])): ?>
+    <?php if (!isset($_SESSION['userID']) && !isset($_SESSION['managerID']) && !isset($_SESSION['adminID'])): ?>
       <button onclick="window.location.href='Login.php'" class="reserve-button text-sm font-bold uppercase">Sign up to reserve</button>
     <?php endif; ?>
     <?php if (isset($_SESSION['userID'])): ?>

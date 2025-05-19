@@ -27,6 +27,12 @@ if (!$manager) {
     exit;
 }
 
+$requestQuery = "SELECT * FROM venuerequests WHERE managerID = ?";
+$stmt = $conn->prepare($requestQuery);
+$stmt->bind_param("i", $managerID);
+$stmt->execute();
+$requestResult = $stmt->get_result();
+
 // Fetch venues under the manager
 $sql = "SELECT v.venueID, v.venueName, v.barangayAddress, v.cityAddress, v.priceRangeID, pr.priceRangeText
         FROM venueData v
@@ -159,7 +165,31 @@ if (!$result2) {
     $viewsAndLikes = $result2->fetch_all(MYSQLI_ASSOC);
 }
 
-// Now you can proceed with your HTML output and use $monthlyReservations and $viewsAndLikes data
+if (isset($_GET['delete_id'])) {
+    error_log("Delete requested for venueID = " . $_GET['delete_id']);
+    // to delete
+$delete_id = (int)$_GET['delete_id'];
+
+// Verify this venueID belongs to the logged-in manager
+$checkStmt = $conn->prepare("SELECT managerID FROM venuerequests WHERE requestID = ?");
+$checkStmt->bind_param("i", $delete_id);
+$checkStmt->execute();
+$result = $checkStmt->get_result();
+$row = $result->fetch_assoc();
+
+if ($row && $row['managerID'] == $managerID) {
+    $delStmt = $conn->prepare("DELETE FROM venuerequests WHERE requestID = ?");
+    $delStmt->bind_param("i", $delete_id);
+    $delStmt->execute();
+    $delStmt->close();
+}
+$checkStmt->close();
+
+header("Location: dashboardadmin.php");
+exit;
+}
+
+
 
 ?>
 
@@ -850,6 +880,32 @@ if (!$result2) {
         </div>
     <?php endif; ?>
 </div>
+
+<div class="dashboard subsection reservation-section">
+    <h2 class="dashboard-title">Venue Requests</h2>
+    <div class = "venue-list">
+    <?php if ($requestResult->num_rows > 0): ?>
+            <?php while ($request = $requestResult->fetch_assoc()): ?>
+                <div class="venue-card">
+                    <div class="venue-card-header">
+                        <div class="venue-card-info">
+                            <h3 class="text-xl font-extrabold uppercase mb-2"><?= htmlspecialchars($request['venueName']) ?></h3>
+                            <p><strong>Barangay:</strong> <?= htmlspecialchars($request['barangayAddress']) ?></p>
+                            <p><strong>City:</strong> <?= htmlspecialchars($request['cityAddress']) ?></p>
+                            <p><strong>Status:</strong> <span class="font-semibold"><?= htmlspecialchars($request['status']) ?></span></p>
+                        </div>
+                        <div class="button-container">
+                            <a href="?delete_id=<?= $request['requestID'] ?>" class="delete-button">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            <?php endwhile; ?>
+    <?php else: ?>
+        <p class="text-black font-bold">No venue requests submitted.</p>
+    <?php endif; ?>
+    </div>
+</div>
+
 
 <!-- Reservation Messages Section -->
 <div class="dashboard subsection">
