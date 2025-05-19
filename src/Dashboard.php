@@ -889,16 +889,10 @@ border-color: #00C851;
       <input type="hidden" name="userID" value="<?= $_SESSION['userID'] ?>">
 
       <label for="startDate">Start Date:</label>
-      <input name="startDate" type="date" value="<?= $row['startDate'] ?>" required class="brutal-input">
-
-      <label for="startTime">Start Time:</label>
-      <input name="startTime" type="time" value="<?= $row['startTime'] ?>" required class="brutal-input">
+      <input name="startDate" type="datetime-local" value="<?= $row['startDate'] ?>" required class="brutal-input">
 
       <label for="endDate">End Date:</label>
-      <input name="endDate" type="date" value="<?= $row['endDate'] ?>" required class="brutal-input">
-
-      <label for="endTime">End Time:</label>
-      <input name="endTime" type="time" value="<?= $row['endTime'] ?>" required class="brutal-input">
+      <input name="endDate" type="datetime-local" value="<?= $row['endDate'] ?>" required class="brutal-input">
 
       <button type="submit" class="brutal-button">
         Update Reservation

@@ -556,7 +556,7 @@ if ($result && $result->num_rows > 0) {
                         </p>
                     </div>
                     <div class="button-container">
-                        <form action="venue_delete.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this venue?');">
+                        <form action="venue_del.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this venue?');">
                             <input type="hidden" name="venueID" value="<?= $venue['venueID']; ?>">
                             <button type="submit" class="delete-button">Delete</button>
                         </form>

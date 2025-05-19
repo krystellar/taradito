@@ -6,9 +6,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $reservationID = $_POST['reservationID'];
     $userID = $_POST['userID'];
     $startDate = $_POST['startDate'];
-    $startTime = $_POST['startTime'];
     $endDate = $_POST['endDate'];
-    $endTime = $_POST['endTime'];
     $redirectURL = "dashboard.php";
 
     if (strtotime($endDate) < strtotime($startDate)) {
@@ -27,8 +25,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit;
     }
 
-    $stmt = $conn->prepare("UPDATE userreserved SET startDate = ?, startTime = ?, endDate = ?, endTime = ? WHERE reservationID = ? AND userID = ?");
-    $stmt->bind_param("ssssii", $startDate, $startTime, $endDate, $endTime, $reservationID, $userID);
+    $stmt = $conn->prepare("UPDATE userreserved SET startDate = ?, endDate = ? WHERE reservationID = ? AND userID = ?");
+    $stmt->bind_param("ssii", $startDate, $endDate, $reservationID, $userID);
 
     if ($stmt->execute()) {
         $_SESSION['reservation_updated'] = true; 
