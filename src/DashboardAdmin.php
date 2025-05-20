@@ -752,7 +752,6 @@ exit;
 <!-- Navbar -->
 <header id="navbar">
   <nav class="navbar-container">
->
     <a href="#" class="logo">
       <img src="Images/Logo/TaraDito.png" alt="TaraDito Logo" />
     </a>
