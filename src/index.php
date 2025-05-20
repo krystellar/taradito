@@ -705,17 +705,12 @@
   position: relative;
   width: 100%;
   height: 100vh;
-  background-image: url('./Images/HOME.jpeg');
+  background-image: url('./Images/HOME.jpg');
   background-size: cover;
   background-position: center;
   overflow: hidden;
 }
 
-.hero-overlay {
-  position: absolute;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.4); /* Optional dark overlay */
-}
 
 .hero-logo-container {
   position: relative;
