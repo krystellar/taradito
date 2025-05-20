@@ -201,13 +201,9 @@ session_start();
 
 <header id="navbar">
   <nav class="navbar-container">
-    
-    <!-- Logo on the left -->
     <a href="#" class="logo">
       <img src="Images/Logo/TaraDito.png" alt="TaraDito Logo" />
     </a>
-
-    <!-- Navigation Links on the right -->
     <ul class="nav-links">
     <li><a href="product.php" class="nav-link">Venues</a></li>
     <li><a href="top_venues_chart.php" class="nav-link">Top picks</a></li>
@@ -236,14 +232,12 @@ session_start();
   </nav>
 </header>
 
- <!-- Navigation Buttons -->
 <div id="navButtons">
   <button data-target="reserved" class="active">Most Reserved</button>
   <button data-target="rated">Most Rated</button>
   <button data-target="liked">Most Liked</button>
 </div>
 
-<!-- Chart Containers -->
 <div id="reserved" class="chart-container active">
   <div class="card">
     <span class="card__title">Top 5 Most Reserved Venues</span>
@@ -492,22 +486,18 @@ session_start();
   </script>
 
 <script>
-     const buttons = document.querySelectorAll('#navButtons button');
+const buttons = document.querySelectorAll('#navButtons button');
 const containers = document.querySelectorAll('.chart-container');
 
 buttons.forEach(button => {
   button.addEventListener('click', () => {
-    // Remove active class from buttons
     buttons.forEach(btn => btn.classList.remove('active'));
-    // Hide all containers
     containers.forEach(c => {
       c.style.display = 'none';
       c.classList.remove('active');
     });
 
-    // Activate clicked button
     button.classList.add('active');
-    // Show related container
     const target = button.getAttribute('data-target');
     const targetContainer = document.getElementById(target);
     targetContainer.style.display = 'block';

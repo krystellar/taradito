@@ -644,12 +644,9 @@ $result = $conn->query($sql);
 </head>
 <body class="bg-white text-gray-900 font-[Nunito, sans-serif] content">
 
-
-
 <!--Nav bar-->
 <header id="navbar">
-
-    <!-- information abt user -->
+<!-- information abt user -->
 <div class="user-info-container">
   <a href="#" class="logo">
       <img src="Images/Logo/TaraDito.png" alt="TaraDito Logo" />
@@ -657,8 +654,6 @@ $result = $conn->query($sql);
     <h3><?= htmlspecialchars($firstName . ' ' . $lastName) ?></h3>
     <p><strong>Role:</strong> <?= htmlspecialchars($role) ?></p>
 </div>
-
-
   <nav class="navbar-container">
      <div class="nav-main">
     <!-- Navigation Links on the right -->

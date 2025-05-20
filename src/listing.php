@@ -826,12 +826,9 @@
 <!-- Navbar -->
 <header id="navbar">
   <nav class="navbar-container">
-    
-    <!-- Logo on the left -->
     <a href="#" class="logo">
       <img src="Images/Logo/TaraDito.png" alt="TaraDito Logo" />
     </a>
-    <!-- Navigation Links on the right -->
     <ul class="nav-links">
       <li><a href="product.php" class="nav-link">Venues</a></li>
       <li><a href="top_venues_chart.php" class="nav-link">Top picks</a></li>
@@ -910,8 +907,6 @@
 
   
   </div>
-
-  <!-- Villa Description -->
     <h2 class="about-title">About this place</h2>
     <p class="about-text">
       <?= htmlspecialchars($venue['venueDesc']) ?>
@@ -933,10 +928,7 @@
   </div>
 <?php endif; ?>
 
-
-
- <div class="flex">
-    <!-- Amenities Section -->
+ <div class="flex"> <!-- Amenities Section -->
     <div class="amenities-container w-1-2">
         <h2 class="text-xl amenities">Services & Amenities</h2>
         <div class="mt-4 grid grid-cols-2 gap-4 text-sm">
@@ -951,7 +943,6 @@
             <?php if ($venue['wifiAccess']): ?><div><p class="font-medium">Wi-Fi Connectivity</p></div><?php endif; ?>
         </div>
     </div>
-
     <!-- Reviews Section -->
     <div class="reviews-container w-1-2">
       <h2 class="text-xl amenities">Reviews</h2>

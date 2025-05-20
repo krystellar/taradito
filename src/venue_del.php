@@ -9,8 +9,6 @@ if (!isset($_SESSION['adminID'])) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['venueID'])) {
     $venueID = (int) $_POST['venueID'];
-
-    // Step 1: Get managerID from managerVenue
     $stmt = $conn->prepare("SELECT managerID FROM managerVenue WHERE venueID = ?");
     $stmt->bind_param("i", $venueID);
     $stmt->execute();
@@ -20,12 +18,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['venueID'])) {
         $row = $result->fetch_assoc();
         $managerID = $row['managerID'];
 
-        // Step 2: Delete from managerVenue
         $delManagerVenue = $conn->prepare("DELETE FROM managerVenue WHERE venueID = ?");
         $delManagerVenue->bind_param("i", $venueID);
         $delManagerVenue->execute();
 
-        // Step 3: Delete from venueData
         $delVenueData = $conn->prepare("DELETE FROM venueData WHERE venueID = ?");
         $delVenueData->bind_param("i", $venueID);
         if ($delVenueData->execute()) {

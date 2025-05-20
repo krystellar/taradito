@@ -346,12 +346,10 @@ if ($result && $result->num_rows > 0) {
     background-color: #FFF6CF;
     margin-bottom: 1.5rem;
     box-shadow: 10px 10px 0 #000;
-    transition: background-color 0.3s ease; /* Smooth transition for color changes */
+    transition: background-color 0.3s ease;
 }
-
-/* Status-specific colors for reservation items */
 .reservation-item.not-accepted {
-    background-color: #ff9fa6; /* Lighter red background */
+    background-color: #ff9fa6;
 }
 
 .reservation-item.happened-paid {
@@ -491,9 +489,7 @@ if ($result && $result->num_rows > 0) {
     </form>
 </div>
 
-
-
-  <!-- venue reqyest -->
+<!-- venue reqyest -->
 <div class="dashboard subsection resrvation-section" style="margin-top: 3rem;">
     <h2 class="dashboard-title">Venue Requests</h2>
 

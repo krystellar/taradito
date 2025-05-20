@@ -746,20 +746,16 @@ exit;
 }
 
 
-    </style>
+</style>
 </head>
-
 <body class="custom-bg min-h-screen content">
 <!-- Navbar -->
 <header id="navbar">
   <nav class="navbar-container">
-    
-    <!-- Logo on the left -->
+>
     <a href="#" class="logo">
       <img src="Images/Logo/TaraDito.png" alt="TaraDito Logo" />
     </a>
-
-    <!-- Navigation Links on the right -->
     <ul class="nav-links">
       <li><a href="product.php" class="nav-link">Venues</a></li>
       <li><a href="top_venues_chart.php" class="nav-link">Top picks</a></li>
@@ -769,11 +765,7 @@ exit;
   </nav>
 </header>
 
-
-
 <div class="max-w-6xl mx-auto p-6">
-
-
 <link rel="stylesheet" href="style.css">
 
 <div class="dashboard">
@@ -841,9 +833,7 @@ exit;
     </form>
 </div>
 
-
-
-  <!-- Venues Managed Section -->
+ <!-- Venues Managed Section -->
 <div class="dashboard subsection resrvation-section">
     <h2 class="dashboard-title">Venues Managed</h2>
 
@@ -911,8 +901,6 @@ exit;
 <div class="dashboard subsection">
     <h2 class="dashboard-title">Reservations</h2>
     <a href="download_reservations.php" class="add-venue-button">Download CSV</a>
-
-
     <?php if (empty($reservations)): ?>
         <p class="no-reservations">No reservations yet.</p>
     <?php else: ?>
