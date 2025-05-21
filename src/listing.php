@@ -110,7 +110,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><?= htmlspecialchars($venue['venueName']) ?> | Design Stays</title>
+  <title><?= htmlspecialchars($venue['venueName']) ?> | TaraDito</title>
   <link href="output.css" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 
@@ -152,31 +152,31 @@
   }
 
   .main-image {
-  border-radius: 0.5rem; /* Slight rounding for a tough look */
+  border-radius: 0.5rem; 
   width: 100%;
   object-fit: cover;
   height: 20rem;
-  border: 10px solid #222; /* Dark, thick border for a stark effect */
-  box-shadow: 0 0 0 5px #fff, 0 0 10px rgba(0, 0, 0, 0.5); /* Strong shadow contrast */
+  border: 10px solid #222; 
+  box-shadow: 0 0 0 5px #fff, 0 0 10px rgba(0, 0, 0, 0.5); 
 }
 
 .sub-images {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1rem; /* More spacing for a cleaner brutalist layout */
+  gap: 1rem; 
 }
 
 .sub-image {
-  border-radius: 0.25rem; /* Sharp but slightly rounded edges */
+  border-radius: 0.25rem;
   width: 100%;
-  border: 8px solid #333; /* Dark, contrasting border */
-  box-shadow: 0 0 0 5px #fff, 0 0 15px rgba(0, 0, 0, 0.6); /* Aggressive shadows */
+  border: 8px solid #333; 
+  box-shadow: 0 0 0 5px #fff, 0 0 15px rgba(0, 0, 0, 0.6); 
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .sub-image:hover {
-  transform: scale(1.05); /* Zoom effect for impact */
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.8); /* Stronger shadow on hover */
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.8); 
 }
 
 #navbar {
@@ -185,7 +185,7 @@
   z-index: 50;
   display: flex;
   justify-content: center;
-  pointer-events: none; /* allows shadow and border effects to float above */
+  pointer-events: none; 
   margin-bottom: 5rem;
 }
 
@@ -412,13 +412,13 @@
 }
 
 .reviews-container {
-    margin-right: 1rem; /* Optional: Adds some space between the two containers */
-  max-height: 400px;         /* Adjust height as needed */
-  overflow-y: auto;          /* Scroll for the whole review section */
+  margin-right: 1rem; 
+  max-height: 400px;         
+  overflow-y: auto;          
   padding-right: 10px;
 }
 
-/* Optional scrollbar styling for better UX */
+/*scrollbar styling for better UX */
 .reviews-container::-webkit-scrollbar {
   width: 8px;
 }
@@ -427,7 +427,7 @@
   border-radius: 4px;
 }
 
-/* Remove individual scroll */
+
 .review-container {
   max-height: none;
   overflow: visible;
@@ -701,11 +701,11 @@
 
 /* Star Style */
 .star {
-    font-size: 4rem; /* Ensures the stars are big */
+    font-size: 4rem;
     color: #ccc;
     cursor: pointer;
     transition: color 0.2s ease;
-    display: inline-block; /* Ensures stars are displayed inline */
+    display: inline-block; 
 }
 
 /* Light up selected stars */
@@ -713,9 +713,9 @@
   color: gold;
 }
 
-/* Hover lighting from left to right */
+
 .rating-stars:hover .star {
-  color: #ccc; /* Reset all to gray */
+  color: #ccc;
 }
 
 .star:hover,
@@ -724,7 +724,7 @@
 }
 
 .ratings {
-  margin-right: 5px; /* Adjust the gap between the stars */
+  margin-right: 5px; 
 }
 
 .two-button{
@@ -790,7 +790,7 @@
 .review-text {
   font-size: 1rem;
   margin: 0;
-  white-space: normal; /* Wraps text */
+  white-space: normal; 
   word-wrap: break-word; /* Prevents cutting off */
 }
 

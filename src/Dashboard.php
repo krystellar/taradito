@@ -882,24 +882,26 @@ border-color: #00C851;
           </tr>
 
           <!-- Hidden update form -->
-            <tr id="form-row-<?= $row['reservationID'] ?>" class="hidden brutal-form-row">
-              <td colspan="7">
-                <form action="update_reservation.php" method="POST" class="brutal-form">
-                  <input type="hidden" name="reservationID" value="<?= $row['reservationID'] ?>">
-                  <input type="hidden" name="userID" value="<?= $_SESSION['userID'] ?>">
+<tr id="form-row-<?= $row['reservationID'] ?>" class="hidden brutal-form-row">
+  <td colspan="7">
+    <form action="update_reservation.php" method="POST" class="brutal-form">
+      <input type="hidden" name="reservationID" value="<?= $row['reservationID'] ?>">
+      <input type="hidden" name="userID" value="<?= $_SESSION['userID'] ?>">
 
-                  <label for="startDate">Start Date:</label>
-                  <input name="startDate" type="datetime-local" value="<?= $row['startDate'] ?>" required class="brutal-input">
+      <label for="startDate">Start Date:</label>
+      <input name="startDate" type="datetime-local" value="<?= $row['startDate'] ?>" required class="brutal-input">
 
-                  <label for="endDate">End Date:</label>
-                  <input name="endDate" type="datetime-local" value="<?= $row['endDate'] ?>" required class="brutal-input">
+      <label for="endDate">End Date:</label>
+      <input name="endDate" type="datetime-local" value="<?= $row['endDate'] ?>" required class="brutal-input">
 
-                  <button type="submit" class="brutal-button">
-                    Update Reservation
-                  </button>
-                </form>
-              </td>
-            </tr>
+      <button type="submit" class="brutal-button">
+        Update Reservation
+      </button>
+    </form>
+  </td>
+</tr>
+
+
           <?php endwhile; ?>
         <?php endif; ?>
       </tbody>
@@ -942,6 +944,7 @@ border-color: #00C851;
     </table>
   </div>
 </section>
+
 
 <!-- Wishlisted -->
 <section class="sub-container wishlisted-section">
@@ -1012,10 +1015,12 @@ border-color: #00C851;
     </table>
   </div>
 </section>
-</div>
+
+
+  </div>
+
 </body>
 </html>
-
 
 <script>
   function toggleForm(reservationID) {

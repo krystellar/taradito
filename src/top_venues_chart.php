@@ -10,7 +10,7 @@ session_start();
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Venue Stats - Brutal Style</title>
+  <title>Venue Statistics | TaraDito</title>
   <style>
     body {
       background: #fff;
